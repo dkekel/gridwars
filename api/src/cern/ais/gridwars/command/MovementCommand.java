@@ -52,4 +52,10 @@ public final class MovementCommand
   {
     return amount;
   }
+
+  @Override
+  public String toString()
+  {
+    return coordinatesFrom + "->" + direction + "(" + amount + ")";
+  }
 }

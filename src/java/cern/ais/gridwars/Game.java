@@ -284,14 +284,12 @@ public class Game
     }
     if (!player.equals(universe.getCell(movementCommand.getCoordinatesFrom()).getOwner()))
     {
-      System.out.println("Command failed validation: Moving cells from a cell not owned by you ("
-              + movementCommand.getCoordinatesFrom().getX() + ", " + movementCommand.getCoordinatesFrom().getY());
+      System.out.println("Command failed validation: Moving cells from a cell not owned by you " + movementCommand.getCoordinatesFrom());
       return false;
     }
     if (universe.getCell(movementCommand.getCoordinatesFrom()).getPopulation() < movementCommand.getAmount())
     {
-      System.out.println("Command failed validation: Moving more cells than you have ("
-              + movementCommand.getCoordinatesFrom().getX() + ", " + movementCommand.getCoordinatesFrom().getY());
+      System.out.println("Command failed validation: Moving more cells than you have " + movementCommand.getCoordinatesFrom());
       return false;
     }
     if (movementCommand.getAmount() <= 0L)
