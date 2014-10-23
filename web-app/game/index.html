@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (C) CERN 2013 - European Laboratory for Particle Physics
+  ~ All Rights Reserved.
+  ~
+  ~ Authors:
+  ~   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
+  ~   Gerardo Lastra (gerardo.lastra@cern.ch)
+  -->
+
+<html>
+<head>
+  <meta charset=UTF-8>
+  <title>Grid Wars</title>
+  <script>
+
+    var loc = window.location, ws_uri;
+    if (loc.protocol === "https:") {
+      ws_uri = "wss:";
+    } else {
+      ws_uri = "ws:";
+    }
+    ws_uri += "//" + loc.host;
+    ws_uri += loc.pathname + "game.ws";
+
+    var ws = new WebSocket(ws_uri);
+    ws.binaryType = "arraybuffer";
+
+    var averageRenderTime = 0;
+    var averageServerTime = 0;
+    var currentTime;
+    var t;
+    var universeSize = 200;
+
+    ws.onopen = function ()
+    {
+      var canvasHeight = document.getElementById("gameCanvas").height;
+      var canvasWidth = document.getElementById("gameCanvas").width;
+      currentTime = new Date();
+      document.getElementById("preCanvas").height = universeSize;
+      document.getElementById("preCanvas").width = universeSize;
+      document.getElementById("gameCanvas").getContext("2d").scale(canvasWidth / universeSize, canvasHeight / universeSize);
+    };
+
+    ws.onmessage = function (binaryMessage)
+    {
+      var canvasHeight = document.getElementById("gameCanvas").height;
+      var canvasWidth = document.getElementById("gameCanvas").width;
+
+      averageServerTime *= 19;
+      averageServerTime += new Date() - currentTime;
+      averageServerTime /= 20;
+
+      document.getElementById("avgServer").innerHTML = Math.round(averageServerTime * 100)/100;
+
+      currentTime = new Date();
+
+      var c = document.getElementById("preCanvas");
+      var ctx = c.getContext("2d");
+      //ctx.scale(0.125, 0.125);
+      var extractedData = new Uint8Array(binaryMessage.data);
+
+      //ctx.clearRect(0, 0, 100, 100);
+
+      var imageData = ctx.createImageData(universeSize, universeSize);
+
+      //top.document.title = extractedData.length;
+
+
+      for (var i = 0; i < extractedData.length; i++)
+      {
+        imageData.data[i] = extractedData[i];
+      }
+      ctx.putImageData(imageData, 0, 0);
+
+      var realCtx = document.getElementById("gameCanvas").getContext("2d");
+
+      realCtx.imageSmoothingEnabled = false;
+      realCtx.mozImageSmoothingEnabled = false;
+      realCtx.webkitImageSmoothingEnabled = false;
+      realCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+      realCtx.drawImage(c, 0, 0);
+
+      averageRenderTime *= 19;
+      averageRenderTime += new Date() - currentTime;
+      averageRenderTime /= 20;
+
+      document.getElementById("avgRender").innerHTML = Math.round(averageRenderTime * 100)/100;
+      document.getElementById("avgFrame").innerHTML = Math.round((averageRenderTime + averageServerTime) * 100)/100;
+      document.getElementById("fps").innerHTML = Math.round(1000 / (averageRenderTime + averageServerTime));
+
+      currentTime = new Date();
+
+      ws.send("1");
+    };
+
+    /*ws.onmessage = function (message)
+    {
+      //document.getElementById("chatlog").textContent = message.data + "\n";
+
+      var currentTime = new Date();
+
+      var c = document.getElementById("gameCanvas");
+
+      //c.style.width = '800px';
+      //c.style.height = '800px';
+
+      var ctx = c.getContext("2d");
+
+      ctx.clearRect(0, 0, 800, 800);
+
+      //var colors = ["#FF0000", "#0000FF", "#00FF00", "#000000", "#8000FF"];
+      var colors = [[255, 0, 0], [0, 0, 255], [0, 255, 0], [0, 0, 0], [128, 0, 255]];
+
+      var jsonObject = eval(message.data);
+
+      var imageData = ctx.createImageData(100, 100);
+
+      for (var i = 0; i < jsonObject.length; i++)
+      {
+        var obj = jsonObject[i];
+        //ctx.fillStyle = colors[obj['player']];
+
+        for (var j = 0; j < obj['cells'].length; j++)
+        {
+          var cell = obj['cells'][j];
+//          ctx.globalAlpha = cell['population'];
+//          ctx.clearRect(cell['x'] * 12, cell['y'] * 12, 12, 12);
+//          ctx.fillRect(cell['x'], cell['y'], 1, 1);
+          var idx = (cell['x'] + cell['y'] * 100) * 4;
+
+          imageData.data[idx] = colors[obj['player']][0];
+          imageData.data[idx + 1] = colors[obj['player']][1];
+          imageData.data[idx + 2] = colors[obj['player']][2];
+          imageData.data[idx + 3] = Math.round(cell['population'] * 255);
+        }
+
+
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      var t = new Date() - currentTime;
+
+      averageRenderTime *= 9;
+      averageRenderTime += t;
+      averageRenderTime /= 10;
+
+      top.document.title = averageRenderTime;
+      ws.send(t.toString());
+
+//            setTimeout(function ()
+//            {
+//
+//            }, 1);
+    };*/
+  </script>
+</head>
+<body>
+<canvas id="preCanvas" hidden="hidden"></canvas>
+<canvas id="gameCanvas" style="border: 1px solid black;" width="800" height="800"></canvas>
+<div style="position: relative; float: right">
+  Averages for last 20 frames.<br/>
+  Canvas rendering: <span id="avgRender"></span>&nbsp;ms<br/>
+  Server response: <span id="avgServer"></span>&nbsp;ms<br/>
+  Full frame loop: <span id="avgFrame"></span>&nbsp;ms<br/>
+  FPS: <span id="fps"></span>
+</div>
+</body>
+</html>
