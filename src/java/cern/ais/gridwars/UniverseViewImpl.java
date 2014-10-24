@@ -95,4 +95,9 @@ public class UniverseViewImpl implements UniverseView
   {
     return turn;
   }
+
+  public Coordinates getCoordinates(int x, int y)
+  {
+  	return new CoordinatesImpl(x, y);
+  }
 }
