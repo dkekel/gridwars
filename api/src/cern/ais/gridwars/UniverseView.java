@@ -99,4 +99,12 @@ public interface UniverseView
    * @return Current turn number.
    */
   public int getCurrentTurn();
+
+  /**
+   *
+   * @param x
+   * @param y
+   * @return Coordinates object in the specified position
+   */
+  public Coordinates getCoordinates(int x, int y);
 }
