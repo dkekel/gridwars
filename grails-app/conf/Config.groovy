@@ -64,7 +64,7 @@ environments {
   development {
     grails.logging.jul.usebridge = true
     cern.ais.gridwars.basedir = 'web-app/'
-    cern.ais.gridwars.fileprotocol = "file:/"
+    cern.ais.gridwars.fileprotocol = "file://"
   }
   production {
     grails.logging.jul.usebridge = false

@@ -14,7 +14,7 @@ class AgentUploadController
   {
     println "Sorry, no upload is possible at the moment"
     response.status = 403
-    /*if (session.user)
+    if (session.user)
     {
       if (!agentUploadService.processJarUpload(request.getFile("file"), request.getParameter("fqcn"), session.user))
       {
@@ -28,6 +28,6 @@ class AgentUploadController
     else
     {
       redirect(controller: 'main')
-    }*/
+    }
   }
 }

@@ -2,6 +2,8 @@ package cern.ais.gridwars
 
 class GameController
 {
+  def matchmakingService
+  def gameExecutionService
 
   def index()
   {
@@ -13,6 +15,13 @@ class GameController
 
   def list()
   {
+    Match match = matchmakingService.nextMatch
+
+    if (match)
+    {
+      gameExecutionService.executeGame(match)
+    }
+    
     if (!session.user)
       redirect(controller: 'main')
     [games: Match.findAllByRunning(false).findAll { it.players.agent.flatten().every { it.active } }.sort { it.startDate }]
