@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="cern.ais.gridwars.Outcome; cern.ais.gridwars.GameConstants; cern.ais.gridwars.MatchPlayer" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.plugin.springsecurity.SpringSecurityUtils; cern.ais.gridwars.Outcome; cern.ais.gridwars.GameConstants; cern.ais.gridwars.MatchPlayer" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>GridWars - Game Viewer</title>
@@ -141,19 +141,10 @@
 </head>
 
 <body>
-<div>${session.user.username} | <g:link controller="user" action="logout">Logout</g:link> |
-<g:link controller="game" action="index">View active bot scoreboard</g:link> |
-<g:link controller="game" action="list">List games</g:link> |
-<g:link controller="agentUpload" action="index">Upload a new bot</g:link> |
-    <a href="/api/doc">API Documentation</a> |
-    <a href="/api/api.jar">API Download</a> |
-    <a href="/api/examples">Examples</a>
-</div>
 <div>
     Players:
     <g:each in="${game.players.sort { it.agent.team.id }}" var="matchPlayer" status="i">
-        <span style="color: ${GameConstants.getRGB(i)}">${matchPlayer.agent.team.username} (<a
-                href="/player-outputs/${matchPlayer.outputFileName}">View log</a>)</span>
+        <span style="color: ${GameConstants.getRGB(i)}">${matchPlayer.agent.team.username}<g:if test="${ matchPlayer.agent.team.id == currentLoggedInUserId || SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') }"> (<g:link action="playerOutput" params="${ [player: matchPlayer.id, game: game.id] }">View log</g:link>) </g:if></span>
     </g:each><br/>
     Winner: ${game.players.every { it.outcome.equals(Outcome.DRAW) } ? "Draw" : game.players.find { it.outcome.equals(Outcome.WIN) }.agent.with { it.team.username + " (" + it.fqClassName + ")" }}<br/>
     Turns to complete: ${game.players.turns.flatten().size()}<br/>

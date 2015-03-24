@@ -19,7 +19,8 @@
 </head>
 
 <body>
-<div>${session.user.username} | <g:link controller="user" action="logout">Logout</g:link> |
+<div>
+    <sec:ifLoggedIn>Welcome <b><sec:username/>!</b><g:form name='logoutForm' controller="logout" action=""><g:submitButton name="Logout"/></g:form></sec:ifLoggedIn>
 <g:link controller="game" action="index">View active bot scoreboard</g:link> |
 <g:link controller="game" action="list">List games</g:link> |
 <g:link controller="agentUpload" action="index">Upload a new bot</g:link> |

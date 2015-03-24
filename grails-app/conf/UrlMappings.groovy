@@ -8,7 +8,7 @@ class UrlMappings
       }
     }
 
-    "/"(controller: 'main')
+    "/"(controller: 'game')
     "500"(view: '/error')
   }
 }

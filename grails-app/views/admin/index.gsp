@@ -16,5 +16,12 @@
     <g:textArea name="config" rows="50">${config}</g:textArea>
     <g:submitButton name="update"/>
 </g:form>
+<div>
+    <ul>
+    <g:each in="${ grailsApplication.controllerClasses }">
+        <li><g:link controller="${it.name}">${ it.fullName }</g:link></li>
+    </g:each>
+    </ul>
+</div>
 </body>
 </html>

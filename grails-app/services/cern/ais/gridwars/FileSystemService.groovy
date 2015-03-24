@@ -5,6 +5,7 @@ class FileSystemService {
   static scope = 'singleton'
 
   def grailsApplication
+  def configService
   private File jarHome
   private File outputHome
 
@@ -17,9 +18,9 @@ class FileSystemService {
   }
 
   void init() {
-    def conf = new ConfigSlurper().parse(config.toURI().toURL())
-    jarHome = initHome(new File(home, conf.jar as String))
-    outputHome = initHome(new File(home, conf.output as String))
+    configService.update(config)
+    jarHome = initHome(new File(home, configService.jar as String))
+    outputHome = initHome(new File(home, configService.output as String))
   }
   
   File jarFile(String name) {

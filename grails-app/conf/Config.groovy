@@ -2,7 +2,7 @@
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
 
-//grails.config.locations = [ "file:${ System.properties.GW_HOME }config.groovy }" ]
+grails.config.locations = [ "file:${ System.properties.GW_HOME }config.groovy }" ]
 
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -88,8 +88,8 @@ log4j = {
   root {
     error 'stdout'
   }
-  trace 'org.hibernate.type'
-  debug 'org.hibernate.SQL'
+//  trace 'org.hibernate.type'
+//  debug 'org.hibernate.SQL'
 
   debug 'cern.ais.gridwars'
   error 'org.codehaus.groovy.grails.web.servlet',        // controllers
@@ -139,17 +139,42 @@ grails.plugin.springsecurity.authority.className = 'cern.ais.gridwars.security.R
 grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
 grails.plugin.springsecurity.password.algorithm='SHA-512'
 
+grails.plugin.springsecurity.ui.register.defaultRoleNames = ['ROLE_USER']
+grails.plugin.springsecurity.ui.password.validationRegex= /^[!@#$%^&\d\w_\.]+$/
+
 grails.plugin.springsecurity.interceptUrlMap = [
-	'/':                              ['permitAll'],
-	'/index':                         ['permitAll'],
-	'/index.gsp':                     ['permitAll'],
+	//'/**':                            ['permitAll'],
+	'/':                              ['ROLE_USER', 'ROLE_ADMIN'],
 	'/assets/**':                     ['permitAll'],
 	'/**/js/**':                      ['permitAll'],
 	'/**/css/**':                     ['permitAll'],
 	'/**/images/**':                  ['permitAll'],
 	'/**/favicon.ico':                ['permitAll'],
+
 	'/login/**':                      ['permitAll'],
-	'/logout/**':                     ['permitAll'],
+	'/register/**':                   ['permitAll'],
+	'/logout/**':                     ['ROLE_USER', 'ROLE_ADMIN'],
+
+	'/game/**':                       ['ROLE_USER', 'ROLE_ADMIN'],
+	'/agentUpload/**':                ['ROLE_USER', 'ROLE_ADMIN'],
+	'/game.ws':                       ['ROLE_USER', 'ROLE_ADMIN'],
+	'/player-outputs/**':                 ['ROLE_USER', 'ROLE_ADMIN'],
+
 	'/admin/**':                      ['ROLE_ADMIN'],
+	//'/**':                            ['ROLE_ADMIN'],
 ]
 
+grails.mail.default.from="pavel.dionisev@cern.ch"
+grails {
+	mail {
+		host = "smtp.cern.ch"
+		port = 25
+		username = "pdionise"
+		password = System.properties.MAIL_PASSWORD
+		props = [
+			"mail.smtp.auth":"true",
+			"mail.smtp.socketFactory.port":"25",
+			"mail.smtp.starttls.enable":"true",
+		]
+	}
+}

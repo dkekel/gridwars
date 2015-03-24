@@ -19,14 +19,6 @@
 </head>
 
 <body>
-<div>${session.user.username} | <g:link controller="user" action="logout">Logout</g:link> |
-<g:link controller="game" action="index">View active bot scoreboard</g:link> |
-<g:link controller="game" action="list">List games</g:link> |
-<g:link controller="agentUpload" action="index">Upload a new bot</g:link> |
-    <a href="/api/doc">API Documentation</a> |
-    <a href="/api/api.jar">API Download</a> |
-    <a href="/api/examples">Examples</a>
-</div>
 <table>
     <tr><th>Start date</th><th>Players</th><th>Winner</th></tr>
     <g:each in="${games}" var="game">

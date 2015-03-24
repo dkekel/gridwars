@@ -1,36 +1,40 @@
 package cern.ais.gridwars
 
+import cern.ais.gridwars.security.User
+import grails.plugin.springsecurity.SpringSecurityUtils
+
 class GameController
 {
   def matchmakingService
   def gameExecutionService
+  def fileSystemService
+  def springSecurityService
 
   def index()
   {
-    if (!session.user)
-      redirect(controller: 'main')
     // Get scoreboard
     [agents: Agent.findAllByActive(true).sort { a, b -> (b.score <=> a.score) }]
   }
 
   def list()
   {
-    if (!session.user)
-      redirect(controller: 'main')
     [games: Match.findAllByRunning(false).findAll { it.players.agent.flatten().every { it.active } }.sort { it.startDate }]
   }
 
   def view(Long id)
   {
-    if (!session.user)
-      redirect(controller: 'main')
+    [game: Match.get(id), currentLoggedInUserId: (springSecurityService.currentUser as User).id]
+  }
 
-    if (!id)
-    {
-      redirect(controller: 'main')
+  def playerOutput() {
+    if (SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') || (springSecurityService.currentUser as User).id == params.player as long) {
+      def text = fileSystemService.outputFile(Match.get(params.game as long).players.find {
+        it.agent.team.id == (params.player as long)
+      }.outputFileName).text
+      render "<pre>$text</pre>"
     }
-
-    [game: Match.get(id)]
+    else
+      render "No access"
   }
 
   def match()
