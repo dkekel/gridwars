@@ -1,6 +1,7 @@
 package cern.ais.gridwars
 
 import cern.ais.gridwars.bot.PlayerBot
+import cern.ais.gridwars.security.User
 import cern.ais.gridwars.servlet.util.ClassUtils
 import org.apache.commons.io.FileUtils
 import org.springframework.web.multipart.commons.CommonsMultipartFile

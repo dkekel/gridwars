@@ -1,5 +1,7 @@
 package cern.ais.gridwars
 
+import cern.ais.gridwars.security.User
+
 class Agent
 {
   String  jarPath

@@ -55,6 +55,7 @@ grails.project.dependency.resolution = {
     runtime ":resources:1.1.6"
 
     compile ":quartz:1.0-RC6"
+    compile ":spring-security-core:2.0-RC4"
 
     // Uncomment these (or add new ones) to enable additional resources capabilities
     //runtime ":zipped-resources:1.0"

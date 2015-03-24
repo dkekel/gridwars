@@ -12,7 +12,6 @@ class AgentUploadController
 
   def upload()
   {
-    println "Sorry, no upload is possible at the moment"
     response.status = 403
     if (session.user)
     {

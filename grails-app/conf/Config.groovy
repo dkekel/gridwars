@@ -2,10 +2,7 @@
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
+//grails.config.locations = [ "file:${ System.properties.GW_HOME }config.groovy }" ]
 
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -91,6 +88,8 @@ log4j = {
   root {
     error 'stdout'
   }
+  trace 'org.hibernate.type'
+  debug 'org.hibernate.SQL'
 
   debug 'cern.ais.gridwars'
   error 'org.codehaus.groovy.grails.web.servlet',        // controllers
@@ -129,3 +128,28 @@ grails {
     }
 }
 remove this line */
+
+//grails.plugin.springsecurity.useBasicAuth = true
+//grails.plugin.springsecurity.basic.realmName = "Grid Wars Server"
+
+// Added by the Spring Security Core plugin:
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'cern.ais.gridwars.security.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'cern.ais.gridwars.security.UserRole'
+grails.plugin.springsecurity.authority.className = 'cern.ais.gridwars.security.Role'
+grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
+grails.plugin.springsecurity.password.algorithm='SHA-512'
+
+grails.plugin.springsecurity.interceptUrlMap = [
+	'/':                              ['permitAll'],
+	'/index':                         ['permitAll'],
+	'/index.gsp':                     ['permitAll'],
+	'/assets/**':                     ['permitAll'],
+	'/**/js/**':                      ['permitAll'],
+	'/**/css/**':                     ['permitAll'],
+	'/**/images/**':                  ['permitAll'],
+	'/**/favicon.ico':                ['permitAll'],
+	'/login/**':                      ['permitAll'],
+	'/logout/**':                     ['permitAll'],
+	'/admin/**':                      ['ROLE_ADMIN'],
+]
+
