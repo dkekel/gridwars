@@ -11,26 +11,29 @@ package cern.ais.gridwars;
 
 import cern.ais.gridwars.bot.PlayerBot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-public class Player
-{
-  final String           name;
+public class Player {
   final PlayerBot        playerBot;
-  final FileOutputStream outputStream;
+	final File outputFile;
+	final FileOutputStream outputStream;
   final Integer colorIndex;
+  final long id;
 
-  public Player(String name, PlayerBot playerBot, FileOutputStream outputStream, Integer colorIndex)
-  {
-    this.name = name;
+  public Player(long id, PlayerBot playerBot, File outputFile, Integer colorIndex) throws FileNotFoundException {
+    this.id = id;
     this.playerBot = playerBot;
-    this.outputStream = outputStream;
+    this.outputFile = outputFile;
+    this.outputStream = new FileOutputStream(outputFile);
     this.colorIndex = colorIndex;
+    System.out.println("Player " + id);
   }
 
-  public String getName()
+  public long getId()
   {
-    return name;
+    return id;
   }
 
   public PlayerBot getPlayerBot()
@@ -56,18 +59,18 @@ public class Player
 
     Player player = (Player) o;
 
-    return name.equals(player.name);
+    return id == player.id;
   }
 
   @Override
   public int hashCode()
   {
-    return name.hashCode();
+    return Long.valueOf(id).hashCode();
   }
 
   @Override
   public String toString()
   {
-    return name;
+    return String.valueOf(id);
   }
 }

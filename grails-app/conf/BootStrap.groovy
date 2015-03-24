@@ -55,7 +55,7 @@ class BootStrap
       mailService.sendMail {
         to configService.admins
         subject subjectText
-        body "Time: ${ new SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(new Date()) }"
+        body "Time: ${ new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss").format(new Date()) }"
       }
     }
   }
