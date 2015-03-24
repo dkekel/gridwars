@@ -63,7 +63,10 @@ grails.hibernate.cache.queries = false
 environments {
   development {
     grails.logging.jul.usebridge = true
-    cern.ais.gridwars.basedir = 'web-app/'
+    def base = 'web-app/'
+    def dbDir = "${base}/db/gw"
+//    dataSource.url = "jdbc:h2:file:${dbDir}"
+    cern.ais.gridwars.basedir = base
     cern.ais.gridwars.fileprotocol = "file://"
   }
   production {
@@ -89,6 +92,7 @@ log4j = {
     error 'stdout'
   }
 
+  debug 'cern.ais.gridwars'
   error 'org.codehaus.groovy.grails.web.servlet',        // controllers
           'org.codehaus.groovy.grails.web.pages',          // GSP
           'org.codehaus.groovy.grails.web.sitemesh',       // layouts

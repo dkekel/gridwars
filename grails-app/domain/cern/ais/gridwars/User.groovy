@@ -5,6 +5,7 @@ class User
   String username
   String hashedPassword
   String salt
+  String email
 
   // Transients
   String password

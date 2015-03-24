@@ -1,3 +1,5 @@
+def grailsApplication
+
 dataSource {
     pooled = true
     driverClassName = "org.h2.Driver"
@@ -12,10 +14,10 @@ hibernate {
 // environment specific settings
 environments {
     development {
-        dataSource {
-            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
-            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-        }
+      dataSource {
+        dbCreate = "create-drop"
+        url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+      }
     }
     test {
         dataSource {

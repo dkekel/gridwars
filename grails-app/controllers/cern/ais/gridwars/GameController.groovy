@@ -15,13 +15,6 @@ class GameController
 
   def list()
   {
-    Match match = matchmakingService.nextMatch
-
-    if (match)
-    {
-      gameExecutionService.executeGame(match)
-    }
-    
     if (!session.user)
       redirect(controller: 'main')
     [games: Match.findAllByRunning(false).findAll { it.players.agent.flatten().every { it.active } }.sort { it.startDate }]
@@ -40,4 +33,10 @@ class GameController
     [game: Match.get(id)]
   }
 
+  def match()
+  {
+    def match = matchmakingService.nextMatch
+    if (match)
+      gameExecutionService.executeGame(match)
+  }
 }

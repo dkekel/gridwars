@@ -2,29 +2,43 @@ package cern.ais.gridwars
 
 import cern.ais.gridwars.bot.PlayerBot
 import cern.ais.gridwars.servlet.util.ClassUtils
+import org.apache.commons.io.FileUtils
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 class AgentUploadService
 {
   def grailsApplication
+  def fileSystemService
 
-  public boolean processJarUpload(CommonsMultipartFile uploadedFile, String agentFQCN, User user)
-  {
+  public boolean processJarUpload(CommonsMultipartFile uploadedFile, String agentFQCN, User user) {
     user.refresh()
-    File destinationFile = new File("${grailsApplication.config.cern.ais.gridwars.basedir}player-jars/${user.username}_${new Date().format("yyyyMMddHHmmss")}_${uploadedFile.originalFilename}")
+    File destinationFile = fileSystemService.jarFile(createJarName(user, uploadedFile.originalFilename))
     uploadedFile.transferTo(destinationFile)
-    println destinationFile.absolutePath
-    println agentFQCN
-    println user.username
+    log.debug("File uploaded: user:($user.username) file: $destinationFile.absolutePath($agentFQCN)")
+    processUploadedFile(destinationFile, agentFQCN, user)
+  }
 
+  public boolean processJarUpload(File uploadedFile, String agentFQCN, User user) {
+    user.refresh()
+    def destFile = fileSystemService.jarFile(createJarName(user, uploadedFile.name))
+    FileUtils.copyFile(uploadedFile, destFile)
+    log.debug("File uploaded: user:($user.username) file: $destFile.absolutePath($agentFQCN)")
+    processUploadedFile(destFile, agentFQCN, user)
+  }
+
+  String createJarName(User user, String originalFilename) {
+    "${user.username}_${new Date().format("yyyyMMddHHmmss")}_$originalFilename"
+  }
+
+  public boolean processUploadedFile(File file, String agentFQCN, User user) {
     // Validate the uploaded file
-    if (!validate(destinationFile, agentFQCN))
+    if (!validate(file, agentFQCN))
     {
-      destinationFile.delete()
+      file.delete()
       return false
     }
 
-    def agent = new Agent(jarPath: destinationFile.absolutePath, fqClassName: agentFQCN, uploadDate: new Date())
+    def agent = new Agent(jarPath: file.absolutePath, fqClassName: agentFQCN, uploadDate: new Date())
 
     // Invalidate previous
     user.agents?.each { it.active = false }
@@ -38,10 +52,10 @@ class AgentUploadService
 
   private boolean validate(File file, String agentFQCN)
   {
-
+    def logError = { log.debug "$file($agentFQCN) haven't pass validation. Reason: $it" }
     if (file.length() > 10485760)
     {
-      println "Too big"
+      logError("Too big")
       return false
     }
 
@@ -49,19 +63,19 @@ class AgentUploadService
 
     if (!classToLoad)
     {
-      println "Failed to load class"
+      logError "Failed to load class"
       return false
     }
 
     if (classToLoad.interface)
     {
-      println "It's an interface"
+      logError "It's an interface"
       return false
     }
 
     if (!PlayerBot.class.isAssignableFrom(classToLoad))
     {
-      println "Does not implement PlayerBot"
+      logError "Does not implement PlayerBot"
       return false
     }
 

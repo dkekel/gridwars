@@ -6,7 +6,7 @@ class Agent
   String  fqClassName
   Date    uploadDate
   double  eloScore = 1000
-  boolean active   = true
+  boolean active = true
 
   static belongsTo = [team: User]
 

@@ -18,7 +18,7 @@ public class GameConstants
   public static final int    TIMEOUT_DURATION_MS               = 50;
   public static final int    INSTANTIATION_TIMEOUT_DURATION_MS = 5000;
   public static final int    CLASS_LOAD_TIMEOUT_DURATION_MS    = 10000;
-  public static final int    TURN_LIMIT                        = 2000;
+  public static final int    TURN_LIMIT                        = 200;
   public static final int    MAXIMUM_GAMES_PER_OPPONENT        = 9;
 
   public static final byte[][] PLAYER_COLORS = {

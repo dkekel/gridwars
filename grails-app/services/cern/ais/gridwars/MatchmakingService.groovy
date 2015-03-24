@@ -12,7 +12,9 @@ class MatchmakingService
     def final activeMatchesClosure = { it.match.players.agent.flatten().every { it.active } }
 
     // Get active agents and sort them by their number of matches against other active agents
-    List<Agent> activeAgents = Agent.findAllByActive(true).sort { it.matches.count(activeMatchesClosure) }
+    List<Agent> activeAgents = Agent.findAllByActive(true).sort {
+      it.matches?.count(activeMatchesClosure) ?: 0
+    }
 
     // Not enough agents to play
     if (activeAgents.size() < 2)
@@ -20,7 +22,7 @@ class MatchmakingService
       return null
     }
 
-    if (activeAgents.first().matches.count(activeMatchesClosure) >= GameConstants.MAXIMUM_GAMES_PER_OPPONENT * (activeAgents.size() - 1))
+    if ((activeAgents.first()?.matches?.count(activeMatchesClosure) ?: 0) >= GameConstants.MAXIMUM_GAMES_PER_OPPONENT * (activeAgents.size() - 1))
     {
       return null
     }
@@ -30,7 +32,7 @@ class MatchmakingService
     activeAgents.remove(player1)
 
     // Get agent other than this one with the least amount of games played against it
-    activeAgents = activeAgents.sort { it.matches.match.flatten().count { it.players.agent.flatten().contains(player1) } }
+    activeAgents = activeAgents.sort { it?.matches?.match?.flatten()?.count { it.players.agent.flatten().contains(player1) } ?: 0 }
     Agent player2 = activeAgents.first()
 
     println "New match between ${player1.fqClassName} and ${player2.fqClassName}"

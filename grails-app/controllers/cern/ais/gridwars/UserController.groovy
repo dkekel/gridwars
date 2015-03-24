@@ -7,10 +7,9 @@ class UserController
 
   def register = {
     // new user posts his registration details
-    if (request.method == 'POST' && "horosho dmitry horosho".equals(params.get('email')))
+    if (request.method == 'POST')
     {
       // create domain object and assign parameters using data binding
-      params.remove('email')
       def u = new User(params)
       u.salt = Math.round(Math.random() * 10000).toString()
       u.hashedPassword = DigestUtils.sha256Hex(u.salt + params.password)

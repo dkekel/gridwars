@@ -12,6 +12,7 @@ import java.nio.ByteBuffer
 class GameExecutionService
 {
   def grailsApplication
+  def fileSystemService
 
   def executeGame(Match match)
   {
@@ -29,7 +30,7 @@ class GameExecutionService
       {
         try
         {
-          newOut = new FileOutputStream("${grailsApplication.config.cern.ais.gridwars.basedir}player-outputs/" + matchPlayer.outputFileName)
+          newOut = new FileOutputStream(fileSystemService.outputFile(matchPlayer.outputFileName))
           OutputSwitcher.instance.switchToFile(newOut)
         }
         catch (FileNotFoundException e)
