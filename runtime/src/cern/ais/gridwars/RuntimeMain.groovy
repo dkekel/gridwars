@@ -5,6 +5,8 @@ import com.esotericsoftware.kryonet.Connection
 import com.esotericsoftware.kryonet.Listener
 import com.esotericsoftware.kryonet.Server
 
+import java.util.zip.DeflaterOutputStream
+
 class RuntimeMain extends Listener {
 	Server s
 
@@ -38,12 +40,20 @@ class RuntimeMain extends Listener {
 		new RuntimeMain("/Users/seagull/Dev/cern/gridwars/home/workerClassPath/*")
 	}
 
+	long i = 0;
+	ByteArrayOutputStream bis = new ByteArrayOutputStream();
+	
 	@Override void received(Connection connection, Object o) {
 		switch (o) {
-			case TurnInfo: print('.'); if ((o as TurnInfo).turn % 100 == 0) println(); break;
+			case TurnInfo: print('.'); bis.write((o as TurnInfo).data); if ((o as TurnInfo).turn % 100 == 0) println(); break;
 			case MatchResults:
 				def mr = o as MatchResults
 				println("\n Math finished. $mr.winnerId won!")
+				println "amout of data produced: ${ (bis.size() / 1024 / 1024 as Double).round(2) } MB."
+				ByteArrayOutputStream cbis = new ByteArrayOutputStream();
+				def os = new DeflaterOutputStream(cbis)
+				os.write(bis.toByteArray())
+				println "compressed data takes: ${ (cbis.size() / 1024 / 1024 as Double).round(2) } MB."
 			break;
 		}
 	}

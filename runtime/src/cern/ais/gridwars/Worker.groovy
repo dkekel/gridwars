@@ -49,6 +49,7 @@ class Worker extends Listener {
 
 	def startGame(StartMatch match) {
 		Thread.start {
+			long time = System.currentTimeMillis()
 			def players = PlayerUtil.prepare(match)
 			def game = new Game(players, new TurnCallback() {
 				@Override void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus) {
@@ -64,6 +65,7 @@ class Worker extends Listener {
 			players*.outputStream*.close()
 			players*.outputStream
 
+			println("Game simulation takes ${ ((System.currentTimeMillis() - time) / 1000 as Double).round(2) } s.")
 			println("Fin. $game.winner won!")
 			c.sendTCP(new MatchResults(match.matchId, match.playerData1.player, players[0].outputFile.bytes,
 				match.playerData2.player, players[1].outputFile.bytes, game.winner.id))
