@@ -1,0 +1,28 @@
+apply plugin: 'maven'
+apply plugin: 'groovy'
+
+group = 'cern.ais.gridwars'
+version = '1.0-SNAPSHOT'
+
+repositories {
+  mavenCentral()
+  maven {
+    url 'http://clojars.org/repo/'
+  }
+}
+
+dependencies {
+  compile project(':api')
+  compile 'com.esotericsoftware:kryo:3.0.0'
+  compile 'kryonet:kryonet:2.21'
+  compile 'org.codehaus.gpars:gpars:1.2.1'
+  compile 'org.codehaus.groovy:groovy-all:2.4.3'
+}
+
+sourceSets.main.java.srcDirs = ['src']
+
+task createWorkerClassPath(type: Copy) {
+  into "$buildDir/home/workerClassPath"
+  from configurations.runtime
+  from jar
+}
