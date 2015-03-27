@@ -1,7 +1,7 @@
 jar = 'player-jars/'
 output = 'player-outputs/'
 
-admins = ["xSeagullx@gmail.com", /* "dmitry.potapov@cern.ch" */]
+admins = ["xSeagullx@gmail.com", "grid.wars@cern.ch"]
 sendMailsToAdmin = !true
 
 capabilities {
@@ -9,3 +9,9 @@ capabilities {
 	registration = true
 	matches = true
 }
+
+workers {
+	max = 4
+	durability = 1
+}
+

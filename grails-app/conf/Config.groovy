@@ -164,13 +164,13 @@ grails.plugin.springsecurity.interceptUrlMap = [
 	//'/**':                            ['ROLE_ADMIN'],
 ]
 
-grails.mail.default.from="pavel.dionisev@cern.ch"
+grails.mail.default.from="grid.wars@cern.ch"
 grails {
 	mail {
 		host = "smtp.cern.ch"
 		port = 25
-		username = "pdionise"
-		password = System.properties.MAIL_PASSWORD
+		username = "gridwars"
+		password = "Zufe-Zifu"
 		props = [
 			"mail.smtp.auth":"true",
 			"mail.smtp.socketFactory.port":"25",

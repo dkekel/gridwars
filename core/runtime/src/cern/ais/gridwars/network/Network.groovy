@@ -2,6 +2,7 @@ package cern.ais.gridwars.network
 
 import cern.ais.gridwars.MatchResults
 import cern.ais.gridwars.PlayerData
+import cern.ais.gridwars.Ready
 import cern.ais.gridwars.StartMatch
 import cern.ais.gridwars.Std
 import cern.ais.gridwars.TurnInfo
@@ -23,6 +24,7 @@ class Network {
 		kryo.register(LinkedHashMap)
 
 		kryo.register(Std)
+		kryo.register(Ready)
 		kryo.register(TurnInfo)
 		kryo.register(StartMatch)
 		kryo.register(PlayerData)

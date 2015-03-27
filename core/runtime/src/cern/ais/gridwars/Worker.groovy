@@ -14,6 +14,7 @@ class Worker extends Listener {
 	private int id
 
 	Worker(int id) {
+		this.id = id
 		println("Worker $id. Created!")
 		c = new Client(16384000, 2048000)
 		c.addListener(this)
@@ -32,7 +33,7 @@ class Worker extends Listener {
 
 	@Override void connected(Connection connection) {
 		println("Worker $id Connected!")
-		connection.sendTCP("Hello!")
+		connection.sendTCP(new Ready(id))
 	}
 
 	@Override void disconnected(Connection connection) {

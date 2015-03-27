@@ -17,10 +17,9 @@ class BootStrap
   def init = { servletContext ->
     fileSystemService.init()
 
-
     new Role(authority: 'ROLE_USER').save()
     def adminRole = new Role(authority: 'ROLE_ADMIN').save()
-    def admin = new User(username: 'admin', password: 'admin', enabled: true, email: 'admin@servername')
+    def admin = new User(username: 'admin', password: 'admin', enabled: true, email: 'grid.wars@cern.ch')
     admin.save()
     new UserRole(user: admin, role: adminRole).save()
 
