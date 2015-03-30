@@ -16,13 +16,17 @@ dependencies {
   compile 'com.esotericsoftware:kryo:3.0.0'
   compile 'kryonet:kryonet:2.21'
   compile 'org.codehaus.gpars:gpars:1.2.1'
-  compile 'org.codehaus.groovy:groovy-all:2.4.3'
+  compile 'org.codehaus.groovy:groovy-all:2.1.9'
 }
 
-sourceSets.main.java.srcDirs = ['src']
+sourceSets.main {
+  java.srcDirs = ['src']
+  groovy.srcDirs = ['src']
+}
 
 task createWorkerClassPath(type: Copy) {
-  into "$buildDir/home/workerClassPath"
+  println("${ System.properties.GW_HOME }/workerClassPath")
+  into "${ System.properties.GW_HOME }/workerClassPath"
   from configurations.runtime
   from jar
 }

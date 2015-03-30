@@ -15,6 +15,7 @@ class BootStrap
   def configService
 
   def init = { servletContext ->
+    log.info("GW_HOME is set to: ${ System.properties.GW_HOME }")
     fileSystemService.init()
 
     new Role(authority: 'ROLE_USER').save()
@@ -22,6 +23,9 @@ class BootStrap
     def admin = new User(username: 'admin', password: 'admin', enabled: true, email: 'grid.wars@cern.ch')
     admin.save()
     new UserRole(user: admin, role: adminRole).save()
+    def admin2 = new User(username: 'admin2', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
+    admin2.save()
+    new UserRole(user: admin2, role: adminRole).save()
 
 
     if (Environment.current == Environment.DEVELOPMENT) {

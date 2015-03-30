@@ -7,14 +7,11 @@ import java.nio.CharBuffer
 
 class DataSendService
 {
-
+  def gameSerializationService
   public void sendGameToClient(Long gameId, WsOutbound wsOutbound)
   {
-    def match = Match.get(gameId)
-    for (Turn turn : match.players.turns.flatten().sort { it.number })
-    {
+    for (turn in gameSerializationService.load(gameId))
       sendTurnToClient(turn, wsOutbound)
-    }
   }
 
   private static void sendTurnToClient(Turn turn, WsOutbound wsOutbound)
@@ -35,4 +32,8 @@ class DataSendService
     wsOutbound.writeBinaryMessage(byteBuffer);
   }
 
+  private static void sendTurnToClient(byte[] turn, WsOutbound wsOutbound)
+  {
+    wsOutbound.writeBinaryMessage(ByteBuffer.wrap(turn));
+  }
 }

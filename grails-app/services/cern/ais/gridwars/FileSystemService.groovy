@@ -7,6 +7,7 @@ class FileSystemService {
   def grailsApplication
   def configService
   private File jarHome
+  private File matchHome
   private File outputHome
 
   File getConfig() {
@@ -21,6 +22,7 @@ class FileSystemService {
     configService.update(config)
     jarHome = initHome(new File(home, configService.jar as String))
     outputHome = initHome(new File(home, configService.output as String))
+    matchHome = initHome(new File(home, configService.matches as String))
   }
   
   File jarFile(String name) {
@@ -35,5 +37,9 @@ class FileSystemService {
     if (!file.exists() && !file.mkdirs())
       throw new RuntimeException("Failed to initalize fileSystem. Can't create directory $file.")
     file
+  }
+
+  File matchResult(long id) {
+    new File(matchHome, "match_$id")
   }
 }

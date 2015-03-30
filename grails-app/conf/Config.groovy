@@ -89,7 +89,7 @@ log4j = {
     error 'stdout'
   }
 //  trace 'org.hibernate.type'
-//  debug 'org.hibernate.SQL'
+  debug 'org.hibernate.SQL'
 
   debug 'cern.ais.gridwars'
   error 'org.codehaus.groovy.grails.web.servlet',        // controllers
@@ -161,6 +161,7 @@ grails.plugin.springsecurity.interceptUrlMap = [
 	'/player-outputs/**':                 ['ROLE_USER', 'ROLE_ADMIN'],
 
 	'/admin/**':                      ['ROLE_ADMIN'],
+	'/dbconsole/**':                  ['ROLE_ADMIN'],
 	//'/**':                            ['ROLE_ADMIN'],
 ]
 

@@ -15,6 +15,8 @@ grails.tomcat.nio = true
 
 grails.project.war.file = 'gridwars_server.war'
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
   inherits("global") {
@@ -46,13 +48,13 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
     // compile 'com.google.guava:guava:14.0'
     runtime 'mysql:mysql-connector-java:5.1.20'
-    compile 'cern.ais.gridwars:api:1.0-SNAPSHOT'
-    compile 'cern.ais.gridwars:runtime:1.0-SNAPSHOT'
+    compile('cern.ais.gridwars:api:1.0-SNAPSHOT')
+    compile('cern.ais.gridwars:runtime:1.0-SNAPSHOT')
   }
 
   plugins {
-    runtime ":hibernate:3.6.10.17"
-    runtime ":jquery:1.8.3"
+    runtime ":hibernate:3.6.10.10"
+    runtime ":jquery:1.11.1"
     runtime ":resources:1.1.6"
 
     // SpringSecurity UI plugins

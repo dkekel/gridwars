@@ -13,14 +13,14 @@ class Worker extends Listener {
 	Client c
 	private int id
 
-	Worker(int id) {
+	Worker(int id, int port, String host) {
 		this.id = id
 		println("Worker $id. Created!")
 		c = new Client(16384000, 2048000)
 		c.addListener(this)
 		c.start()
 		Network.init(c)
-		c.connect(5000, 'localhost', 10000)
+		c.connect(5000, host, port)
 
 		while (true) {
 			sleep(1000)
@@ -28,7 +28,10 @@ class Worker extends Listener {
 	}
 
 	static void main(String[] args) {
-		new Worker(args[0] as int)
+		if (!args)
+			println("Usage: worker id [port = 10000] [hostname = localhost]")
+
+		new Worker(args[0] as int, (args.length > 1 ? args[1] : 10000) as int, args.length > 2 ? args[2] : "localhost")
 	}
 
 	@Override void connected(Connection connection) {

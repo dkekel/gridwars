@@ -30,7 +30,7 @@
                 ${game.players.agent.team.flatten().sort { it.id }.username.join(' vs ')}
             </td>
             <td>
-                ${game.players.every { it.outcome.equals(Outcome.DRAW) } ? "Draw" : game.players.find { it.outcome.equals(Outcome.WIN) }.agent.team.username}
+                ${ game.winner ? game.winner.team.username : "Draw" }
             </td>
             <td>
                 <g:link controller="game" action="view" params="[id: game.id]">View</g:link>

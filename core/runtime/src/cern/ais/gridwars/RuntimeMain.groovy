@@ -33,24 +33,28 @@ class RuntimeMain extends Listener {
 
 	private final Server s
 	private final String classPath
+	private final String workerHome
 	private pool = Executors.newFixedThreadPool(4)
 	private Map<Connection, Task> workers = new ConcurrentHashMap<>()
 	private Queue<Task> queue = new ConcurrentLinkedQueue<>()
+	private static int port
 
-	RuntimeMain(String classPath)
+	RuntimeMain(String classPath, String home, int port = 10000)
 	{
+		this.port = port
+		workerHome = home
 		this.classPath = classPath
 		s = new Server(16384000, 2048000)
 		s.start()
 		Network.init(s)
 		s.addListener(this)
-		s.bind(10000)
+		s.bind(port)
 		println("Start server")
 	}
 
 	static main(arg)
 	{
-		def m = new RuntimeMain("/Users/seagull/Dev/cern/gridwars/core/runtime/build/home/workerClassPath/*")
+		def m = new RuntimeMain("/Users/seagull/Dev/cern/gridwars/core/runtime/build/home/workerClassPath/*", '/Users/seagull/Dev/cern/gridwars/home/workerHome')
 		def sM = new StartMatch(1,
 			new PlayerData(new File('/Users/seagull/Dev/cern/gridwars/target/work/gw.defName.defBot.jar').bytes, 1, "gw.defName.defBot"),
 			//new PlayerData(new File('/Users/seagull/Dev/cern/gridwars/target/work/ru.tversu.gridwars.TverSUbot81.jar').bytes, 2, "ru.tversu.gridwars.TverSUbot81")
@@ -71,37 +75,47 @@ class RuntimeMain extends Listener {
 	private void spawnWorker() {
 		pool.submit {
 			int workerId = lastWorkerId.andIncrement
-			println("Worker $workerId is being born")
-			def fos = new FileOutputStream(new File("Worker${workerId}_Output.txt"))
-			def builder = new ProcessBuilder(new File(System.getProperty("java.home") as String, 'bin/java').absolutePath, "-cp", classPath, "cern.ais.gridwars.Worker", "$workerId")
-			builder.directory(new File('/Users/seagull/Dev/cern/gridwars/home/workerHome'))
-			builder.redirectErrorStream(true)
-			def p = builder.start()
-			p.waitForProcessOutput(fos, fos)
-			int ev = p.exitValue()
-			fos.close()
-			println("Worker $workerId is dead. ExitValue $ev")
+			try
+			{
+				println("Worker $workerId is being born")
+				def fos = new FileOutputStream(new File("Worker${ workerId }_Output.txt"))
+				def builder = new ProcessBuilder(new File(System.getProperty("java.home") as String, 'bin/java').absolutePath, "-cp", classPath, "cern.ais.gridwars.Worker", "$workerId", "$port")
+				builder.directory(new File(workerHome))
+				builder.redirectErrorStream(true)
+				def p = builder.start()
+				p.waitForProcessOutput(fos, fos)
+				int ev = p.exitValue()
+				fos.close()
+				println("Worker $workerId is dead. ExitValue $ev")
+			}
+			catch (any) {
+				print("Error while instantiating worker $workerId")
+				any.printStackTrace()
+			}
 		}
 	}
 
-	private long i = 0;
-	private ByteArrayOutputStream bis = new ByteArrayOutputStream();
+	private Map<Integer, PriorityQueue<TurnInfo>> gameData = new ConcurrentHashMap<>()
 
 	@Override void received(Connection connection, Object o)
 	{
 		switch (o)
 		{
-		case TurnInfo: print('.'); bis.write((o as TurnInfo).data); if ((o as TurnInfo).turn % 100 == 0) println(); break;
+		case TurnInfo:
+			print('.');
+			TurnInfo turn = o as TurnInfo
+			println("received turn($turn.turn): $turn.playerId")
+			gameData[connection.ID].add(turn)
+			if (turn.turn % 100 == 0)
+				println();
+			break;
 		case MatchResults:
 			def mr = o as MatchResults
 			println("\n Math finished. $mr.winnerId won!")
-			println "amout of data produced: ${ (bis.size() / 1024 / 1024 as Double).round(2) } MB."
-			ByteArrayOutputStream cbis = new ByteArrayOutputStream();
-			def os = new DeflaterOutputStream(cbis)
-			os.write(bis.toByteArray())
-			println "compressed data takes: ${ (cbis.size() / 1024 / 1024 as Double).round(2) } MB."
-			workers[connection].callback()
+			def queue = gameData[connection.ID]
+			workers[connection].callback(queue)
 			workers.remove(connection)
+			gameData.remove(connection.ID)
 			// TODO do smth with worker.
 			break;
 		case Ready:
@@ -110,6 +124,7 @@ class RuntimeMain extends Listener {
 			task.workerId = (o as Ready).workerId 
 			workers[connection] = task
 			connection.sendTCP(task.match)
+			gameData[connection.ID] = new PriorityQueue<>()
 			break
 		}
 	}
