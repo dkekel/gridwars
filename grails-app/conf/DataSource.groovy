@@ -17,7 +17,7 @@ environments {
         println("jdbc:h2:${ "${System.properties.GW_HOME}/db/gw" };MVCC=TRUE;LOCK_TIMEOUT=10000")
         url = "jdbc:h2:${ "${System.properties.GW_HOME}/db/gw" };MVCC=TRUE;LOCK_TIMEOUT=10000"
         pooled = true
-        logSql = true
+        //logSql = true
 
         properties {
           maxActive = -1
@@ -48,7 +48,7 @@ environments {
         println("jdbc:h2:${ "${System.properties.GW_HOME}/db/gw" };MVCC=TRUE;LOCK_TIMEOUT=10000")
         url = "jdbc:h2:${ "${System.properties.GW_HOME}/db/gw" };MVCC=TRUE;LOCK_TIMEOUT=10000"
         pooled = true
-        logSql = true
+        //logSql = true
 
         properties {
           maxActive = -1

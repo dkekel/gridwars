@@ -23,7 +23,7 @@
             ws_uri = "ws:";
         }
         ws_uri += "//" + loc.host;
-        ws_uri += "/gridwars_server/game.ws";
+        ws_uri += "/${rootPath}game.ws";
 
         var ws = new WebSocket(ws_uri);
         ws.binaryType = "arraybuffer";

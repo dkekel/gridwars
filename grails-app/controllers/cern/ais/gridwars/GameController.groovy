@@ -2,6 +2,7 @@ package cern.ais.gridwars
 
 import cern.ais.gridwars.security.User
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.util.Environment
 
 class GameController
 {
@@ -23,7 +24,8 @@ class GameController
 
   def view(Long id)
   {
-    [game: Match.get(id), currentLoggedInUserId: (springSecurityService.currentUser as User).id]
+    println("Current environment: ${Environment.current}")
+    [game: Match.get(id), currentLoggedInUserId: (springSecurityService.currentUser as User).id, rootPath: Environment.current == Environment.PRODUCTION ? '' : "gridwars_server/"]
   }
 
   def playerOutput() {
