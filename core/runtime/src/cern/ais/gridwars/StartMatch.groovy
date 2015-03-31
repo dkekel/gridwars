@@ -5,7 +5,7 @@ import groovy.transform.Immutable
 
 @Immutable class PlayerData {
 	byte[] jar
-	long player
+	long player // Agent id
 	String className
 }
 

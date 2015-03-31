@@ -8,7 +8,7 @@ class GameSerializationService
 	private static final int TURN_DATA_SIZE = 4 * GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE
 
 	def fileSystemService
-	def save(long matchId, Collection<TurnInfo> info) {
+	def save(long matchId, Collection<TurnInfo> info, MatchResults results) {
 		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
 		def os = new DeflaterOutputStream(compressed)
 		for (it in info)
@@ -19,17 +19,13 @@ class GameSerializationService
 		def match = Match.get(matchId)
 		fileSystemService.matchResult(matchId).bytes = compressed.toByteArray()
 		match.running = false
-		match.winner = match.players[0].agent
+		match.winner = Agent.get(results.winnerId)
 		match.turns = info.size()
 
-		def player1 = match.players[0]
-		player1.setOutcome(Outcome.DRAW)
-		player1.save()
-
-		def player2 = match.players[1]
-		player2.setOutcome(Outcome.DRAW)
-		player2.save()
 		match.save(failOnError: true)
+
+		fileSystemService.outputFile("match_${ matchId }_player_${ match.player1.id }.txt").bytes = results.output1
+		fileSystemService.outputFile("match_${ matchId }_player_${ match.player2.id }.txt").bytes = results.output2
 	}
 
 	Iterator<byte[]> load(long matchId) {

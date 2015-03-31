@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="cern.ais.gridwars.Outcome; cern.ais.gridwars.MatchPlayer" contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>GridWars - Game list</title>
@@ -27,7 +27,7 @@
                 ${game.startDate.format("yyyy-MM-dd HH:mm:ss")}
             </td>
             <td>
-                ${game.players.agent.team.flatten().sort { it.id }.username.join(' vs ')}
+                ${ game.player1.team.username } vs ${ game.player2.team.username }
             </td>
             <td>
                 ${ game.winner ? game.winner.team.username : "Draw" }

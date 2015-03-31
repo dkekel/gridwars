@@ -104,7 +104,6 @@ class RuntimeMain extends Listener {
 		case TurnInfo:
 			print('.');
 			TurnInfo turn = o as TurnInfo
-			println("received turn($turn.turn): $turn.playerId")
 			gameData[connection.ID].add(turn)
 			if (turn.turn % 100 == 0)
 				println();
@@ -113,7 +112,7 @@ class RuntimeMain extends Listener {
 			def mr = o as MatchResults
 			println("\n Math finished. $mr.winnerId won!")
 			def queue = gameData[connection.ID]
-			workers[connection].callback(queue)
+			workers[connection].callback(queue, o)
 			workers.remove(connection)
 			gameData.remove(connection.ID)
 			// TODO do smth with worker.

@@ -12,13 +12,12 @@ class Agent
 
   static belongsTo = [team: User]
 
-  static hasMany = [matches: MatchPlayer]
-
   static constraints = {
   }
 
   public int getScore()
   {
-    return matches.count { it.match.players.agent.flatten().every { it.active } && it.outcome.equals(Outcome.WIN) } * 3 + matches.count { it.match.players.agent.flatten().every { it.active } && it.outcome.equals(Outcome.DRAW) }
+    0
+    //return matches.count { it.match.players.agent.flatten().every { it.active } && it.outcome.equals(Outcome.WIN) } * 3 + matches.count { it.match.players.agent.flatten().every { it.active } && it.outcome.equals(Outcome.DRAW) }
   }
 }

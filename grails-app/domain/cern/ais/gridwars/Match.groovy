@@ -7,7 +7,8 @@ class Match
   int turns
   Date startDate = new Date()
 
-  static hasMany = [players: MatchPlayer]
+  Agent player1
+  Agent player2
 
   static constraints = {
     winner nullable: true

@@ -26,35 +26,14 @@ class GameExecutionService
     }
     if (runtime.slotAvailable) {
       match.running = true
-      runtime.send(new StartMatch(match.id, playerData(match.players.first()), playerData(match.players.last()))) { Collection<TurnInfo> data ->
-        gameSerializationService.save(match.id, data)
+      runtime.send(new StartMatch(match.id, playerData(match.player1), playerData(match.player2))) { Collection<TurnInfo> data, MatchResults results ->
+        gameSerializationService.save(match.id, data, results)
         println("$match.id finished!")
       }
     }
   }
 
-  PlayerData playerData(MatchPlayer player) {
-    new PlayerData(new File(player.agent.jarPath).bytes, player.id, player.agent.fqClassName)
+  PlayerData playerData(Agent player) {
+    new PlayerData(new File(player.jarPath).bytes, player.id, player.fqClassName)
   }
-
-  private static String getTurnJSON(Player player, List<MovementCommand> movementCommands)
-  {
-    JSONObject turnJSON = new JSONObject();
-    JSONArray commandJSONArray = new JSONArray()
-    for (MovementCommand movementCommand : movementCommands)
-    {
-      JSONObject commandJSON = new JSONObject()
-      commandJSON.put("x", movementCommand.coordinatesFrom.x)
-      commandJSON.put("y", movementCommand.coordinatesFrom.y)
-      commandJSON.put("d", movementCommand.direction.ordinal())
-      commandJSON.put("a", movementCommand.amount)
-      commandJSONArray.add(commandJSON)
-    }
-    //return commandJSONArray.toString()
-    turnJSON.put("player", player.name)
-    turnJSON.put("commands", commandJSONArray)
-
-    return turnJSON.toString()
-  }
-
 }

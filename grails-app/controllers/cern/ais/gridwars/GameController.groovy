@@ -19,7 +19,7 @@ class GameController
 
   def list()
   {
-    [games: Match.findAllByRunning(false).findAll { it.players.agent.flatten().every { it.active } }.sort { it.startDate }]
+    [games: Match.findAllByRunning(false).findAll { !it.running }.sort { it.startDate }]
   }
 
   def view(Long id)
@@ -30,9 +30,7 @@ class GameController
 
   def playerOutput() {
     if (SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') || (springSecurityService.currentUser as User).id == params.player as long) {
-      def text = fileSystemService.outputFile(Match.get(params.game as long).players.find {
-        it.agent.team.id == (params.player as long)
-      }.outputFileName).text
+      def text = fileSystemService.outputFile("match_${ params.game }_player_${ params.player }.txt").text
       render "<pre>$text</pre>"
     }
     else
@@ -41,8 +39,9 @@ class GameController
 
   def match()
   {
-    def match = matchmakingService.nextMatch
+    def match = matchmakingService.nextMatch1
     if (match)
       gameExecutionService.executeGame(match)
+    redirect(action: "list")
   }
 }
