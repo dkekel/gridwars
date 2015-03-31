@@ -9,6 +9,7 @@
 <%@ page import="grails.plugin.springsecurity.SpringSecurityUtils; cern.ais.gridwars.Outcome; cern.ais.gridwars.GameConstants; cern.ais.gridwars.MatchPlayer" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
+    <meta name="layout" content="main"/>
     <title>GridWars - Game Viewer</title>
     <script>
 

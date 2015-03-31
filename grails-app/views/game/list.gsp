@@ -10,6 +10,7 @@
 <html>
 <head>
     <title>GridWars - Game list</title>
+    <meta name="layout" content="main"/>
     <style type="text/css">
     td {
         text-align: center;
