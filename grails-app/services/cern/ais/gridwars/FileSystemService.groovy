@@ -29,8 +29,8 @@ class FileSystemService {
     new File(jarHome, name)
   }
 
-  File outputFile(String name) {
-    new File(outputHome, name)
+  File outputFile(long gameId, long playerId) {
+    new File("match_${ gameId }_player_${ playerId }.txt")
   }
   
   private static File initHome(File file) {

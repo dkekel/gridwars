@@ -1,5 +1,7 @@
 package cern.ais.gridwars
 
+import cern.ais.gridwars.Match.Status
+
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.InflaterOutputStream
 
@@ -18,14 +20,14 @@ class GameSerializationService
 
 		def match = Match.get(matchId)
 		fileSystemService.matchResult(matchId).bytes = compressed.toByteArray()
-		match.running = false
+		match.status = Status.SUCCEDED
 		match.winner = Agent.get(results.winnerId)
 		match.turns = info.size()
 
 		match.save(failOnError: true)
 
-		fileSystemService.outputFile("match_${ matchId }_player_${ match.player1.id }.txt").bytes = results.output1
-		fileSystemService.outputFile("match_${ matchId }_player_${ match.player2.id }.txt").bytes = results.output2
+		fileSystemService.outputFile(matchId, match.player1.id).bytes = results.output1
+		fileSystemService.outputFile(matchId, match.player2.id).bytes = results.output2
 	}
 
 	Iterator<byte[]> load(long matchId) {

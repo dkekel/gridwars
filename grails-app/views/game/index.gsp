@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="cern.ais.gridwars.Match;" contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>GridWars - Scoreboard</title>
@@ -31,13 +31,13 @@
                 ${agent.fqClassName}
             </td>
             <td>
-                ${ Match.countByWinner(agent) }
+                ${ service.wins(agent) }
             </td>
             <td>
-                ${ Match.findAllByPlayer1OrPlayer2(agent, agent).grep { it.winner = null }.size() }
+                ${ service.draws(agent) }
             </td>
             <td>
-                ${ Match.findAllByPlayer1OrPlayer2(agent, agent).grep { it.winner != agent }.size() }
+                ${ service.losses(agent) }
             </td>
         </tr>
     </g:each>

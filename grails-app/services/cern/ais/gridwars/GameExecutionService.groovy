@@ -1,8 +1,6 @@
 package cern.ais.gridwars
 
-import cern.ais.gridwars.command.MovementCommand
-import org.codehaus.groovy.grails.web.json.JSONArray
-import org.codehaus.groovy.grails.web.json.JSONObject
+import cern.ais.gridwars.Match.Status
 
 class GameExecutionService
 {
@@ -25,7 +23,8 @@ class GameExecutionService
       }
     }
     if (runtime.slotAvailable) {
-      match.running = true
+      match.status = Status.RUNNING
+      match.save(failOnError: true)
       runtime.send(new StartMatch(match.id, playerData(match.player1), playerData(match.player2))) { Collection<TurnInfo> data, MatchResults results ->
         gameSerializationService.save(match.id, data, results)
         println("$match.id finished!")

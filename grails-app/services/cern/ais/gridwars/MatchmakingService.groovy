@@ -1,5 +1,6 @@
 package cern.ais.gridwars
 
+import cern.ais.gridwars.Match.Status
 import cern.ais.gridwars.security.User
 
 class MatchmakingService
@@ -19,7 +20,36 @@ class MatchmakingService
     }
   }
 
-  public Match getNextMatch1() {
+  def wins(Agent a) {
+    getMatchesOfAgent(a).count { it.winner == a }
+  }
+
+  def draws(Agent a) {
+    getMatchesOfAgent(a).count { it.winner == null }
+  }
+
+  def losses(Agent a) {
+    getMatchesOfAgent(a).count { it.winner != null && it.winner != a }
+  }
+
+  def score(Agent a) {
+    getMatchesOfAgent(a).sum { it.winner == a ? 3 : it.winner == null ? 1 : 0 }
+  }
+
+  /**
+   * Returns a list of succeded matches played by agent.
+   * @param a
+   * @return
+   */
+  public List<Match> getMatchesOfAgent(Agent a) {
+    Match.findAllByStatusAndPlayer1(Status.SUCCEDED, a) + Match.findAllByStatusAndPlayer2(Status.SUCCEDED, a)
+  }
+
+  public List<Match> getAllMatchesOfAgent(Agent a) {
+    Match.findAllByPlayer1OrPlayer2(a, a)
+  }
+
+  public Match getNextMatch() {
     try
     {
       List<Agent> activeAgents = activeAgents
@@ -30,7 +60,7 @@ class MatchmakingService
         return null
 
       println "New match between ${ fighters.first().team.username } and ${ fighters.last().team.username }"
-      return new Match(player1: fighters.first(), player2: fighters.last(), running: true).save(flush: true, failOnError: true) // TODO match status - pending.
+      return new Match(player1: fighters.first(), player2: fighters.last()).save(flush: true, failOnError: true) // TODO match status - pending.
     }
     catch (any) {
       log.error("Error while matchmaking!")

@@ -1,5 +1,6 @@
 package cern.ais.gridwars
 
+import cern.ais.gridwars.Match.Status
 import cern.ais.gridwars.security.User
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.util.Environment
@@ -14,12 +15,12 @@ class GameController
   def index()
   {
     // Get scoreboard
-    [agents: Agent.findAllByActive(true).sort { a, b -> (b.score <=> a.score) }]
+    [agents: Agent.findAllByActive(true).sort { matchmakingService.score(it) }, service: matchmakingService]
   }
 
   def list()
   {
-    [games: Match.findAllByRunning(false).findAll { !it.running }.sort { it.startDate }]
+    [games: Match.findAllByStatus(Status.SUCCEDED).sort { it.startDate }]
   }
 
   def view(Long id)
@@ -30,7 +31,7 @@ class GameController
 
   def playerOutput() {
     if (SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') || (springSecurityService.currentUser as User).id == params.player as long) {
-      def text = fileSystemService.outputFile("match_${ params.game }_player_${ params.player }.txt").text
+      def text = fileSystemService.outputFile(params.game as long, params.player as long).text
       render "<pre>$text</pre>"
     }
     else
@@ -39,7 +40,7 @@ class GameController
 
   def match()
   {
-    def match = matchmakingService.nextMatch1
+    def match = matchmakingService.nextMatch
     if (match)
       gameExecutionService.executeGame(match)
     redirect(action: "list")

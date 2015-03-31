@@ -15,9 +15,15 @@ class Agent
   static constraints = {
   }
 
-  public int getScore()
+  boolean equals(o)
   {
-    0
-    //return matches.count { it.match.players.agent.flatten().every { it.active } && it.outcome.equals(Outcome.WIN) } * 3 + matches.count { it.match.players.agent.flatten().every { it.active } && it.outcome.equals(Outcome.DRAW) }
+    if (this.is(o)) return true
+    if (getClass() != o.class) return false
+    return id == ((Agent) o).id
+  }
+
+  int hashCode()
+  {
+    return (id != null ? id.hashCode() : 0)
   }
 }

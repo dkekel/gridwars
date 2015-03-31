@@ -2,13 +2,21 @@ package cern.ais.gridwars
 
 class Match
 {
-  boolean running
+  enum Status {
+    PENDING, // MATCH IS CREATED
+    RUNNING, // MATCH IS CURRENTLY EVALUATED
+    SUCCEDED, // MATCH FINISHED
+    FAILED, // MATCH FAILED
+    CANCELED // MATCH CANCELED(NEW AGENT UPLOADED)
+  }
+  
+  Status status = Status.PENDING
+  Agent player1
+  Agent player2
+
   Agent winner
   int turns
   Date startDate = new Date()
-
-  Agent player1
-  Agent player2
 
   static constraints = {
     winner nullable: true
