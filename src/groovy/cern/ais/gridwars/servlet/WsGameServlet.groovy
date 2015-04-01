@@ -72,7 +72,11 @@ public class WsGameServlet extends WebSocketServlet
       if (id > 0)
       {
         dataSendService.sendGameToClient(id, wsOutbound)
+        println("Sending data to client")
       }
+      else
+        println("Send game failed. id < 0")
+
       wsOutbound.close(0, null);
     }
 

@@ -18,6 +18,9 @@
         <td>id</td>
         <td>player1</td>
         <td>player2</td>
+        <g:if test="${ showStatus }">
+            <td>status</td>
+        </g:if>
     </tr>
     </thead>
     <g:each in="${ matches }">
@@ -25,6 +28,9 @@
             <td>${ it.id }</td>
             <td>${ it.player1.team.username }: ${ it.player1.fqClassName }</td>
             <td>${ it.player2.team.username }: ${ it.player2.fqClassName }</td>
+            <g:if test="${ showStatus }">
+                <td>${ it.status }</td>
+            </g:if>
         </tr>
     </g:each>
 </table>

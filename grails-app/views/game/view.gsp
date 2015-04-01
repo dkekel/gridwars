@@ -12,137 +12,138 @@
     <meta name="layout" content="main"/>
     <title>GridWars - Game Viewer</title>
     <script>
-
-        var frameArray = [];
-        var loc = window.location, ws_uri;
-        if (loc.protocol === "https:")
-        {
-            ws_uri = "wss:";
-        }
-        else
-        {
-            ws_uri = "ws:";
-        }
-        ws_uri += "//" + loc.host;
-        ws_uri += "/${rootPath}game.ws";
-
-        var ws = new WebSocket(ws_uri);
-        ws.binaryType = "arraybuffer";
-
-        var universeSize = 50;
-        var currentTurn = 0;
-        var currentRenderedFrame = 0;
-
-        var isPlaying = 0;
-        var playInterval;
-        var delay = 50;
-
-        drawFrame = function (frameNumber)
-        {
-            // Canvas
-            var canvasHeight = document.getElementById("gameCanvas").height;
-            var canvasWidth = document.getElementById("gameCanvas").width;
-            var c = document.getElementById("preCanvas");
-            var ctx = c.getContext("2d");
-            var extractedData = new Uint8Array(frameArray[frameNumber].data);
-            var imageData = ctx.createImageData(universeSize, universeSize);
-            for (var i = 0; i < extractedData.length; i++)
+         function initws() {
+            var frameArray = [];
+            var loc = window.location, ws_uri;
+            if (loc.protocol === "https:")
             {
-                imageData.data[i] = extractedData[i];
+                ws_uri = "wss:";
             }
-            ctx.putImageData(imageData, 0, 0);
+            else
+            {
+                ws_uri = "ws:";
+            }
+            ws_uri += "//" + loc.host;
+            ws_uri += "/${rootPath}game.ws";
 
-            var realCtx = document.getElementById("gameCanvas").getContext("2d");
+            var ws = new WebSocket(ws_uri);
+            ws.binaryType = "arraybuffer";
 
-            realCtx.imageSmoothingEnabled = false;
-            realCtx.mozImageSmoothingEnabled = false;
-            realCtx.webkitImageSmoothingEnabled = false;
-            realCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-            realCtx.drawImage(c, 0, 0);
+            var universeSize = 50;
+            var currentTurn = 0;
+            var currentRenderedFrame = 0;
 
-            currentRenderedFrame = frameNumber;
-            document.getElementById("currentTurn").innerHTML = currentRenderedFrame;
-        };
+            var isPlaying = 0;
+            var playInterval;
+            var delay = 50;
 
-        goToStart = function ()
-        {
-            if (isPlaying) togglePlay();
+            drawFrame = function (frameNumber)
+            {
+                // Canvas
+                var canvasHeight = document.getElementById("gameCanvas").height;
+                var canvasWidth = document.getElementById("gameCanvas").width;
+                var c = document.getElementById("preCanvas");
+                var ctx = c.getContext("2d");
+                var extractedData = new Uint8Array(frameArray[frameNumber].data);
+                var imageData = ctx.createImageData(universeSize, universeSize);
+                for (var i = 0; i < extractedData.length; i++)
+                {
+                    imageData.data[i] = extractedData[i];
+                }
+                ctx.putImageData(imageData, 0, 0);
 
-            drawFrame(0);
-        };
+                var realCtx = document.getElementById("gameCanvas").getContext("2d");
 
-        drawNextFrame = function ()
-        {
-            if (currentRenderedFrame >= frameArray.length - 1)
+                realCtx.imageSmoothingEnabled = false;
+                realCtx.mozImageSmoothingEnabled = false;
+                realCtx.webkitImageSmoothingEnabled = false;
+                realCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                realCtx.drawImage(c, 0, 0);
+
+                currentRenderedFrame = frameNumber;
+                document.getElementById("currentTurn").innerHTML = currentRenderedFrame;
+            };
+
+            goToStart = function ()
             {
                 if (isPlaying) togglePlay();
-            }
-            else
-            {
-                drawFrame(currentRenderedFrame + 1);
-            }
-        };
 
-        togglePlay = function ()
-        {
-            if (!isPlaying)
-            {
-                playInterval = setInterval(drawNextFrame, delay);
-            }
-            else
-            {
-                clearInterval(playInterval);
-            }
-            isPlaying = !isPlaying;
-        };
-
-        increaseSpeed = function ()
-        {
-            delay = Math.round((2 * delay) / 3);
-            if (isPlaying)
-            {
-                togglePlay();
-                togglePlay();
-            }
-        };
-
-        decreaseSpeed = function ()
-        {
-            delay = Math.round(delay * 1.5)
-            if (isPlaying)
-            {
-                togglePlay();
-                togglePlay();
-            }
-        };
-
-        ws.onopen = function ()
-        {
-            var canvasHeight = document.getElementById("gameCanvas").height;
-            var canvasWidth = document.getElementById("gameCanvas").width;
-            currentTime = new Date();
-            document.getElementById("preCanvas").height = universeSize;
-            document.getElementById("preCanvas").width = universeSize;
-            document.getElementById("gameCanvas").getContext("2d").scale(canvasWidth / universeSize, canvasHeight / universeSize);
-            ws.send("${game.id.toString()}");
-        };
-
-        ws.onmessage = function (binaryMessage)
-        {
-            frameArray[currentTurn++] = binaryMessage;
-            document.getElementById("loadedTurns").innerHTML = currentTurn;
-
-            if (currentTurn >= ${ game.turns })
-            {
-                document.getElementById("gameView").hidden = "";
                 drawFrame(0);
-            }
-        };
+            };
+
+            drawNextFrame = function ()
+            {
+                if (currentRenderedFrame >= frameArray.length - 1)
+                {
+                    if (isPlaying) togglePlay();
+                }
+                else
+                {
+                    drawFrame(currentRenderedFrame + 1);
+                }
+            };
+
+            togglePlay = function ()
+            {
+                if (!isPlaying)
+                {
+                    playInterval = setInterval(drawNextFrame, delay);
+                }
+                else
+                {
+                    clearInterval(playInterval);
+                }
+                isPlaying = !isPlaying;
+            };
+
+            increaseSpeed = function ()
+            {
+                delay = Math.round((2 * delay) / 3);
+                if (isPlaying)
+                {
+                    togglePlay();
+                    togglePlay();
+                }
+            };
+
+            decreaseSpeed = function ()
+            {
+                delay = Math.round(delay * 1.5)
+                if (isPlaying)
+                {
+                    togglePlay();
+                    togglePlay();
+                }
+            };
+
+            ws.onopen = function ()
+            {
+                var canvasHeight = document.getElementById("gameCanvas").height;
+                var canvasWidth = document.getElementById("gameCanvas").width;
+                currentTime = new Date();
+                document.getElementById("preCanvas").height = universeSize;
+                document.getElementById("preCanvas").width = universeSize;
+                document.getElementById("gameCanvas").getContext("2d").scale(canvasWidth / universeSize, canvasHeight / universeSize);
+                ws.send("${game.id.toString()}");
+            };
+
+            ws.onmessage = function (binaryMessage)
+            {
+                frameArray[currentTurn++] = binaryMessage;
+                document.getElementById("loadedTurns").innerHTML = currentTurn;
+
+                if (currentTurn >= ${ game.turns })
+                {
+                    document.getElementById("gameView").hidden = "";
+                    drawFrame(0);
+                }
+            };    
+        }
     </script>
 </head>
 
 <body>
-<div>
+<div onload="initws()">
     Players:
     <g:set var="i" value="${0}" />
     <g:each in="[game.player1, game.player2]">
@@ -169,5 +170,6 @@
 </div>
 
 <canvas id="preCanvas" hidden="hidden"></canvas>
+<script>$(initws)</script>
 </body>
 </html>

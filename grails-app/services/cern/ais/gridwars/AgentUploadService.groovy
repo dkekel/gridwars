@@ -14,7 +14,7 @@ class AgentUploadService
 
   public boolean processJarUpload(CommonsMultipartFile uploadedFile, String agentFQCN, User user) {
     user.refresh()
-    File destinationFile = fileSystemService.jarFile(createJarName(user, uploadedFile.originalFilename))
+    File destinationFile = fileSystemService.jarFile(createJarName(user))
     uploadedFile.transferTo(destinationFile)
     log.debug("File uploaded: user:($user.username) file: $destinationFile.absolutePath($agentFQCN)")
     processUploadedFile(destinationFile, agentFQCN, user)
@@ -22,14 +22,14 @@ class AgentUploadService
 
   public boolean processJarUpload(File uploadedFile, String agentFQCN, User user) {
     user.refresh()
-    def destFile = fileSystemService.jarFile(createJarName(user, uploadedFile.name))
+    def destFile = fileSystemService.jarFile(createJarName(user))
     FileUtils.copyFile(uploadedFile, destFile)
     log.debug("File uploaded: user:($user.username) file: $destFile.absolutePath($agentFQCN)")
     processUploadedFile(destFile, agentFQCN, user)
   }
 
-  String createJarName(User user, String originalFilename) {
-    "${user.username}_${new Date().format("yyyyMMddHHmmss")}_$originalFilename"
+  String createJarName(User user) {
+    "${user.username}_${new Date().format("yyyyMMddHHmmss")}"
   }
 
   public boolean processUploadedFile(File file, String agentFQCN, User user) {

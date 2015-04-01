@@ -11,6 +11,7 @@
     <meta http-equiv="x-ua-compatible" content="IE=9">
     <title><g:layoutTitle default="Grid Wars" /></title>
     <r:require module="jquery"/>
+    <g:javascript library="jquery" />
     <g:layoutHead />
     <r:layoutResources />
 </head>
@@ -22,9 +23,9 @@
             <li><g:link controller="game" action="index">View active bot scoreboard</g:link></li>
             <li><g:link controller="game" action="list">List games</g:link></li>
             <li><g:link controller="agentUpload" action="index">Upload a new bot</g:link></li>
-            <li><a href="/api/doc">API Documentation</a></li>
-            <li><a href="/api/api.jar">API Download</a></li>
-            <li><a href="/api/examples">Examples</a></li>
+            <li><a href="/api/docs">API Documentation</a></li>
+            <li><a href="/api/api-1.0-SNAPSHOT.jar">API Download</a></li>
+            %{--<li><a href="/api/examples">Examples</a></li>--}%
             <sec:ifAllGranted roles="ROLE_ADMIN">
                 <li><g:link controller="admin">Admin</g:link></li>
             </sec:ifAllGranted>

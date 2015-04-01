@@ -56,6 +56,7 @@ grails.exceptionresolver.params.exclude = ['password']
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
 
+grails.dbconsole.enabled = true
 
 environments {
   development {
@@ -70,7 +71,7 @@ environments {
     grails.logging.jul.usebridge = false
     cern.ais.gridwars.basedir = '/var/lib/tomcat/webapps/ROOT/'
     cern.ais.gridwars.fileprotocol = "file://"
-    grails.serverURL = "http://gridwars.cern.ch:8080"
+    grails.serverURL = "http://gridwars.cern.ch"
   }
 }
 
@@ -163,6 +164,9 @@ grails.plugin.springsecurity.interceptUrlMap = [
 
 	'/admin/**':                      ['ROLE_ADMIN'],
 	'/dbconsole/**':                  ['ROLE_ADMIN'],
+  '/user/**':             ['ROLE_ADMIN'],
+  '/role/**':             ['ROLE_ADMIN'],
+  '/api/**':          ['ROLE_USER', 'ROLE_ADMIN'],
 	//'/**':                            ['ROLE_ADMIN'],
 ]
 

@@ -41,6 +41,7 @@ class Worker extends Listener {
 
 	@Override void disconnected(Connection connection) {
 		println("Worker $id Disconnected!")
+		System.exit(1)
 	}
 
 	@Override void received(Connection connection, Object o) {
@@ -84,9 +85,19 @@ class Worker extends Listener {
 			else
 				println("Fin. Game $match.matchId failed!")
 
-			c.sendTCP(new MatchResults(match.matchId, match.playerData1.player, players?.get(0)?.outputFile?.bytes,
-				match.playerData2.player, players?.get(1)?.outputFile?.bytes, game?.winner?.id, game ? true : false))
+			c.sendTCP(new MatchResults(match.matchId, match.playerData1.player, trimOutput(players?.get(0)?.outputFile?.bytes),
+				match.playerData2.player, trimOutput(players?.get(1)?.outputFile?.bytes), game?.winner?.id, game ? true : false))
 			println("Sending...")
 		}
+	}
+
+	static final int MAX_SIZE = 2 * 1024 * 1024 // 2MB
+	byte[] trimOutput(byte[] array) {
+		if (array.length < MAX_SIZE)
+			return array
+
+		def res = new byte[array.length]
+		System.arraycopy(array, 0, res, 0, MAX_SIZE)
+		res
 	}
 }
