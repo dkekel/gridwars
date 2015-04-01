@@ -14,12 +14,13 @@
 
 <body>
 <div class="container">
-<div class="col-lg-6">
-<g:form name="updateForm" action="update">
-    <g:textArea name="config" rows="50">${config}</g:textArea>
-    <g:submitButton name="update"/>
-</g:form>
-</div>
+    <g:link controller="admin" action="queue">Status</g:link>
+    <div class="col-lg-6">
+    <g:form name="updateForm" action="update">
+        <g:textArea name="config" rows="50">${config}</g:textArea>
+        <g:submitButton name="update"/>
+    </g:form>
+    </div>
     <div class="col-lg-6">
     <ul>
     <g:each in="${ grailsApplication.controllerClasses }">

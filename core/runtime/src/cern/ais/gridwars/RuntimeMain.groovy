@@ -34,16 +34,20 @@ class RuntimeMain extends Listener {
 	private final Server s
 	private final String classPath
 	private final String workerHome
-	private pool = Executors.newFixedThreadPool(4)
+	private pool
 	private Map<Connection, Task> workers = new ConcurrentHashMap<>()
 	private Queue<Task> queue = new ConcurrentLinkedQueue<>()
 	private static int port
+	int maxWorkers
 
-	RuntimeMain(String classPath, String home, int port = 10000)
+	RuntimeMain(String classPath, String home, int maxWorkers = 4, int port = 10000)
 	{
 		this.port = port
 		workerHome = home
+		this.maxWorkers = maxWorkers
 		this.classPath = classPath
+		pool = Executors.newFixedThreadPool(maxWorkers)
+
 		s = new Server(16384000, 2048000)
 		s.start()
 		Network.init(s)
@@ -69,7 +73,7 @@ class RuntimeMain extends Listener {
 	}
 
 	boolean isSlotAvailable() {
-		return workers.size() < 4
+		return workers.size() + queue.size() < maxWorkers
 	}
 
 	private void spawnWorker() {
@@ -102,11 +106,8 @@ class RuntimeMain extends Listener {
 		switch (o)
 		{
 		case TurnInfo:
-			print('.');
 			TurnInfo turn = o as TurnInfo
 			gameData[connection.ID].add(turn)
-			if (turn.turn % 100 == 0)
-				println();
 			break;
 		case MatchResults:
 			def mr = o as MatchResults
@@ -116,6 +117,7 @@ class RuntimeMain extends Listener {
 			workers.remove(connection)
 			gameData.remove(connection.ID)
 			// TODO do smth with worker.
+			connection.sendTCP(Std.DIE)
 			break;
 		case Ready:
 			def task = queue.poll()

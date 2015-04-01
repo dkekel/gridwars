@@ -10,6 +10,7 @@ class AgentUploadService
 {
   def grailsApplication
   def fileSystemService
+  def matchmakingService
 
   public boolean processJarUpload(CommonsMultipartFile uploadedFile, String agentFQCN, User user) {
     user.refresh()
@@ -39,14 +40,21 @@ class AgentUploadService
       return false
     }
 
-    def agent = new Agent(jarPath: file.absolutePath, fqClassName: agentFQCN, uploadDate: new Date())
+    Agent.findAllByTeamAndActive(user, true).each {
+      matchmakingService.cancelMatches(it)
+    }
 
     // Invalidate previous
-    user.agents?.each { it.active = false }
+    user.agents?.each {
+      it.active = false;
+      it.save()
+    }
 
+    def agent = new Agent(jarPath: file.absolutePath, fqClassName: agentFQCN, uploadDate: new Date())
+    agent.save(flush: true)
     user.addToAgents(agent)
-
-    user.save()
+    user.save(flush: true)
+    matchmakingService.prepareMatches(agent)
 
     return true
   }

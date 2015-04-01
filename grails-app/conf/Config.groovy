@@ -89,8 +89,9 @@ log4j = {
     error 'stdout'
   }
 //  trace 'org.hibernate.type'
-  debug 'org.hibernate.SQL'
+  //debug 'org.hibernate.SQL'
 
+  debug 'grails.app.jobs'
   debug 'cern.ais.gridwars'
   error 'org.codehaus.groovy.grails.web.servlet',        // controllers
           'org.codehaus.groovy.grails.web.pages',          // GSP

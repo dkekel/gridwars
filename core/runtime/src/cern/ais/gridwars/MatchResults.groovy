@@ -13,5 +13,6 @@ class MatchResults
 	long player2
 	byte[] output2
 
-	long winnerId
+	Long winnerId
+	boolean isComplete
 }

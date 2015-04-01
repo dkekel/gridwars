@@ -5,6 +5,10 @@ import cern.ais.gridwars.security.User
 
 class MatchmakingService
 {
+  List<Match> getPendingMatches() {
+    Match.findAllByStatus(Status.PENDING)
+  }
+
   public List<Agent> getActiveAgents() {
     User.list()
       .collect { Agent.findAllByTeamAndActive(it, true) }
@@ -49,21 +53,18 @@ class MatchmakingService
     Match.findAllByPlayer1OrPlayer2(a, a)
   }
 
-  public Match getNextMatch() {
+  public synchronized Match getNextMatch() {
     try
     {
-      List<Agent> activeAgents = activeAgents
-
-      List<Agent> fighters = getFighters(activeAgents)
-      // Get the one with the least games played
-      if (!fighters)
+      def matches = pendingMatches
+      if (!matches)
         return null
+      def match = matches.first()
 
-      println "New match between ${ fighters.first().team.username } and ${ fighters.last().team.username }"
-      return new Match(player1: fighters.first(), player2: fighters.last()).save(flush: true, failOnError: true) // TODO match status - pending.
+      return match // TODO match status - pending.
     }
     catch (any) {
-      log.error("Error while matchmaking!")
+      log.error("Error while matchmaking!", any)
       null
     }
   }
@@ -107,4 +108,18 @@ class MatchmakingService
 //            .addToPlayers(new MatchPlayer(agent: player2, outputFileName: "${player2.fqClassName}_${new Date().format("yyyyMMddHHmmss")}.txt"))
 //    return match.save(failOnError: true, validate: true, flush: true)
 //  }
+  def cancelMatches(Agent agent)
+  {
+    getAllMatchesOfAgent(agent).each {
+      it.status = Status.CANCELED
+      it.save(failOnError: true)
+    }
+  }
+
+  def prepareMatches(Agent agent) {
+    activeAgents.each {
+      if (agent != it)
+        new Match(player1: agent, player2: it).save()
+    }
+  }
 }

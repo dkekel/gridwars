@@ -54,25 +54,39 @@ class Worker extends Listener {
 	def startGame(StartMatch match) {
 		Thread.start {
 			long time = System.currentTimeMillis()
-			def players = PlayerUtil.prepare(match)
-			def game = new Game(players, new TurnCallback() {
-				@Override void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus) {
-					println("Processing turn $turn")
-					c.sendTCP(new TurnInfo(binaryGameStatus.array(), turn, player.id))
-				}
-			})
+			Game game = null
+			List<Player> players = null
+			try {
+				players = PlayerUtil.prepare(match)
+				game = new Game(players, new TurnCallback() {
+					@Override void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands,
+					                                ByteBuffer binaryGameStatus)
+					{
+						println("Processing turn $turn")
+						c.sendTCP(new TurnInfo(binaryGameStatus.array(), turn, player.id))
+					}
+				})
 
-			game.startUp()
-			while (!game.done())
-				game.nextTurn()
+				game.startUp()
+				while (!game.done())
+					game.nextTurn()
 
-			players*.outputStream*.close()
-			players*.outputStream
+				players*.outputStream*.close()
+				players*.outputStream
+			}
+			catch (any) {
+				println("Unrecoverable error in game.")
+				any.printStackTrace()
+			}
 
 			println("Game simulation takes ${ ((System.currentTimeMillis() - time) / 1000 as Double).round(2) } s.")
-			println("Fin. $game.winner won!")
-			c.sendTCP(new MatchResults(match.matchId, match.playerData1.player, players[0].outputFile.bytes,
-				match.playerData2.player, players[1].outputFile.bytes, game.winner.id))
+			if (game && players && game.done())
+				println("Fin. Game $match.matchId finished. $game.winner won!")
+			else
+				println("Fin. Game $match.matchId failed!")
+
+			c.sendTCP(new MatchResults(match.matchId, match.playerData1.player, players?.get(0)?.outputFile?.bytes,
+				match.playerData2.player, players?.get(1)?.outputFile?.bytes, game?.winner?.id, game ? true : false))
 			println("Sending...")
 		}
 	}

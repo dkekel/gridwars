@@ -20,14 +20,16 @@ class GameSerializationService
 
 		def match = Match.get(matchId)
 		fileSystemService.matchResult(matchId).bytes = compressed.toByteArray()
-		match.status = Status.SUCCEDED
-		match.winner = Agent.get(results.winnerId)
+		match.status = results.isComplete ? Status.SUCCEDED : Status.FAILED
+		match.winner = results.winnerId ? Agent.get(results.winnerId) : null
 		match.turns = info.size()
 
 		match.save(failOnError: true)
 
-		fileSystemService.outputFile(matchId, match.player1.id).bytes = results.output1
-		fileSystemService.outputFile(matchId, match.player2.id).bytes = results.output2
+		if (results.output1)
+			fileSystemService.outputFile(matchId, match.player1.id).bytes = results.output1
+		if (results.output2)
+			fileSystemService.outputFile(matchId, match.player2.id).bytes = results.output2
 	}
 
 	Iterator<byte[]> load(long matchId) {
