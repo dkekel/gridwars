@@ -25,8 +25,8 @@ sourceSets.main {
 }
 
 task createWorkerClassPath(type: Copy) {
-  println("${ System.properties.GW_HOME }/workerClassPath")
-  into "${ System.properties.GW_HOME }/workerClassPath"
+  println("${ System.properties.GW_HOME }/workers/workerClassPath")
+  into "${ System.properties.GW_HOME }/workers/workerClassPath"
   from configurations.runtime
   from jar
 }

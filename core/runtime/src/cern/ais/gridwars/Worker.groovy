@@ -72,7 +72,6 @@ class Worker extends Listener {
 					game.nextTurn()
 
 				players*.outputStream*.close()
-				players*.outputStream
 			}
 			catch (any) {
 				println("Unrecoverable error in game.")

@@ -10,7 +10,11 @@ class AdminController
 	}
 
 	def queue() {
-		[matches: matchmakingService.getPendingMatches()]
+		[matches: matchmakingService.getPendingMatches(), showStatus: false]
+	}
+
+	def histo() {
+		[matches: Match.list(), showStatus: true]
 	}
 
 	def update() {
