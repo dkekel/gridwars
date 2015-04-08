@@ -178,7 +178,7 @@ grails {
 		host = "smtp.cern.ch"
 		port = 25
 		username = "gridwars"
-		password = "Zufe-Zifu"
+		password = "***"
 		props = [
 			"mail.smtp.auth":"true",
 			"mail.smtp.socketFactory.port":"25",
