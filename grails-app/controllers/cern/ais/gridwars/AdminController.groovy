@@ -6,6 +6,7 @@ class AdminController
 {
 	def fileSystemService
 	def matchmakingService
+	def configService
 
 	def index() {
 		[config: fileSystemService.config.text]
@@ -13,6 +14,26 @@ class AdminController
 
 	def queue() {
 		[matches: matchmakingService.getPendingMatches(), showStatus: params.showStatus == null ? false : params.showStatus]
+	}
+
+	def clear() {
+		matchmakingService.activeAgents.each {
+			matchmakingService.cancelMatches(it)
+		}
+	}
+
+	def startFight() {
+		clear()
+		pairs(matchmakingService.activeAgents).each { List<Agent> a ->
+			(configService?.numMatches ?: 1).times {
+				new Match(player1: a[0], player2: a[1]).save()
+			}
+		}
+		redirect(action: "queue")
+	}
+
+	private def pairs(def elements) {
+		return elements.tail().collect { [elements.head(), it] } + (elements.size() > 1 ? pairs(elements.tail()) : [])
 	}
 
 	def histo() {

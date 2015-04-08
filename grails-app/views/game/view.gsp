@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="grails.plugin.springsecurity.SpringSecurityUtils; cern.ais.gridwars.Outcome; cern.ais.gridwars.GameConstants; cern.ais.gridwars.MatchPlayer" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.plugin.springsecurity.SpringSecurityUtils; cern.ais.gridwars.GameConstants;" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta name="layout" content="main"/>

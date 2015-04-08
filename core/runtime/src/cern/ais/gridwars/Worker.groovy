@@ -6,12 +6,16 @@ import cern.ais.gridwars.network.Network
 import com.esotericsoftware.kryonet.Client
 import com.esotericsoftware.kryonet.Connection
 import com.esotericsoftware.kryonet.Listener
+import groovy.transform.ThreadInterrupt
+import groovy.transform.TimedInterrupt
 
 import java.nio.ByteBuffer
+import java.util.concurrent.TimeoutException
 
 class Worker extends Listener {
 	Client c
 	private int id
+	private int TIME_OUT = 60 * 1000 // 60 s
 
 	Worker(int id, int port, String host) {
 		this.id = id
@@ -69,8 +73,11 @@ class Worker extends Listener {
 				})
 
 				game.startUp()
-				while (!game.done())
+				while (!game.done()) {
+					if (System.currentTimeMillis() - time > TIME_OUT)
+						throw new TimeoutException()
 					game.nextTurn()
+				}
 
 				players*.outputStream*.close()
 			}

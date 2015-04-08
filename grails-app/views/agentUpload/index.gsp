@@ -15,11 +15,12 @@
 
 <body>
 <div>
-<g:form controller="agentUpload" method="post" action="upload"
-        enctype="multipart/form-data">
-    <label for="file">.JAR File (max 10 MB):</label> <input id="file" type="file" name="file"/>
-    <label for="fqcn">FQ Class Name (e.g. my.package.MyAgent):</label> <input id="fqcn" type="text" name="fqcn"/>
-    <input type="submit"/>
-</g:form>
+    <div style="background-color: red">Please <b>do not</b> use Java 8. It will not be uploaded.</div>
+    <g:form controller="agentUpload" method="post" action="upload"
+            enctype="multipart/form-data">
+        <label for="file">.JAR File (max 10 MB):</label> <input id="file" type="file" name="file"/>
+        <label for="fqcn">FQ Class Name (e.g. my.package.MyAgent):</label> <input id="fqcn" type="text" name="fqcn"/>
+        <input type="submit"/>
+    </g:form>
 </body>
 </html>

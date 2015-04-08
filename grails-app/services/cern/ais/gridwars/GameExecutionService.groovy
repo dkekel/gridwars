@@ -22,6 +22,7 @@ class GameExecutionService
         any.printStackTrace()
       }
     }
+
     if (runtime.slotAvailable) {
       runtime.send(new StartMatch(match.id, playerData(match.player1), playerData(match.player2))) { Collection<TurnInfo> data, MatchResults results ->
         gameSerializationService.save(match.id, data, results)
@@ -38,5 +39,9 @@ class GameExecutionService
 
   PlayerData playerData(Agent player) {
     new PlayerData(new File(player.jarPath).bytes, player.id, player.fqClassName)
+  }
+
+  def cleanup() {
+    runtime?.cleanup()
   }
 }

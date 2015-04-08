@@ -26,6 +26,12 @@ class BootStrap
     def admin2 = new User(username: 'admin2', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
     admin2.save()
     new UserRole(user: admin2, role: adminRole).save()
+    def admin3 = new User(username: 'admin3', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
+    admin3.save()
+    new UserRole(user: admin3, role: adminRole).save()
+    def admin4 = new User(username: 'admin3', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
+    admin4.save()
+    new UserRole(user: admin4, role: adminRole).save()
 
 
     if (Environment.current == Environment.DEVELOPMENT) {

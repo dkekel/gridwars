@@ -2,6 +2,8 @@
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
 
+if (!System.properties.GW_HOME)
+  throw new IllegalStateException("No GW_HOME accessible! Shutdown.")
 grails.config.locations = [ "file:${ System.properties.GW_HOME }config.groovy }" ]
 
 // if (System.properties["${appName}.config.location"]) {

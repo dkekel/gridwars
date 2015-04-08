@@ -17,15 +17,21 @@ import java.util.zip.DeflaterOutputStream
 @Log
 class RuntimeMain extends Listener {
 	private class Task {
+		private static long TIMEOUT = 1000 * 60 // 1 minute  
 		StartMatch match
 		Closure callback
 
 		Connection connection
 		int workerId
+		long startTime = -1
 
 		Task(StartMatch match, Closure callback) {
 			this.match = match
 			this.callback = callback
+		}
+
+		boolean isTimeOut() {
+			startTime != -1 && (System.currentTimeMillis() - startTime > TIMEOUT)
 		}
 	}
 
@@ -106,10 +112,14 @@ class RuntimeMain extends Listener {
 		switch (o)
 		{
 		case TurnInfo:
+			if (!gameData.containsKey(connection.ID))
+				break
 			TurnInfo turn = o as TurnInfo
 			gameData[connection.ID].add(turn)
 			break;
 		case MatchResults:
+			if (!workers.containsKey(connection))
+				break
 			def mr = o as MatchResults
 			println("\n Math finished. $mr.winnerId won!")
 			def queue = gameData[connection.ID]
@@ -121,7 +131,13 @@ class RuntimeMain extends Listener {
 			break;
 		case Ready:
 			def task = queue.poll()
+			if (!task) {
+				println("No task to execute: Killing ${ workers[connection]?.workerId }.")
+				connection.sendTCP(Std.DIE)
+				return
+			}
 			task.connection = connection
+			task.startTime = System.currentTimeMillis() 
 			task.workerId = (o as Ready).workerId 
 			workers[connection] = task
 			connection.sendTCP(task.match)
@@ -130,11 +146,20 @@ class RuntimeMain extends Listener {
 		}
 	}
 
+	void cleanup() {
+		workers.values().grep { Task t -> t.timeOut }.each {
+			it.connection.sendTCP(Std.DIE)
+			def task = workers.remove(it.connection)
+			if (task)
+				reportFailure(task, gameData.remove(it.connection.ID))?.callback()
+		}
+	}
+
 	void send(StartMatch match, Closure callback) {
 		if (!slotAvailable)
 			throw new IllegalStateException("Sorry no slot available!")
 
-		log.info("Queue. $match")
+		log.info("Queue. $match.matchId")
 		queue << new Task(match, callback)
 		spawnWorker()
 	}
@@ -145,5 +170,15 @@ class RuntimeMain extends Listener {
 
 	@Override void disconnected(Connection connection) {
 		println("Someone is dead… $connection.ID")
+		def cb = workers.remove(connection)
+		def data = gameData.remove(connection.ID)
+		if (cb)
+			reportFailure(cb, data)
+		if (!queue.empty)
+			spawnWorker()
+	}
+	
+	private void reportFailure(Task cb, Collection<TurnInfo> data) {
+		cb.callback(data, new MatchResults(cb.match.matchId, cb.match.playerData1.player, "Failure".bytes, cb.match.playerData2.player, "Failure".bytes, null, false))
 	}
 }
