@@ -15,12 +15,12 @@ class GameController
   def index()
   {
     // Get scoreboard
-    [agents: Agent.findAllByActive(true).sort { matchmakingService.score(it) }, service: matchmakingService]
+    [agents: Agent.findAllByActive(true).sort { matchmakingService.score(it) }, service: matchmakingService, currentLoggedInUserId: (springSecurityService.currentUser as User).id]
   }
 
   def list()
   {
-    [games: Match.findAllByStatus(Status.SUCCEDED).sort { it.startDate }]
+    [games: Match.findAllByStatus(Status.SUCCEDED).sort { it.startDate }, currentLoggedInUserId: (springSecurityService.currentUser as User).id]
   }
 
   def view(Long id)

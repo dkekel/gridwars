@@ -12,13 +12,29 @@
     <title><g:layoutTitle default="Grid Wars" /></title>
     <r:require module="jquery"/>
     <g:javascript library="jquery" />
+    <link rel="stylesheet"  type="text/css" href="${resource(dir: 'css', file: 'bootstrap.min.css')}" />
+    <script src="${resource(dir: 'js', file: 'bootstrap.min.js')}"></script>
+    <style>
+        body { 
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            background-color: #f5f5f5;
+        }
+    </style>
+    <g:layoutHead/>
     <g:layoutHead />
     <r:layoutResources />
 </head>
 
 <body>
-<nav id="navigationBar" class="navbar navbar-default navbar-fixed-top">
-    <div class="navbar-inner container-fluid">
+<div id="navigationBar" class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar-inner">
         <ul class="nav navbar-nav">
             <li><g:link controller="game" action="index">View active bot scoreboard</g:link></li>
             <li><g:link controller="game" action="list">List games</g:link></li>
@@ -28,14 +44,31 @@
             %{--<li><a href="/api/examples">Examples</a></li>--}%
             <sec:ifAllGranted roles="ROLE_ADMIN">
                 <li><g:link controller="admin">Admin</g:link></li>
+                <li><g:link controller="admin" action="queue">Status</g:link></li>
             </sec:ifAllGranted>
-            <li><sec:ifLoggedIn>Welcome <b><sec:username/>!</b><g:form name='logoutForm' controller="logout" action=""><g:submitButton name="Logout"/></g:form></sec:ifLoggedIn></li>
         </ul>
+        <sec:ifLoggedIn>
+        <ul class="nav navbar-right">
+            <li>
+            <g:form class="navbar-form navbar-left" name='logoutForm' controller="logout" action="">
+                <div class="form-group">
+                    <div>Welcome <b><sec:username/>!</b></div>
+                </div>
+                <g:submitButton class="btn btn-link" name="Logout"/>
+            </g:form>
+            </li>
+        </ul>
+        </sec:ifLoggedIn>
     </div>
-</nav>
-<div id="body">
-    <r:layoutResources />
-    <g:layoutBody />
 </div>
+<div id="body" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <r:layoutResources />
+            <g:layoutBody />
+        </div>
+    </div>
+</div>
+<footer class="footer"><span class="text-muted pull-right" style="padding-right: 1em">Copyright CERN, GS-AIS 2015</span></footer>
 </body>
 </html>

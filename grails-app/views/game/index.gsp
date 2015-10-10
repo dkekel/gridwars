@@ -11,34 +11,18 @@
 <head>
     <title>GridWars - Scoreboard</title>
     <meta name="layout" content="main"/>
-    <style type="text/css">
-    td {
-        text-align: center;
-        padding: 10px;
-    }
-    </style>
 </head>
 
 <body>
-<table>
+<table class="table table-condensed table-hover">
     <tr><th>Username</th><th>Agent</th><th>Wins</th><th>Draws</th><th>Losses</th></tr>
     <g:each in="${agents}" var="agent">
-        <tr>
-            <td>
-                ${agent.team.username}
-            </td>
-            <td>
-                ${agent.fqClassName}
-            </td>
-            <td>
-                ${ service.wins(agent) }
-            </td>
-            <td>
-                ${ service.draws(agent) }
-            </td>
-            <td>
-                ${ service.losses(agent) }
-            </td>
+        <tr class="${ agent.team.id == currentLoggedInUserId ? "info" : "" }">
+            <td>${agent.team.username}</td>
+            <td>${agent.fqClassName}</td>
+            <td>${ service.wins(agent) }</td>
+            <td>${ service.draws(agent) }</td>
+            <td>${ service.losses(agent) }</td>
         </tr>
     </g:each>
 </table>

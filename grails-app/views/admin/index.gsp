@@ -13,21 +13,18 @@
 </head>
 
 <body>
-<div class="container">
-    <g:link controller="admin" action="queue">Status</g:link>
-    <div class="col-lg-6">
-    <g:form name="updateForm" action="update">
-        <g:textArea name="config" rows="50">${config}</g:textArea>
-        <g:submitButton name="update"/>
-    </g:form>
-    </div>
-    <div class="col-lg-6">
+<div class="col-lg-5">
     <ul>
-    <g:each in="${ grailsApplication.controllerClasses }">
-        <li><g:link controller="${it.name}">${ it.fullName }</g:link></li>
-    </g:each>
+        <g:each in="${ grailsApplication.controllerClasses }">
+            <li><g:link controller="${it.name}">${ it.fullName }</g:link></li>
+        </g:each>
     </ul>
 </div>
+<div class="col-lg-7">
+    <g:form name="updateForm" action="update">
+        <g:textArea name="config" rows="50" style="width: 100%">${config}</g:textArea>
+        <g:submitButton name="update"/>
+    </g:form>
 </div>
 </body>
 </html>

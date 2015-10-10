@@ -11,16 +11,43 @@
 <head>
     <meta name="layout" content="main"/>
     <title>GridWars - Agent Upload</title>
+    <style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }</style>
 </head>
 
 <body>
-<div>
-    <div style="background-color: red">Please <b>do not</b> use Java 8. It will not be uploaded.</div>
-    <g:form controller="agentUpload" method="post" action="upload"
-            enctype="multipart/form-data">
-        <label for="file">.JAR File (max 10 MB):</label> <input id="file" type="file" name="file"/>
-        <label for="fqcn">FQ Class Name (e.g. my.package.MyAgent):</label> <input id="fqcn" type="text" name="fqcn"/>
-        <input type="submit"/>
+    <g:form controller="agentUpload" method="post" action="upload" enctype="multipart/form-data" class="form">
+        <div class="alert alert-warning" role="alert">
+            Please <b>do not</b> use Java 8. It will not be uploaded!<br/>
+            Maximal file size is <b>10MB</b><br/>
+        </div>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Fully Qualified name(i.e. com.superuser.MegaBot).">
+            <span class="input-group-btn">
+                <span class="btn btn-default btn-file">
+                    Browse <input type="file" />
+                </span>
+                <input class="btn btn-primary" type="submit"/>
+            </span>
+        </div>
     </g:form>
 </body>
 </html>

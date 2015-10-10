@@ -1,4 +1,11 @@
 /target/
 /res/
-/web-app/
 /.idea/
+
+# web application files
+/web-app/WEB-INF/classes
+/web-app/api
+/web-app/db
+/web-app/META-INF
+/web-app/player-jars
+/web-app/player-outputs
