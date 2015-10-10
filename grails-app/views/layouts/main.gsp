@@ -11,9 +11,13 @@
     <meta http-equiv="x-ua-compatible" content="IE=9">
     <title><g:layoutTitle default="Grid Wars" /></title>
     <r:require module="jquery"/>
+    <g:layoutHead/>
+    <g:layoutHead />
+    <r:layoutResources />
     <g:javascript library="jquery" />
     <link rel="stylesheet"  type="text/css" href="${resource(dir: 'css', file: 'bootstrap.min.css')}" />
     <script src="${resource(dir: 'js', file: 'bootstrap.min.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'pako_inflate.min.js')}"></script>
     <style>
         body { 
             padding-top: 70px;
@@ -27,9 +31,6 @@
             background-color: #f5f5f5;
         }
     </style>
-    <g:layoutHead/>
-    <g:layoutHead />
-    <r:layoutResources />
 </head>
 
 <body>

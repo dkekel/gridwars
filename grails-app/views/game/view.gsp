@@ -44,7 +44,7 @@
                 var canvasWidth = document.getElementById("gameCanvas").width;
                 var c = document.getElementById("preCanvas");
                 var ctx = c.getContext("2d");
-                var extractedData = new Uint8Array(frameArray[frameNumber].data);
+                var extractedData = frameArray[frameNumber];
                 var imageData = ctx.createImageData(universeSize, universeSize);
                 for (var i = 0; i < extractedData.length; i++)
                 {
@@ -129,7 +129,14 @@
 
             ws.onmessage = function (binaryMessage)
             {
-                frameArray[currentTurn++] = binaryMessage;
+                var data = pako.inflate(binaryMessage.data);
+                var HEADER_SIZE = 0; // size of header in bytes (current: 2 bytes turns for num).
+                var turnsLoaded = ${ game.turns };
+
+                var N = universeSize * universeSize * 4;
+                for (var turn = 0; turn < turnsLoaded; turn++) {
+                    frameArray[currentTurn++] = data.slice(HEADER_SIZE + N * turn, HEADER_SIZE + N * (turn + 1))
+                }
                 document.getElementById("loadedTurns").innerHTML = currentTurn;
 
                 if (currentTurn >= ${ game.turns })

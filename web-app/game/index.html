@@ -58,7 +58,9 @@
       var c = document.getElementById("preCanvas");
       var ctx = c.getContext("2d");
       //ctx.scale(0.125, 0.125);
-      var extractedData = new Uint8Array(binaryMessage.data);
+      var extractedData = new Uint8Array(pako.inflate(binaryMessage.data));
+      var HEADER_SIZE = 2; // size of header in bytes (current: 2 bytes turns for num).
+      var numTurns = extractedData[0] << 8 | extractedData[1];
 
       //ctx.clearRect(0, 0, 100, 100);
 
@@ -67,11 +69,12 @@
       //top.document.title = extractedData.length;
 
 
-      for (var i = 0; i < extractedData.length; i++)
-      {
-        imageData.data[i] = extractedData[i];
+      var N = universeSize * universeSize;
+      for (var turn = 0; turn < numTurns; i++) {
+          for (var i = 0; i < N; i++)
+            imageData.data[i] = extractedData[N * turn + i + HEADER_SIZE];
+          ctx.putImageData(imageData, 0, 0);
       }
-      ctx.putImageData(imageData, 0, 0);
 
       var realCtx = document.getElementById("gameCanvas").getContext("2d");
 

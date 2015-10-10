@@ -4,18 +4,17 @@ import org.apache.catalina.websocket.WsOutbound
 
 import java.nio.ByteBuffer
 import java.nio.CharBuffer
+import java.util.zip.Deflater
+import java.util.zip.DeflaterOutputStream
 
 class DataSendService
 {
   def gameSerializationService
   public void sendGameToClient(Long gameId, WsOutbound wsOutbound)
   {
-    for (turn in gameSerializationService.load(gameId))
-      sendTurnToClient(turn, wsOutbound)
-  }
+	  def bytes = gameSerializationService.load(gameId)
+    log.info("Sending Game: $gameId. Size ${ bytes.size() / 1024 } KB.");
 
-  private static void sendTurnToClient(byte[] turn, WsOutbound wsOutbound)
-  {
-    wsOutbound.writeBinaryMessage(ByteBuffer.wrap(turn));
+    wsOutbound.writeBinaryMessage(ByteBuffer.wrap(bytes));
   }
 }

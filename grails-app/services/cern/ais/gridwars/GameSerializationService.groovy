@@ -32,30 +32,7 @@ class GameSerializationService
 			fileSystemService.outputFile(matchId, match.player2.id).bytes = results.output2
 	}
 
-	Iterator<byte[]> load(long matchId) {
-		def decompressed = new ByteArrayOutputStream()
-		def inflater = new InflaterOutputStream(decompressed)
-		inflater.write(fileSystemService.matchResult(matchId).bytes)
-		inflater.close()
-
-		int numTurns = decompressed.size() / TURN_DATA_SIZE as int
-		def dataToBeSent = decompressed.toByteArray()
-		int curr = 0
-		new Iterator<byte[]>() {
-			@Override boolean hasNext() {
-				return curr < numTurns
-			}
-
-			@Override byte[] next() {
-				def res = new byte[TURN_DATA_SIZE]
-				System.arraycopy(dataToBeSent, curr * TURN_DATA_SIZE, res, 0, TURN_DATA_SIZE)
-				curr++
-				res
-			}
-
-			@Override void remove() {
-				throw new UnsupportedOperationException()
-			}
-		}
+	byte[] load(long matchId) {
+		fileSystemService.matchResult(matchId).bytes
 	}
 }
