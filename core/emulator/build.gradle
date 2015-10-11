@@ -1,0 +1,22 @@
+apply plugin: 'maven'
+apply plugin: 'java'
+
+group = 'cern.ais.gridwars'
+version = '1.0-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+	maven {
+		url 'http://clojars.org/repo/'
+	}
+}
+
+dependencies {
+	compile project(':runtime')
+	compile 'org.codehaus.groovy:groovy-all:2.1.9'
+}
+
+sourceSets.main {
+	java.srcDirs = ['src']
+	groovy.srcDirs = ['src']
+}
