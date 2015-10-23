@@ -37,6 +37,7 @@
 <div id="navigationBar" class="navbar navbar-default navbar-fixed-top">
     <div class="navbar-inner">
         <ul class="nav navbar-nav">
+            <li><g:link controller="teamMember" action="index"><i class="glyphicon glyphicon-user"></i> Team</g:link></li>
             <li><g:link controller="game" action="index">View active bot scoreboard</g:link></li>
             <li><g:link controller="game" action="list">List games</g:link></li>
             <li><g:link controller="agentUpload" action="index">Upload a new bot</g:link></li>

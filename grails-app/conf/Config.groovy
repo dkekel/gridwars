@@ -160,9 +160,10 @@ grails.plugin.springsecurity.interceptUrlMap = [
 	'/logout/**':                     ['ROLE_USER', 'ROLE_ADMIN'],
 
 	'/game/**':                       ['ROLE_USER', 'ROLE_ADMIN'],
+	'/teamMember/**':                 ['ROLE_USER', 'ROLE_ADMIN'],
 	'/agentUpload/**':                ['ROLE_USER', 'ROLE_ADMIN'],
 	'/game.ws':                       ['ROLE_USER', 'ROLE_ADMIN'],
-	'/player-outputs/**':                 ['ROLE_USER', 'ROLE_ADMIN'],
+	'/player-outputs/**':             ['ROLE_USER', 'ROLE_ADMIN'],
 
 	'/admin/**':                      ['ROLE_ADMIN'],
 	'/dbconsole/**':                  ['ROLE_ADMIN'],
