@@ -1,7 +1,6 @@
 apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'application'
-apply plugin: 'distribution'
 
 group = 'cern.ais.gridwars'
 version = '1.0-SNAPSHOT'
@@ -16,22 +15,11 @@ repositories {
 }
 
 dependencies {
-	compile project(':runtime')
-	compile 'org.codehaus.groovy:groovy-all:2.1.9'
+	compile fileTree('lib/') {
+		exclude "emulator-1.0-SNAPSHOT.jar"
+	}
 }
 
 sourceSets.main {
 	groovy.srcDirs = ['src']
 }
-
-distributions {
-	main {
-		contents {
-			from { 'dist' }
-			into ('src') {
-				from { 'src' }
-			}
-		}
-	}
-}
-
