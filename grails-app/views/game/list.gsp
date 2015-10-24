@@ -21,13 +21,13 @@
 
 <body>
 <table class="table table-condensed table-hover">
-    <tr><th>Start date</th><th>Players</th><th>Winner</th></tr>
+    <tr><th></th><th>Winner</th><th>Players</th><th>Start date</th></tr>
     <g:each in="${games}" var="game">
         <tr class="${ getColumnClass(game, currentLoggedInUserId) }">
-            <td>${ game.startDate.format("yyyy-MM-dd HH:mm:ss") }</td>
-            <td>${ game.player1.team.username } vs ${ game.player2.team.username }</td>
-            <td>${ game.winner ? game.winner.team.username : "Draw" }</td>
             <td><g:link controller="game" action="view" params="[id: game.id]">View</g:link></td>
+            <td>${ game.winner ? game.winner.team.username : "Draw" }</td>
+            <td>${ game.player1.team.username } vs ${ game.player2.team.username }</td>
+            <td>${ game.startDate.format("yyyy-MM-dd HH:mm:ss") }</td>
         </tr>
     </g:each>
 </table>
