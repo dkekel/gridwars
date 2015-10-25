@@ -1,0 +1,16 @@
+apply plugin: "java"
+
+repositories {
+	mavenCentral()
+	maven {
+		url 'http://clojars.org/repo/'
+	}
+}
+
+dependencies {
+	compile project(':api')
+}
+
+sourceSets.main {
+	java.srcDirs = ['src']
+}

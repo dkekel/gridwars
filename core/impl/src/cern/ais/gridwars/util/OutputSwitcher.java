@@ -1,6 +1,5 @@
 package cern.ais.gridwars.util;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 

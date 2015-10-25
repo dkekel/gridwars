@@ -1,18 +1,68 @@
+         .    .        .      .             . .     .        .          .          .
+  .    .          .                 .                    .                .    . 
+           .               A long time ago in a galaxy far, far away...   .
+    *         .               .           .               .        .             .
+              .      .            .                 .                         +      .
+      .   .      .         .         .   . :::::+::::...      .          .         .
+   .          .         .      .    ..::.:::+++++:::+++++:+::.    .     .
+                                 .:.  ..:+:..+|||+..::|+|+||++|:.             .     .
+                     .   .    :::....:::::::::++||||O||O#OO|OOO|+|:.    .
+     .   .      .      .    .:..:..::+||OO#|#|OOO+|O||####OO###O+:+|+               .
+                          .:...:+||O####O##||+|OO|||O#####O#O||OO|++||:     .    .
+.          .             ..::||+++|+++++|+::|+++++O#O|OO|||+++..:OOOOO|+  .         .
+   .   .      .   .     +++||++:.:++:..+#|. ::::++|+++||++O##O+:.++|||#O+    .
+         .           . ++++++++...:+:+:.:+: ::..+|OO++O|########|++++||##+            .
+.          .       .  :::+++|O+||+::++++:::+:::+++::+|+O###########OO|:+OO       .  .
+              .       +:+++|OO+|||O:+:::::.. .||O#OOO||O||#@###@######:+|O|  .
+          .          ::+:++|+|O+|||++|++|:::+O#######O######O@############O
+     +             . ++++: .+OO###O++++++|OO++|O#@@@####@##################+         .
+               .     ::::::::::::::::::::++|O+..+#|O@@@@#@###O|O#O##@#OO####     .
+          .        . :. .:.:. .:.:.: +.::::::::  . +#:#@:#@@@#O||O#O@:###:#| .      .
+                                    `. .:.:.:.:. . :.:.:%::%%%:::::%::::%:::
+         .      .                                      `.:.:.:.:   :.:.:.:.  .   .
+                    .                                                                .
+  .            .
+         .          .                                                       .   .
+ .                                                                                    .
+             .        .                                                           .
+             .     .                                                           .    *  .
+    .      .     .                                                        .
+                       .   A terrible civil war burns throughout the  .        .     .
+                          galaxy: a rag-tag group of freedom fighters   .  .
+              .       .  has risen from beneath the dark shadow of the            .
+         .        .     evil monster the Galactic Empire has become.                  .
+  .        .             Imperial  forces  have  instituted  a reign of   .      .
+        *             terror,  and every  weapon in its arsenal has  been
+   .               . turned upon the Rebels  and  their  allies:  tyranny, .   .
+            .       oppression, vast fleets, overwhelming armies, and fear.        .  .
+      .  .      .  Fear  keeps  the  individual systems in line,  and is the   .
+                  prime motivator of the New Order.             .
+   .        .      Outnumbered and outgunned,  the Rebellion burns across the   .    .
+         .      vast reaches of space and a thousand-thousand worlds, with only     .
+             . their great courage - and the mystical power known as the Force -
+   .         flaming a fire of hope.                                    .
+                This is a  galaxy  of wondrous aliens,  bizarre monsters,  strange   .
+          . Droids, powerful weapons, great heroes, and terrible villains.  It is a
+    +      galaxy of fantastic worlds,  magical devices, vast fleets, awesome machi-  .
+          nery, terrible conflict, and unending hope.              .         .          .   . 
+.        .          .    .    .            .            .                   .       .
+               .               ..       .       .   .             .           +          .   
+                     .              .       .              +     .      .    .          .  
+.        .               .       .     .            .        .                 .          .   
+   .           .        .                     .        .            .          .     .      .    
+             .               .    .          .              .   .         .
+    _______ .______       __   _______     ____    __    ____  ___      .______      +   _______.
+   /  _____||   _  \   . |  | |       \    \   \ ./  \  /   / /   \     |   _  \        /       |
+  |  |  __  |  |_)  |    |  | |  .--.  |  . \   \/    \/   / /  ^  \  . |  |_)  |      |   (----`
+  |  | |_ | |      / .   |  | |  |  |  |     \            / /  /_\  \   |      /   .    \   \    
+  |  |__| | |  |\  \----.|  | |  '--'  |      \    /\    / /  _____  \  |  |\  \----.----)   | . 
+   \______| | _| `._____||__| |_______/   .    \__/  \__/ /__/     \__\ | _| `._____|_______/    .
+     .             .             .         .               .                 . 
+.        .               .       .     .            .    .       *        .        .        .     
 
-        A long time ago in a galaxy far,
-        far away...
+                                         Episode N
 
-    _______ .______       __   _______     ____    __    ____  ___      .______          _______.
-   /  _____||   _  \     |  | |       \    \   \  /  \  /   / /   \     |   _  \        /       |
-  |  |  __  |  |_)  |    |  | |  .--.  |    \   \/    \/   / /  ^  \    |  |_)  |      |   (----`
-  |  | |_ | |      /     |  | |  |  |  |     \            / /  /_\  \   |      /        \   \    
-  |  |__| | |  |\  \----.|  | |  '--'  |      \    /\    / /  _____  \  |  |\  \----.----)   |   
-   \______| | _| `._____||__| |_______/        \__/  \__/ /__/     \__\ | _| `._____|_______/    
-                                                                                               
-
-                                         Episode V
-
-                                      BATTLE FOR DUBNA
+                            B A T T L E   F O R   D U B N A
 
 ## Distribution Content:
 
@@ -56,3 +106,10 @@ Consult web if you have problems at this step, there are plenty guides and tutor
 
 Play fair and
 May the Code be with you!
+
+                                    _.=+._
+ \::::::::::::::::::::::::::.\`--._/[_/~|;\_.--'/.:::::::::\
+  \::::::::::::::::::::::::::.`.  ` __`\.-.(  .'.:::::::::::\
+  /::::::::::::::::::::::::::::.`-:.`'..`-'/\'.:::::::::::::/
+ /::::::::::::::::::::::::::::::::.\ `--')/  ) ::::::::::::/
+                                     `--'

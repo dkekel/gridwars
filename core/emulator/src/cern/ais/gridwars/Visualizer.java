@@ -1,5 +1,6 @@
 package cern.ais.gridwars;
 
+import cern.ais.gridwars.bot.PlayerBot;
 import cern.ais.gridwars.cell.Cell;
 import cern.ais.gridwars.command.MovementCommand;
 import cern.ais.gridwars.universe.Universe;
@@ -18,15 +19,15 @@ import java.util.*;
 import java.util.List;
 
 public class Visualizer {
-	private static JFrame frame;
-	private static boolean m_Running = !false;
-	private static Label m_StatusLabel;
-	private static int[] speeds = new int[] { 10, 20, 40, 80, 160, 320, 500 };
-	private static int m_TimerSpeedId = 4;
-	private static Game game;
+	private JFrame frame;
+	private boolean m_Running = !false;
+	private Label m_StatusLabel;
+	private int[] speeds = new int[] { 10, 20, 40, 80, 160, 320, 500 };
+	private int m_TimerSpeedId = 3;
+	private Game game;
 
-	private static void createGame() throws FileNotFoundException {
-		game = new Game(Arrays.asList(new Player(0, new MovingBot(MovementCommand.Direction.DOWN), new File("player1.log"), 0), new Player(1, new MovingBot(MovementCommand.Direction.RIGHT), new File("player2.log"), 1)), new Game.TurnCallback() {
+	private void createGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
+		game = new Game(Arrays.asList(new Player(0, bot1, new File("player1.log"), 0), new Player(1, bot2, new File("player2.log"), 1)), new Game.TurnCallback() {
 			@Override public void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus) {
 				frame.setTitle("Turn " + turn);
 				frame.repaint();
@@ -36,9 +37,8 @@ public class Visualizer {
 		game.startUp();
 	}
 
-	private static void createAndShowGUI() throws FileNotFoundException
+	private void createAndShowGUI() throws FileNotFoundException
 	{
-		createGame();
 		frame = new JFrame("GridWars Emulator");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,13 +105,13 @@ public class Visualizer {
 		}).start();
 	}
 
-	private static Component createSpeedControlButton(final String caption) {
+	private Component createSpeedControlButton(final String caption) {
 		JButton control = new JButton(caption);
 		control.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
-				if (caption.equals("+") && m_TimerSpeedId < speeds.length - 2)
+				if (caption.equals("-") && m_TimerSpeedId < speeds.length - 2)
 					m_TimerSpeedId += 1;
-				if (caption.equals("-") && m_TimerSpeedId > 0)
+				if (caption.equals("+") && m_TimerSpeedId > 0)
 					m_TimerSpeedId -= 1;
 			}
 		});
@@ -120,6 +120,13 @@ public class Visualizer {
 
 	public static void main(String[] args) throws FileNotFoundException
 	{
+//		new Launcher();
+		new Visualizer().runGame(new MovingBot(MovementCommand.Direction.DOWN), new MovingBot(MovementCommand.Direction.RIGHT));
+	}
+
+	public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException
+	{
+		createGame(bot1, bot2);
 		createAndShowGUI();
 	}
 }

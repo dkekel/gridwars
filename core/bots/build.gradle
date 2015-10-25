@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-	compile project(':impl')
+	compile project(':emulator')
 	compile 'org.codehaus.groovy:groovy-all:2.1.9'
 }
 
