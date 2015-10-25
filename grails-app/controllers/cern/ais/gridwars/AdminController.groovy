@@ -20,6 +20,7 @@ class AdminController
 		matchmakingService.activeAgents.each {
 			matchmakingService.cancelMatches(it)
 		}
+		redirect (action: "index")
 	}
 
 	def startFight() {

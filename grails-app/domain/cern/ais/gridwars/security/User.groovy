@@ -6,6 +6,7 @@ class User {
 
 	transient springSecurityService
 
+	int rank
 	String username
 	String password
 	String email
@@ -21,6 +22,7 @@ class User {
 	static constraints = {
 		username blank: false, unique: true
 		password blank: false
+		rank defaultValue: 0
 	}
 
 	Set<Role> getAuthorities() {

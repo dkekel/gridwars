@@ -40,10 +40,10 @@
             Maximal file size is <b>10MB</b><br/>
         </div>
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Fully Qualified name(i.e. com.superuser.MegaBot).">
+            <input name="fqcn" type="text" class="form-control" placeholder="Fully Qualified name(i.e. com.superuser.MegaBot).">
             <span class="input-group-btn">
                 <span class="btn btn-default btn-file">
-                    Browse <input type="file" />
+                    Browse <input name="file" type="file" />
                 </span>
                 <input class="btn btn-primary" type="submit"/>
             </span>

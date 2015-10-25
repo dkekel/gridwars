@@ -18,7 +18,10 @@
     <tr><th>Username</th><th>Agent</th><th>Wins</th><th>Draws</th><th>Losses</th></tr>
     <g:each in="${agents}" var="agent">
         <tr class="${ agent.team.id == currentLoggedInUserId ? "info" : "" }">
-            <td>${agent.team.username}</td>
+            <td>
+                ${ '<i class="glyphicon glyphicon-star text-danger"></i>' * agent.team.rank }
+                ${ agent.team.username }
+            </td>
             <td>${agent.fqClassName}</td>
             <td>${ service.wins(agent) }</td>
             <td>${ service.draws(agent) }</td>

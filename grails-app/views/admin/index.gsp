@@ -15,6 +15,12 @@
 <body>
 <div class="col-lg-5">
     <ul>
+        Admin actions:
+        <li><g:link action="clear">Clear</g:link></li>
+        <li><g:link action="startFight">Start Fight</g:link></li>
+        <li><g:link action="histo">Histo</g:link></li>
+    </ul>
+    <ul>
         <g:each in="${ grailsApplication.controllerClasses }">
             <li><g:link controller="${it.name}">${ it.fullName }</g:link></li>
         </g:each>

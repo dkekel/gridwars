@@ -1,6 +1,9 @@
 package cern.ais.gridwars
 
 import cern.ais.gridwars.Match.Status
+import cern.ais.gridwars.security.Role
+import cern.ais.gridwars.security.User
+import cern.ais.gridwars.security.UserRole
 
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.InflaterOutputStream
@@ -23,6 +26,19 @@ class GameSerializationService
 		match.status = results.isComplete ? Status.SUCCEDED : Status.FAILED
 		match.winner = results.winnerId ? Agent.get(results.winnerId) : null
 		match.turns = info.size()
+		if (results.isComplete && results.winnerId) {
+			def player1 = User.get(match.player1.team.id)
+			def player2 = User.get(match.player2.team.id)
+
+			def role = new Role(authority: "ADMIN_BOT")
+			if (player1.authorities.contains(role) || player2.authorities.contains(role)) {
+				def rank = Math.max(player1.rank, player2.rank)
+				if (results.winnerId != match.player1Id) {
+					match.winner.team.rank = rank
+					match.winner.team.save(validate: true)
+				}
+			}
+		}
 
 		match.save(failOnError: true)
 
