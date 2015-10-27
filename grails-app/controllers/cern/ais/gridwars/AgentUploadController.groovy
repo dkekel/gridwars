@@ -14,21 +14,25 @@ class AgentUploadController
   {
     if (!SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") && !configService.capabilities.upload)
       redirect(action: "uploadRestricted")
+    else
+      [error: params.error, agents: SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") ? Agent.list() : Agent.findAllByTeam(springSecurityService.currentUser as User) ] 
   }
 
   def uploadRestricted() {
   }
 
-  def upload()
-  {
+  def upload() {
     if (!SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") && !configService.capabilities.upload) {
       redirect(action: "uploadRestricted")
       return
     }
 
-    if (!agentUploadService.processJarUpload(request.getFile("file") as CommonsMultipartFile, request.getParameter("fqcn"), springSecurityService.currentUser as User))
-      render 'There have been some problems with your upload. Make sure it implements the correct interface, the FQCN is correct and it is a valid JAR file.'
-    else
+    try {
+      agentUploadService.processJarUpload(request.getFile("file") as CommonsMultipartFile, request.getParameter("fqcn"), springSecurityService.currentUser as User)
       redirect(controller: 'game')
+    }
+    catch (JarValidationError e) {
+      redirect(params: [error: e.message])
+    }
   }
 }

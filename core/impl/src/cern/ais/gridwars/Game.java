@@ -279,7 +279,7 @@ public class Game
   {
     if (movementCommand == null || movementCommand.getCoordinatesFrom() == null || movementCommand.getAmount() == null || movementCommand.getDirection() == null)
     {
-      System.out.println("Command failed validation: Null pointers in command");
+      System.out.println("Command failed validation: Null pointers in command." + movementCommand);
       return false;
     }
     if (!player.equals(universe.getCell(movementCommand.getCoordinatesFrom()).getOwner()))

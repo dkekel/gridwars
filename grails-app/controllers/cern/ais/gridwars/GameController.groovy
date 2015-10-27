@@ -30,8 +30,10 @@ class GameController
   }
 
   def playerOutput() {
-    if (SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') || (springSecurityService.currentUser as User).id == params.player as long) {
-      def text = fileSystemService.outputFile(params.game as long, params.player as long).text
+    if (SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') || (springSecurityService.currentUser as User).id == Agent.get(params.bot as long)?.team?.id) {
+      def file = fileSystemService.outputFile(params.game as long, params.bot as long)
+      def text = file?.exists() ? file?.text : null
+      text = text ?: "No output"
       render "<pre>$text</pre>"
     }
     else

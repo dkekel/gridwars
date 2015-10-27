@@ -1,10 +1,15 @@
 package cern.ais.gridwars
-
+import cern.ais.gridwars.FileSystemService.SharedJarFile
 import cern.ais.gridwars.bot.PlayerBot
 import cern.ais.gridwars.security.User
 import cern.ais.gridwars.servlet.util.ClassUtils
-import org.apache.commons.io.FileUtils
+import groovy.transform.InheritConstructors
 import org.springframework.web.multipart.commons.CommonsMultipartFile
+
+import java.lang.reflect.Modifier
+
+@InheritConstructors
+class JarValidationError extends RuntimeException {}
 
 class AgentUploadService
 {
@@ -12,33 +17,35 @@ class AgentUploadService
   def fileSystemService
   def matchmakingService
 
-  public boolean processJarUpload(CommonsMultipartFile uploadedFile, String agentFQCN, User user) {
+  public void processJarUpload(CommonsMultipartFile uploadedFile, String agentFQCN, User user) {
+    processUpload(uploadedFile.bytes, agentFQCN, user)
+  }
+
+  public void processJarUpload(File uploadedFile, String agentFQCN, User user) {
+    processUpload(uploadedFile.bytes, agentFQCN, user)
+  }
+
+  public void processUpload(byte[] fileContents, String agentFQCN, User user) {
+    if (!fileContents)
+      throw new JarValidationError("File is empty.")
+
+    SharedJarFile destinationFile = fileSystemService.storeJar(fileContents)
+
     user.refresh()
-    File destinationFile = fileSystemService.jarFile(createJarName(user))
-    uploadedFile.transferTo(destinationFile)
-    log.debug("File uploaded: user:($user.username) file: $destinationFile.absolutePath($agentFQCN)")
-    processUploadedFile(destinationFile, agentFQCN, user)
-  }
+    log.debug("File uploaded: user:($user.username) file: $destinationFile.file.absolutePath($agentFQCN)")
 
-  public boolean processJarUpload(File uploadedFile, String agentFQCN, User user) {
-    user.refresh()
-    def destFile = fileSystemService.jarFile(createJarName(user))
-    FileUtils.copyFile(uploadedFile, destFile)
-    log.debug("File uploaded: user:($user.username) file: $destFile.absolutePath($agentFQCN)")
-    processUploadedFile(destFile, agentFQCN, user)
-  }
-
-  String createJarName(User user) {
-    "${user.username}_${new Date().format("yyyyMMddHHmmss")}"
-  }
-
-  public boolean processUploadedFile(File file, String agentFQCN, User user) {
-    // Validate the uploaded file
-    if (!validate(file, agentFQCN))
-    {
-      file.delete()
-      return false
+    try {
+      processUploadedFile(destinationFile.file, agentFQCN, user)
     }
+    catch (JarValidationError e) {
+      destinationFile.dispose();
+      throw e;
+    }
+  }
+
+  public void processUploadedFile(File file, String agentFQCN, User user) {
+    // Validate the uploaded file
+    validate(file, agentFQCN)
 
     Agent.findAllByTeamAndActive(user, true).each {
       matchmakingService.cancelMatches(it)
@@ -50,44 +57,35 @@ class AgentUploadService
       it.save()
     }
 
-    def agent = new Agent(jarPath: file.absolutePath, fqClassName: agentFQCN, uploadDate: new Date())
+    def agent = new Agent(jarPath: file.name, fqClassName: agentFQCN, uploadDate: new Date())
     agent.save(flush: true)
     user.addToAgents(agent)
     user.save(flush: true)
     matchmakingService.prepareMatches(agent)
-
-    return true
   }
 
-  private boolean validate(File file, String agentFQCN)
-  {
+  private void validate(File file, String agentFQCN) {
     def logError = { log.debug "$file($agentFQCN) haven't pass validation. Reason: $it" }
-    if (file.length() > 10485760)
-    {
+    if (file.length() > 10485760) {
       logError("Too big")
-      return false
+      throw new JarValidationError("File is too big. Uploaded ${ String.format("%.2f", file.length() / 1024 / 1024) } MB. Limit is 10MB.")
     }
 
-    Class classToLoad = ClassUtils.loadClassFromJarFile(agentFQCN, grailsApplication.config.cern.ais.gridwars.fileprotocol + file.absolutePath, Thread.currentThread().getContextClassLoader())
+    Class classToLoad = ClassUtils.loadClassFromJarFile(agentFQCN, grailsApplication.config.cern.ais.gridwars.fileprotocol + file.absolutePath, Thread.currentThread().contextClassLoader)
 
-    if (!classToLoad)
-    {
+    if (!classToLoad) {
       logError "Failed to load class"
-      return false
+      throw new JarValidationError("Failed to load bot class. Class '$agentFQCN' is not found in given jar.")
     }
 
-    if (classToLoad.interface)
-    {
+    if (classToLoad.interface ||  Modifier.isAbstract(classToLoad.modifiers)) {
       logError "It's an interface"
-      return false
+      throw new JarValidationError("Failed to load bot class. Class '$agentFQCN' is an interface or an abstract class.")
     }
 
-    if (!PlayerBot.class.isAssignableFrom(classToLoad))
-    {
+    if (!PlayerBot.class.isAssignableFrom(classToLoad)) {
       logError "Does not implement PlayerBot"
-      return false
+      throw new JarValidationError("Failed to load bot class. Class '$agentFQCN' is not implementing PlayerBot.")
     }
-
-    return true
   }
 }

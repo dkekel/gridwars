@@ -13,26 +13,18 @@ class BootStrap
   def fileSystemService
   def mailService
   def configService
+  def transactionManager
 
   def init = { servletContext ->
     log.info("GW_HOME is set to: ${ System.properties.GW_HOME }")
     fileSystemService.init()
 
     new Role(authority: 'ROLE_USER').save()
-    def adminRole = new Role(authority: 'ROLE_ADMIN').save()
-    def admin = new User(username: 'admin', password: 'admin', enabled: true, email: 'grid.wars@cern.ch')
-    admin.save()
-    new UserRole(user: admin, role: adminRole).save()
-    def admin2 = new User(username: 'admin2', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
-    admin2.save()
-    new UserRole(user: admin2, role: adminRole).save()
-    def admin3 = new User(username: 'admin3', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
-    admin3.save()
-    new UserRole(user: admin3, role: adminRole).save()
-    def admin4 = new User(username: 'admin3', password: 'admin', enabled: true, email: 'grid.wars2@cern.ch')
-    admin4.save()
-    new UserRole(user: admin4, role: adminRole).save()
+    def adminRoles = [new Role(authority: 'ROLE_ADMIN').save(), new Role(authority: 'ADMIN_BOT').save()]
 
+    5.times {
+      createAdminAccount(it, adminRoles)
+    }
 
     if (Environment.current == Environment.DEVELOPMENT) {
 //      ["bot.Main", "ru.tversu.gridwars.TverSUbot81"].eachWithIndex { jarName, it ->
@@ -54,6 +46,18 @@ class BootStrap
 //      gameExecutionService.executeGame(match)
       reportServerStatus("Grid Wars server is active!")
   }
+
+	void createAdminAccount(int id, List<Role> adminRoles) {
+		def userName = "admin" + (id ?: "")
+		if (User.findByUsername(userName))
+			return
+
+		def admin = new User(username: userName, password: 'GridWarsCern123', enabled: true, email: 'grid.wars@cern.ch')
+		admin.save(failOnError: true)
+		adminRoles.each {
+			new UserRole(user: admin, role: it).save(failOnError: true)
+		}
+	}
 
   def destroy = {
     reportServerStatus("Grid Wars server is dying!")

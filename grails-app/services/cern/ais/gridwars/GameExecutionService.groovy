@@ -8,6 +8,7 @@ class GameExecutionService
 
   def configService
   def gameSerializationService
+  def fileSystemService
 
   static RuntimeMain runtime
 
@@ -38,7 +39,7 @@ class GameExecutionService
   }
 
   PlayerData playerData(Agent player) {
-    new PlayerData(new File(player.jarPath).bytes, player.id, player.fqClassName)
+    new PlayerData(fileSystemService.jarFile(player.jarPath).bytes, player.id, player.fqClassName)
   }
 
   def cleanup() {

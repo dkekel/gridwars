@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="cern.ais.gridwars.Agent" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta name="layout" content="main"/>
@@ -34,6 +34,9 @@
 </head>
 
 <body>
+    <g:if test="${ error }">
+        <div class="alert alert-danger">${ error }</div>
+    </g:if>
     <g:form controller="agentUpload" method="post" action="upload" enctype="multipart/form-data" class="form">
         <div class="alert alert-warning" role="alert">
             Please <b>do not</b> use Java 8. It will not be uploaded!<br/>
@@ -49,5 +52,29 @@
             </span>
         </div>
     </g:form>
+    <sec:ifAnyGranted roles="ROLE_ADMIN">
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>Path</th>
+                <th>isActive</th>
+                <th>ClassName</th>
+                <th>Upload date</th>
+                <th>Version</th>
+                <th>Team</th>
+            </tr>
+            <g:each in="${agents}">
+                <tr>
+                    <td>${ it.id }</td>
+                    <td>${ it.jarPath }</td>
+                    <td>${ it.active }</td>
+                    <td>${ it.fqClassName }</td>
+                    <td>${ it.uploadDate }</td>
+                    <td>${ it.version }</td>
+                    <td>${ it.team.username }</td>
+                </tr>
+            </g:each>
+        </table>
+    </sec:ifAnyGranted>
 </body>
 </html>

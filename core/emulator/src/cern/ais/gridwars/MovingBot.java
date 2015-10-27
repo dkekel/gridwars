@@ -8,6 +8,10 @@ import java.util.List;
 public class MovingBot implements PlayerBot {
 	private MovementCommand.Direction direction;
 
+	public MovingBot() {
+		this(MovementCommand.Direction.DOWN);
+	}
+
 	public MovingBot(MovementCommand.Direction direction) {
 		this.direction = direction;
 	}

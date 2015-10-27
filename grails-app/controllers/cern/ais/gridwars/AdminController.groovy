@@ -30,7 +30,7 @@ class AdminController
 				new Match(player1: a[0], player2: a[1]).save()
 			}
 		}
-		redirect(action: "queue")
+		redirect(action: "index")
 	}
 
 	private def pairs(def elements) {

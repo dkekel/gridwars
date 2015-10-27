@@ -154,10 +154,10 @@
     Players:
     <g:set var="i" value="${0}" />
     <g:each in="[game.player1, game.player2]">
-        <span style="color: ${GameConstants.getRGB(i++)}">${ it.team.username }<g:if test="${ it.team.id == currentLoggedInUserId || SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') }"> (<g:link action="playerOutput" params="${ [player: it.id, game: game.id] }">View log</g:link>) </g:if></span>
+        <span style="color: ${GameConstants.getRGB(i++)}">${ it.team.username }<g:if test="${ it.team.id == currentLoggedInUserId || SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') }"> (<g:link action="playerOutput" params="${ [bot: it.id, game: game.id] }">View log</g:link>) </g:if></span>
     </g:each>
     <br/>
-    Winner: ${ game.winner.team.username }<br/>
+    Winner: ${ game.winner?.team?.username ?: "None" }<br/>
     Turns to complete: ${ game.turns }<br/>
     Loading turn data: <span id="loadedTurns">0</span> out of ${ game.turns }
 </div>
