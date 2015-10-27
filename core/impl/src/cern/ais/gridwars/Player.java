@@ -26,7 +26,7 @@ public class Player {
     this.id = id;
     this.playerBot = playerBot;
     this.outputFile = outputFile;
-    this.outputStream = new FileOutputStream(outputFile);
+    this.outputStream = outputFile != null ? new FileOutputStream(outputFile) : null;
     this.colorIndex = colorIndex;
     System.out.println("Player " + id);
   }
