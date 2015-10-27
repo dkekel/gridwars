@@ -5,7 +5,7 @@
   Time: 19:15
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="cern.ais.gridwars.security.UserRole; cern.ais.gridwars.security.Role" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <meta http-equiv="x-ua-compatible" content="IE=9">
@@ -52,12 +52,19 @@
         <sec:ifLoggedIn>
         <ul class="nav navbar-right">
             <li>
-            <g:form class="navbar-form navbar-left" name='logoutForm' controller="logout" action="">
-                <div class="form-group">
-                    <div>Welcome <b><sec:username/>!</b></div>
-                </div>
-                <g:submitButton class="btn btn-link" name="Logout"/>
-            </g:form>
+                <g:form class="navbar-form" name='logoutForm' controller="logout" action="">
+                    <div class="form-group">
+                        <div>Welcome <b><sec:username/>!</b></div>
+                    </div>
+                    <sec:ifAllGranted roles="ROLE_ADMIN">
+                        <g:select
+                                name="account"
+                                from="${ UserRole.findAllByRole(Role.findByAuthority("ROLE_ADMIN"))*.user*.username.unique() }"
+                                onchange="this.form.action='${ createLink(controller: "logout", action: "switchUser")}'; this.form.submit()"
+                        />
+                    </sec:ifAllGranted>
+                    <g:submitButton class="btn btn-link" name="Logout"/>
+                </g:form>
             </li>
         </ul>
         </sec:ifLoggedIn>
