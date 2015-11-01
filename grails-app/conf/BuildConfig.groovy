@@ -49,6 +49,7 @@ grails.project.dependency.resolution = {
     // compile 'com.google.guava:guava:14.0'
     runtime 'mysql:mysql-connector-java:5.1.20'
     compile('cern.ais.gridwars:api:1.0-SNAPSHOT')
+    compile('cern.ais.gridwars:impl:1.0-SNAPSHOT')
     compile('cern.ais.gridwars:runtime:1.0-SNAPSHOT')
   }
 

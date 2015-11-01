@@ -99,7 +99,7 @@ class Worker extends Listener {
 	}
 
 	static final int MAX_SIZE = 2 * 1024 * 1024 // 2MB
-	byte[] trimOutput(byte[] array) {
+	static byte[] trimOutput(byte[] array) {
 		if (array.length < MAX_SIZE)
 			return array
 

@@ -70,10 +70,12 @@ environments {
     cern.ais.gridwars.fileprotocol = "file://"
   }
   production {
+    grails.app.context = "/"
     grails.logging.jul.usebridge = false
     cern.ais.gridwars.basedir = '/var/lib/tomcat/webapps/ROOT/'
     cern.ais.gridwars.fileprotocol = "file://"
     grails.serverURL = "http://gridwars.cern.ch"
+    server.port = "80"
   }
 }
 

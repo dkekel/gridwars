@@ -28,7 +28,7 @@ class PlayerUtil {
 	private static PlayerBot loadBot(PlayerData data) {
 		def file = File.createTempFile(randomStr(10), randomStr(10))
 		file.bytes = data.jar
-		def classLoader = new URLClassLoader(file.toURI().toURL())
+		def classLoader = new URLClassLoader([file.toURI().toURL()] as URL[], this.getClassLoader())
 		classLoader.loadClass(data.className).newInstance() as PlayerBot
 	}
 
