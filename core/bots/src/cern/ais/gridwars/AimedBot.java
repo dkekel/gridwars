@@ -46,14 +46,6 @@ public class AimedBot implements PlayerBot
 		List<Coordinates> myCells = universeView.getMyCells();
 
 		List<Coordinates> battleCells = getBattleCells(universeView);
-
-		if ((((universeView.getCurrentTurn() > 40) && (universeView.getCurrentTurn() < 100)) || ((universeView.getCurrentTurn() > 160) && (universeView.getCurrentTurn() <= 170))) ||
-			(universeView.getCurrentTurn() > 200 && universeView.getCurrentTurn() % 4 <= 1)) {//&& (universeView.getCurrentTurn() < 4500)) {
-			//if (universeView.getCurrentTurn() > 20) {
-			//if (battleCells.size() > 0) {
-//			sendArmiesToDefendUs(universeView, commandList, main.getCenter((Cell) null).coords); // FIXME HERE was old code
-			//}
-		}
 	}
 
 	public boolean isMyBoundaryCell(UniverseView universeView, Coordinates coord) {
@@ -76,32 +68,12 @@ public class AimedBot implements PlayerBot
 	public void sendArmiesToDefendUs(UniverseView universeView, List<MovementCommand> movementCommands,
 		List<Cell> myAttackCells, Cell center)
 	{
-		// = new ArrayList<Coordinates>();
-		//battleCells.add(getCoord(5,10,universeView));
-		//battleCells.add(getCoord(27,10,universeView));
-		//battleCells.add(getCoord(20,13,universeView));
-		//battleCells.add(getCoord(20,13,universeView));
-
-		//battleCells.add(getCoord(1,1,universeView));
-		//battleCells.add(getCoord(1,49,universeView));
-		//battleCells.add(getCoord(49,1,universeView));
-		//battleCells.add(getCoord(49,49,universeView));	
 
 		List<Coordinates> battleCells = getPadding(universeView, center.coords);
 
-		/*for (int i = 0; i <= 49; i++) {
-			for (int j = 0; j <= 49; j++) {
-				if (!universeView.belongsToMe(i, j)) {
-					battleCells.add(getCoord(i,j,universeView));	
-				}
-			}
-		}*/
 
 		for (Cell myCoord : myAttackCells)
 		{
-			//„‡ÌË˜Ì˚Â ÍÎÂÚÍË ÌËÍÛ‰‡ ÌÂ ÓÚÔ‡‚ÎˇÂÏ
-			//if (!isMyBoundaryCell(universeView, myCoord)) {
-			//—Ì‡˜‡Î‡ Ì‡‰Ó Ì‡ÈÚË ÍÎÂÚÍÛ, Í ÍÓÚÓÓÈ Ï˚ ‰ÓÎÊÌ˚ ÛÒÚÂÏËÚ¸Òˇ
 			long minMetrics = 1000000L;
 			Coordinates aim = myCoord.getRelative(Direction.LEFT).coords; //Á‡„ÎÛ¯Í‡
 			//Ë˘ÂÏ ·ÎËÊ‡È¯Û˛

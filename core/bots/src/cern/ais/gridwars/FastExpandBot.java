@@ -15,7 +15,7 @@ import java.util.Queue;
 
 public class FastExpandBot implements PlayerBot
 {
-	private final Main m_MainBot;
+	private Main m_MainBot;
 	private final Queue<Cell> cells;
 	private final Direction[] directions = new Direction[]
 		{Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT};
@@ -25,9 +25,14 @@ public class FastExpandBot implements PlayerBot
 
 	public FastExpandBot(Main mainBot)
 	{
-		m_MainBot = mainBot;
 		cells = new ArrayDeque<Cell>();
+		m_MainBot = mainBot;
 		attackBot = new AimedBot(mainBot);
+	}
+
+	public FastExpandBot()
+	{
+		this(new Main());
 	}
 
 	@Override public void getNextCommands(UniverseView uV, List<MovementCommand> movementCommands)

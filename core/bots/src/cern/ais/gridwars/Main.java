@@ -25,14 +25,15 @@ public class Main implements PlayerBot
 
 	public Main()
 	{
-//		bot = new TestBot();
-		bot = new FastExpandBot(this);
-		bot = new FastExpandBot(this);
-		//bot = new SplitBot(this);
-		//bot = new GRIDBot();
-		//bot = new AimedBot();
-		//bot = new ThreeFishBot();
-		//bot = new NewBot();
+//		bot = new ExpandBot();
+//		bot = new RocketBot();
+		bot = new ThreeFishBot();
+//		bot = new FastExpandBot(this);
+//		bot = new SplitBot(this);
+	}
+
+	void setBot(PlayerBot bot) {
+		this.bot = bot;
 	}
 
 	private void createGrid()
