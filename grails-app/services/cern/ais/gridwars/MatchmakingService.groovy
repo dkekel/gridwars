@@ -39,8 +39,8 @@ class MatchmakingService
     getMatchesOfAgent(a).count { it.winner != null && it.winner != a }
   }
 
-  def score(Agent a) {
-    getMatchesOfAgent(a).sum { it.winner == a ? 3 : it.winner == null ? 1 : 0 }
+  int score(Agent a) {
+    (getMatchesOfAgent(a).sum { it.winner == a ? 3 : it.winner == null ? 1 : 0 } ?: 0) as int
   }
 
   /**

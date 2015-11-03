@@ -40,12 +40,7 @@
    .        .      Outnumbered and outgunned,  the Rebellion burns across the   .    .
          .      vast reaches of space and a thousand-thousand worlds, with only     .
              . their great courage - and the mystical power known as the Force -
-   .         flaming a fire of hope.                                    .
-                This is a  galaxy  of wondrous aliens,  bizarre monsters,  strange   .
-          . Droids, powerful weapons, great heroes, and terrible villains.  It is a
-    +      galaxy of fantastic worlds,  magical devices, vast fleets, awesome machi-  .
-          nery, terrible conflict, and unending hope.              .         .          .   . 
-.        .          .    .    .            .            .                   .       .
+   .         flaming a fire of hope.        .          .    .    .            .      .
                .               ..       .       .   .             .           +          .   
                      .              .       .              +     .      .    .          .  
 .        .               .       .     .            .        .                 .          .   
@@ -60,7 +55,7 @@
      .             .             .         .               .                 . 
 .        .               .       .     .            .    .       *        .        .        .     
 
-                                         Episode N
+                                         Episode V
 
                             B A T T L E   F O R   D U B N A
 
@@ -77,24 +72,24 @@
 
 ## Build
 
-There is two ways to work with sources given. With or without IDE.
-Although IDE work is recommended, as it facilitates all operations, fully command-line build is also possible 
-(for people w/o IDE, and low bandwidth, and console/notepad maniacs).
+There are two ways to work with sources given. With or without IDE.
+Although IDE work is recommended as it facilitates all operations, fully command-line build is also possible 
+(for people w/o IDE, small HDD and console/notepad maniacs).
 
 This section will first explain importing project in IDE, and then console build.
 
 ### Eclipse / IntelliJ IDEA
 
 1. Open project in your favorite IDE (IntelliJ idea recommended, Eclipse - tested)
-1.1. IntelliJ IDEA. File -> Open -> (Select build.gradle file) -> Click Ok for default settings -> enjoy.
-1.1. Go to File -> Import -> Gradle -> Gradle Project -> Browse -> (navigate to the root folder of your project, then click Build Model).
-2. All necessary project dependencies are bundled, but Gradle will spend some time for downloading distribution
+1.1. IntelliJ IDEA:  File -> Open -> (Select build.gradle file) -> Click Ok for default settings -> enjoy.
+1.1. Eclipse:        File -> Import -> Gradle -> Gradle Project -> Browse -> (navigate to the root folder of your project, then click Build Model).
+2. All necessary project dependencies are bundled, but Gradle will spend some time for downloading distribution (~60MB)
    and configuring project for first run. It should happen only once.
 
 ### Console build
-1. Given project can be run from command line.
-You have to have JDK 1.7+ and JAVA_HOME environmental variable set. Or you can have java in your PATH.
-Consult web if you have problems at this step, there are plenty guides and tutorials how to setup java environment on your operating system.
+1. Given project can be built and run from command line.
+You have to have JDK 1.7+ and JAVA_HOME environmental variable set. Or you can have JDK bin dir in your PATH.
+Consult web if you have problems at this step, there are plenty of guides and tutorials how to setup Java environment on your operating system.
 2. First run of gradlew scripts **will** take some time! Something around 60MB will be downloaded.
 3. After download you will have following commands.
   1. To build jar file: ./gradlew jar
@@ -103,8 +98,13 @@ Consult web if you have problems at this step, there are plenty guides and tutor
   4. To list all tasks available: ./gradlew tasks
 4. All build results goes under build directory.
 
+## Example sources
+You have 3 simple Java bots and one Groovy bot as an example. They all implement PlayerBot API.
+You can use "cern.ais.gridwars.Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally. 
+You can modify Visualizer's main method or create your own class calling aforementioned method.
 
-Play fair and
+
+Play fair and…
 May the Code be with you!
 
                                     _.=+._
@@ -113,3 +113,5 @@ May the Code be with you!
   /::::::::::::::::::::::::::::.`-:.`'..`-'/\'.:::::::::::::/
  /::::::::::::::::::::::::::::::::.\ `--')/  ) ::::::::::::/
                                      `--'
+// TODO Specify JDK versions required.
+// Explain INtellij JAVA_HOME/SDK settings.

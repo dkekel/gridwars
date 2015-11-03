@@ -42,8 +42,7 @@
             <li><g:link controller="game" action="list">List games</g:link></li>
             <li><g:link controller="agentUpload" action="index">Upload a new bot</g:link></li>
             <li><a href="/api/docs">API Documentation</a></li>
-            <li><a href="/api/api-1.0-SNAPSHOT.jar">API Download</a></li>
-            %{--<li><a href="/api/examples">Examples</a></li>--}%
+            <li><a href="/api/emulator-1.0-SNAPSHOT.zip">API Download</a></li>
             <sec:ifAllGranted roles="ROLE_ADMIN">
                 <li><g:link controller="admin">Admin</g:link></li>
                 <li><g:link controller="admin" action="queue">Status</g:link></li>

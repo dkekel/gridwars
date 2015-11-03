@@ -49,7 +49,7 @@ public class Visualizer {
 				for (int my = 0; my < GameConstants.UNIVERSE_SIZE; my++)
 					for (int mx = 0; mx < GameConstants.UNIVERSE_SIZE; mx++)
 					{
-						Cell cell = universe.getCell(my, mx);
+						Cell cell = universe.getCell(mx, my);
 						long population = cell.getPopulation();
 						if (population == 0)
 							continue;
@@ -120,8 +120,7 @@ public class Visualizer {
 
 	public static void main(String[] args) throws FileNotFoundException
 	{
-//		new Launcher();
-		new Visualizer().runGame(new MovingBot(MovementCommand.Direction.DOWN), new MovingBot(MovementCommand.Direction.RIGHT));
+		new Visualizer().runGame(new MovingBot(MovementCommand.Direction.UP), new MovingBot(MovementCommand.Direction.UP));
 	}
 
 	public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException
