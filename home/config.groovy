@@ -13,7 +13,7 @@ capabilities {
 	matches = true // Doesn't work
 }
 
-numMatches = 5 // Number of matches to be played between each player. Use 1 before, and odd number from 3 to final match.
+numMatches = 15 // Number of matches to be played between each player. Use 1 before, and odd number from 3 to final match.
 
 workers {
 	classpath = "${ System.properties.GW_HOME }/workers/workerClassPath/*"

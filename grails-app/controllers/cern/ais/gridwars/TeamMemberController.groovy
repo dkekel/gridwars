@@ -1,13 +1,21 @@
 package cern.ais.gridwars
 
 import cern.ais.gridwars.security.User
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 class TeamMemberController
 {
 	def springSecurityService
 
-	def index() {
-		[team: teams, member: (params.member ?: null) as TeamMember]
+	def index(Long id) {
+		if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") && id != null)
+			[team: TeamMember.findAllById(id), member: null]
+		else
+			[team: teams, member: (params.member ?: null) as TeamMember]
+	}
+
+	def list() {
+		[users: User.list()]
 	}
 
 	private List<TeamMember> getTeams() {

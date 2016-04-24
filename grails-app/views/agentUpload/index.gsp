@@ -66,12 +66,13 @@
             <g:each in="${agents}">
                 <tr>
                     <td>${ it.id }</td>
-                    <td>${ it.jarPath }</td>
+                    <td><g:link id="${ it.jarPath }" action="download">${ it.jarPath }</g:link></td>
                     <td>${ it.active }</td>
                     <td>${ it.fqClassName }</td>
                     <td>${ it.uploadDate }</td>
                     <td>${ it.version }</td>
                     <td>${ it.team.username }</td>
+                    %{--<td><g:link action="deactivate"><i class="" /></td></td>--}%
                 </tr>
             </g:each>
         </table>

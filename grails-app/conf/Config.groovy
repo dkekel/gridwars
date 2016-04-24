@@ -98,6 +98,7 @@ log4j = {
 
   debug 'grails.app.jobs'
   debug 'cern.ais.gridwars'
+  debug "javax.mail"
   error 'org.codehaus.groovy.grails.web.servlet',        // controllers
           'org.codehaus.groovy.grails.web.pages',          // GSP
           'org.codehaus.groovy.grails.web.sitemesh',       // layouts
@@ -113,7 +114,7 @@ log4j = {
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
-/* remove this line 
+/* remove this  line 
 // GSP settings
 grails {
     views {
@@ -162,7 +163,9 @@ grails.plugin.springsecurity.interceptUrlMap = [
 	'/logout/**':                     ['ROLE_USER', 'ROLE_ADMIN'],
 
 	'/game/**':                       ['ROLE_USER', 'ROLE_ADMIN'],
+	'/teamMember/list':               ['ROLE_ADMIN'],
 	'/teamMember/**':                 ['ROLE_USER', 'ROLE_ADMIN'],
+	'/agentUpload/download':          ['ROLE_ADMIN'],
 	'/agentUpload/**':                ['ROLE_USER', 'ROLE_ADMIN'],
 	'/game.ws':                       ['ROLE_USER', 'ROLE_ADMIN'],
 	'/player-outputs/**':             ['ROLE_USER', 'ROLE_ADMIN'],
@@ -171,21 +174,32 @@ grails.plugin.springsecurity.interceptUrlMap = [
 	'/dbconsole/**':                  ['ROLE_ADMIN'],
   '/user/**':             ['ROLE_ADMIN'],
   '/role/**':             ['ROLE_ADMIN'],
+  '/securityInfo/**':     ['ROLE_ADMIN'],
+  '/registrationCode/**': ['ROLE_ADMIN'],
   '/api/**':          ['ROLE_USER', 'ROLE_ADMIN'],
-	//'/**':                            ['ROLE_ADMIN'],
+//	'/**':                            ['ROLE_ADMIN'],
 ]
 
-grails.mail.default.from="grid.wars@cern.ch"
 grails {
 	mail {
 		host = "smtp.cern.ch"
 		port = 25
 		username = "gridwars"
-		password = "Babu-Kera"
+		password = "Nivixi10"
+		"default" {
+			from = "grid.wars@cern.ch"
+		}
 		props = [
-			"mail.smtp.auth":"true",
-			"mail.smtp.socketFactory.port":"25",
-			"mail.smtp.starttls.enable":"true",
+			"mail.debug": "true",
+			"mail.debug.auth": "true",
+
+			"mail.smtp.ssl.trust": "smtp.cern.ch",
+			"mail.smtp.auth": "true",
+			"mail.smtp.ssl.enable": "false",
+			"mail.smtp.socketFactory.port": "25",
+			"mail.smtp.starttls.enable": "false",
+			"mail.smtp.socketFactory.fallback": "true",
 		]
 	}
 }
+grails.mail.default.from = "grid.wars@cern.ch" 

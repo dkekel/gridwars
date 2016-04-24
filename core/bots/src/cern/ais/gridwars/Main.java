@@ -27,8 +27,8 @@ public class Main implements PlayerBot
 	{
 //		bot = new ExpandBot();
 //		bot = new RocketBot();
-		bot = new ThreeFishBot();
-//		bot = new FastExpandBot(this);
+//		bot = new ThreeFishBot();
+		bot = new FastExpandBot(this);
 //		bot = new SplitBot(this);
 	}
 

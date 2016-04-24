@@ -7,9 +7,9 @@ public class App {
 		Main bot1 = new Main();
 		bot1.setBot(new FastExpandBot(bot1));
 		Main bot2 = new Main();
-		bot2.setBot(new AimedBot(bot2));
+		bot2.setBot(new SplitBot(bot2));
 
-		new Visualizer().runGame(bot1, bot2);
-		new Visualizer().runGame(new ThreeFishBot(), new RocketBot());
+//		new Visualizer().runGame(bot2, new CernTechnologySelfOpponentAdvWithBuffer());
+		//new Visualizer().runGame(bot1, bot2);
 	}
 }

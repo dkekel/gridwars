@@ -7,6 +7,7 @@ class Agent
   String  jarPath
   String  fqClassName
   Date    uploadDate
+  int     size
   double  eloScore = 1000
   boolean active = true
 

@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
 	compile project(':impl')
+	compile 'org.jfree:jfreechart:1.0.19'
 	compile 'org.codehaus.groovy:groovy-all:2.1.9'
 }
 

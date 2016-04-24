@@ -30,7 +30,9 @@ class GameSerializationService
 			def player1 = User.get(match.player1.team.id)
 			def player2 = User.get(match.player2.team.id)
 
-			if (player1.authorities.find { it.authority == "ADMIN_BOT" } || player2.authorities.find { it.authority == "ADMIN_BOT" }) {
+			def player1IsAdmin = player1.authorities.find { it.authority == "ADMIN_BOT" }
+			def player2IsAdmin = player2.authorities.find { it.authority == "ADMIN_BOT" }
+			if ((player1IsAdmin && !player2IsAdmin) || (player2IsAdmin && !player1IsAdmin)) {
 				def rank = Math.max(player1.rank, player2.rank)
 				if (results.winnerId != match.player1Id) {
 					match.winner.team.rank = rank

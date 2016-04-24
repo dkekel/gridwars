@@ -19,6 +19,7 @@ dependencies {
   compile 'org.codehaus.groovy:groovy-all:2.1.9'
 }
 
+sourceSets.main.java.srcDirs = []
 sourceSets.main {
   groovy.srcDirs = ['src']
 }

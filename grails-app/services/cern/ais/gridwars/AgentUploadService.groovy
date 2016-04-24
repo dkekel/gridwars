@@ -57,7 +57,7 @@ class AgentUploadService
       it.save()
     }
 
-    def agent = new Agent(jarPath: file.name, fqClassName: agentFQCN, uploadDate: new Date())
+    def agent = new Agent(jarPath: file.name, size: file.size(), fqClassName: agentFQCN, uploadDate: new Date())
     agent.save(flush: true)
     user.addToAgents(agent)
     user.save(flush: true)

@@ -54,7 +54,7 @@ class RuntimeMain extends Listener {
 		this.classPath = classPath
 		pool = Executors.newFixedThreadPool(maxWorkers)
 
-		s = new Server(16384000, 2048000)
+		s = new Server(25 * 1024 * 1024, 25 * 1024 * 1024)
 		s.start()
 		Network.init(s)
 		s.addListener(this)

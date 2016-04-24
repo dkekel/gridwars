@@ -20,7 +20,7 @@ class Worker extends Listener {
 	Worker(int id, int port, String host) {
 		this.id = id
 		println("Worker $id. Created!")
-		c = new Client(16384000, 2048000)
+		c = new Client(25 * 1024 * 1024, 25 * 1024 * 1024)
 		c.addListener(this)
 		c.start()
 		Network.init(c)
@@ -100,6 +100,7 @@ class Worker extends Listener {
 
 	static final int MAX_SIZE = 2 * 1024 * 1024 // 2MB
 	static byte[] trimOutput(byte[] array) {
+		if (!array) return new byte[0]
 		if (array.length < MAX_SIZE)
 			return array
 
