@@ -10,6 +10,7 @@ class BootStrap
   def agentUploadService
   def matchmakingService
   def gameExecutionService
+  def quartzScheduler
   def fileSystemService
   def mailService
   def configService
@@ -18,6 +19,10 @@ class BootStrap
   def init = { servletContext ->
     log.info("GW_HOME is set to: ${ System.properties.GW_HOME }")
     fileSystemService.init()
+    if (configService.jobsEnabled)
+      quartzScheduler.resumeAll()
+    else
+      quartzScheduler.pauseAll()
 
     new Role(authority: 'ROLE_USER').save()
     def adminRoles = [new Role(authority: 'ROLE_ADMIN').save(), new Role(authority: 'ADMIN_BOT').save()]

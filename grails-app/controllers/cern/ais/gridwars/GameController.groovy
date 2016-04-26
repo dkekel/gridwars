@@ -11,8 +11,9 @@ class GameController
   def gameExecutionService
   def fileSystemService
   def springSecurityService
+  def gameSerializationService
 
-  def index()
+	def index()
   {
     // Get scoreboard
     [agents: Agent.findAllByActive(true).sort { -matchmakingService.score(it) }, service: matchmakingService, currentLoggedInUserId: (springSecurityService.currentUser as User).id]
@@ -27,6 +28,16 @@ class GameController
   {
     println("Current environment: ${Environment.current}")
     [game: Match.get(id), currentLoggedInUserId: (springSecurityService.currentUser as User).id, rootPath: Environment.current == Environment.PRODUCTION ? '' : "gridwars_server/"]
+  }
+
+  def data(Long id)
+  {
+    def bytes = gameSerializationService.load(id)
+    log.info("Sending Game: $id. Size ${ bytes.size() / 1024 } KB.");
+    response.contentType = 'application/octet-stream'
+    response.outputStream.withStream {
+      it.write(bytes)
+    }
   }
 
   def playerOutput() {

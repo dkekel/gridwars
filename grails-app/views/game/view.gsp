@@ -14,21 +14,6 @@
     <script>
          function initws() {
             var frameArray = [];
-            var loc = window.location, ws_uri;
-            if (loc.protocol === "https:")
-            {
-                ws_uri = "wss:";
-            }
-            else
-            {
-                ws_uri = "ws:";
-            }
-            ws_uri += "//" + loc.host;
-            ws_uri += "/${rootPath}game.ws";
-
-            var ws = new WebSocket(ws_uri);
-            ws.binaryType = "arraybuffer";
-
             var universeSize = 50;
             var currentTurn = 0;
             var currentRenderedFrame = 0;
@@ -116,35 +101,43 @@
                 }
             };
 
-            ws.onopen = function ()
-            {
-                var canvasHeight = document.getElementById("gameCanvas").height;
-                var canvasWidth = document.getElementById("gameCanvas").width;
-                currentTime = new Date();
-                document.getElementById("preCanvas").height = universeSize;
-                document.getElementById("preCanvas").width = universeSize;
-                document.getElementById("gameCanvas").getContext("2d").scale(canvasWidth / universeSize, canvasHeight / universeSize);
-                ws.send("${game.id.toString()}");
-            };
+             var canvasHeight = document.getElementById("gameCanvas").height;
+             var canvasWidth = document.getElementById("gameCanvas").width;
+             currentTime = new Date();
+             document.getElementById("preCanvas").height = universeSize;
+             document.getElementById("preCanvas").width = universeSize;
+             document.getElementById("gameCanvas").getContext("2d").scale(canvasWidth / universeSize, canvasHeight / universeSize);
 
-            ws.onmessage = function (binaryMessage)
-            {
-                var data = pako.inflate(binaryMessage.data);
-                var HEADER_SIZE = 0; // size of header in bytes (current: 2 bytes turns for num).
-                var turnsLoaded = ${ game.turns };
+             console.log("Loading game");
+             var xhr = new XMLHttpRequest();
+             xhr.open('GET', '${ g.createLink(action: "data", id: game.id)}', true);
+             xhr.responseType = 'arraybuffer';
+             xhr.onload = function() {
+                 var data = this.response;
+                 data = pako.inflate(data);
+                 var HEADER_SIZE = 0; // size of header in bytes (current: 2 bytes turns for num).
+                 var turnsLoaded = ${ game.turns };
 
-                var N = universeSize * universeSize * 4;
-                for (var turn = 0; turn < turnsLoaded; turn++) {
-                    frameArray[currentTurn++] = data.slice(HEADER_SIZE + N * turn, HEADER_SIZE + N * (turn + 1))
-                }
-                document.getElementById("loadedTurns").innerHTML = currentTurn;
+                 var N = universeSize * universeSize * 4;
+                 for (var turn = 0; turn < turnsLoaded; turn++) {
+                     frameArray[currentTurn++] = data.slice(HEADER_SIZE + N * turn, HEADER_SIZE + N * (turn + 1))
+                 }
 
-                if (currentTurn >= ${ game.turns })
-                {
-                    document.getElementById("gameView").hidden = "";
-                    drawFrame(0);
-                }
-            };    
+                 if (currentTurn >= ${ game.turns })
+                 {
+                     document.getElementById("gameView").hidden = "";
+                     drawFrame(0);
+                 }
+                 $("#loadedTurns").parent().toggle(false)
+             };
+             xhr.addEventListener("progress", function(oEvent) {
+                 var loaded = parseInt(oEvent.loaded / 1024);
+                 var total = ${ game.fileSize / 1024 as int };
+                 var percentage = parseInt(loaded / total * 100);
+                 $("#loadedTurns").width(percentage + "%");
+                 $('#loadedData').html(percentage + "% (" + loaded + " / " + total + " KB)");
+             });
+             xhr.send(null);
         }
     </script>
 </head>
@@ -159,7 +152,12 @@
     <br/>
     Winner: ${ game.winner?.team?.username ?: "None" }<br/>
     Turns to complete: ${ game.turns }<br/>
-    Loading turn data: <span id="loadedTurns">0</span> out of ${ game.turns }
+    <div class="row">
+        <div id="loadedData" class="col-md-2"></div>
+        <div class="progress col-md-10" style="padding: 0">
+            <div id="loadedTurns" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><span class="sr-only"></span></div>
+        </div>
+    </div>
 </div>
 
 <div id="gameView" hidden="hidden">

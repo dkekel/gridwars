@@ -7,6 +7,7 @@ class AdminController
 	def fileSystemService
 	def matchmakingService
 	def configService
+	def quartzScheduler
 
 	def index() {
 		[config: fileSystemService.config.text]
@@ -44,6 +45,10 @@ class AdminController
 	def update() {
 		fileSystemService.config.text = params.config
 		fileSystemService.init()
+		if (configService.jobsEnabled)
+			quartzScheduler.resumeAll()
+		else
+			quartzScheduler.pauseAll()
 		redirect action: "index"
 	}
 

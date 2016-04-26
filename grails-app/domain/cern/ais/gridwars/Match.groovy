@@ -16,6 +16,7 @@ class Match
 
   Agent winner
   int turns
+  int fileSize
   Date startDate = new Date()
 
   static constraints = {

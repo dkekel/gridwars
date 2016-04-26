@@ -22,10 +22,13 @@ class GameSerializationService
 		println "compressed data takes: ${ (compressed.size() / 1024 / 1024 as Double).round(2) } MB."
 
 		def match = Match.get(matchId)
-		fileSystemService.matchResult(matchId).bytes = compressed.toByteArray()
+
+		def compressedMatch = compressed.toByteArray()
+		fileSystemService.matchResult(matchId).bytes = compressedMatch
 		match.status = results.isComplete ? Status.SUCCEDED : Status.FAILED
 		match.winner = results.winnerId ? Agent.get(results.winnerId) : null
 		match.turns = info.size()
+		match.fileSize = compressedMatch.length
 		if (results.isComplete && results.winnerId) {
 			def player1 = User.get(match.player1.team.id)
 			def player2 = User.get(match.player2.team.id)
@@ -34,11 +37,10 @@ class GameSerializationService
 			def player2IsAdmin = player2.authorities.find { it.authority == "ADMIN_BOT" }
 			if ((player1IsAdmin && !player2IsAdmin) || (player2IsAdmin && !player1IsAdmin)) {
 				def rank = Math.max(player1.rank, player2.rank)
-				if (results.winnerId != match.player1Id) {
+				if (results.winnerId != match.player1Id)
 					match.winner.team.rank = rank
-					match.winner.team.save(validate: true)
-				}
 			}
+			match.winner.team.save(validate: true)
 		}
 
 		match.save(failOnError: true)

@@ -69,16 +69,6 @@
         <url-pattern>*.gsp</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>WsGameServlet</servlet-name>
-        <servlet-class>cern.ais.gridwars.servlet.WsGameServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>WsGameServlet</servlet-name>
-        <url-pattern>*.ws</url-pattern>
-    </servlet-mapping>
-
     <session-config>
         <!-- 30 minutes -->
         <session-timeout>30</session-timeout>

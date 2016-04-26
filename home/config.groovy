@@ -6,6 +6,7 @@ matches = 'player-matches/'
 admins = ["grid.wars@cern.ch"]
 sendMailsToAdmin = !true
 spawnWorkers = !false
+jobsEnabled = true
 
 capabilities {
 	upload = true // Used to block uploading, while final match is ready.
