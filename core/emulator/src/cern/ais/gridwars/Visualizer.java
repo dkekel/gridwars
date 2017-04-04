@@ -32,7 +32,7 @@ public class Visualizer {
 				frame.setTitle("Turn " + turn);
 				frame.repaint();
 			}
-		});
+		}, true);
 
 		game.startUp();
 	}
@@ -120,7 +120,7 @@ public class Visualizer {
 
 	public static void main(String[] args) throws FileNotFoundException
 	{
-		new Visualizer().runGame(new MovingBot(MovementCommand.Direction.UP), new MovingBot(MovementCommand.Direction.UP));
+		new Visualizer().runGame(new GroovyBot(), new MovingBot(MovementCommand.Direction.RIGHT));
 	}
 
 	public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException

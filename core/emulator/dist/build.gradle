@@ -5,6 +5,9 @@ apply plugin: 'application'
 group = 'cern.ais.gridwars'
 version = '1.0-SNAPSHOT'
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 mainClassName = "cern.ais.gridwars.Visualizer"
 
 repositories {

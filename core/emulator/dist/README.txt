@@ -55,9 +55,9 @@
      .             .             .         .               .                 . 
 .        .               .       .     .            .    .       *        .        .        .     
 
-                                         Episode V
+                                         Episode VII
 
-                            B A T T L E   F O R   D U B N A
+                            B A T T L E   F O R   G L A S G O W
 
 ## Distribution Content:
 
@@ -71,7 +71,7 @@
 /lib/** (necessary dependencies. Do not touch)
 
 ## Build
-
+ 
 There are two ways to work with sources given. With or without IDE.
 Although IDE work is recommended as it facilitates all operations, fully command-line build is also possible 
 (for people w/o IDE, small HDD and console/notepad maniacs).
@@ -85,6 +85,8 @@ This section will first explain importing project in IDE, and then console build
 1.1. Eclipse:        File -> Import -> Gradle -> Gradle Project -> Browse -> (navigate to the root folder of your project, then click Build Model).
 2. All necessary project dependencies are bundled, but Gradle will spend some time for downloading distribution (~60MB)
    and configuring project for first run. It should happen only once.
+3. Check JDK version. If necessary - download and install JDK 1.7 and specify it in File -> Project Structure -> SDK
+JDK 1.8 will not work!
 
 ### Console build
 1. Given project can be built and run from command line.
@@ -113,5 +115,3 @@ May the Code be with you!
   /::::::::::::::::::::::::::::.`-:.`'..`-'/\'.:::::::::::::/
  /::::::::::::::::::::::::::::::::.\ `--')/  ) ::::::::::::/
                                      `--'
-// TODO Specify JDK versions required.
-// Explain INtellij JAVA_HOME/SDK settings.

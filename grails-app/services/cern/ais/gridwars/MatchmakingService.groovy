@@ -60,6 +60,7 @@ class MatchmakingService
     try
     {
       def matches = pendingMatches
+      log.warn("${matches.size()} pending matches.")
       if (!matches)
         return null
       def match = matches.get(Math.random() * pendingMatches.size() as int)

@@ -16,6 +16,7 @@ class MatchJob
 
   def execute()
   {
+    println("MatchJob tick")
     // execute job
     if (gameExecutionService == null || matchmakingService == null)
       return

@@ -104,7 +104,7 @@ class GameExecutionService
       match.save(failOnError: true)
     }
     else {
-      log.info("No slots available. Waiting!")
+      println("No slots available. Waiting!")
     }
   }
 

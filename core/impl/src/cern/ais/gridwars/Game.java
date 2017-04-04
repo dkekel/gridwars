@@ -24,13 +24,19 @@ public class Game
   protected final List<Player> playerList;
   protected final Universe universe = new ArrayUniverse();
   protected final TurnCallback     turnCallback;
+  private boolean debugMode;
   protected       Iterator<Player> playerIterator;
   protected       int              currentTurn;
 
-  public Game(List<Player> playerList, TurnCallback turnCallback)
+  public Game(List<Player> playerList, TurnCallback turnCallback) {
+    this(playerList, turnCallback, false);
+  }
+
+  public Game(List<Player> playerList, TurnCallback turnCallback, boolean debugMode)
   {
     this.playerList = playerList;
     this.turnCallback = turnCallback;
+    this.debugMode = debugMode;
     playerIterator = this.playerList.iterator();
   }
 
@@ -178,7 +184,7 @@ public class Game
     playerThread.start();
     try
     {
-      playerThread.join(GameConstants.TIMEOUT_DURATION_MS);
+      playerThread.join(debugMode ? 0 : GameConstants.TIMEOUT_DURATION_MS);
     }
     catch (InterruptedException e)
     {

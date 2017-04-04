@@ -289,7 +289,7 @@ class RegisterCommand
 		password blank: false, validator: RegisterController.passwordValidator
 		password2 validator: RegisterController.password2Validator
 		masterPass validator: { value, command ->
-			if (command.masterPass != "SpringCampus2016")
+			if (command.masterPass != "CERNGWM@sterPa\$\$")
 			{
 				return 'master.password.error'
 			}
