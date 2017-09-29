@@ -15,6 +15,9 @@ repositories {
 	}
 }
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 dependencies {
 	compile project(':emulator')
 	compile 'org.codehaus.groovy:groovy-all:2.1.9'
