@@ -1,18 +1,4 @@
-apply plugin: 'maven'
 apply plugin: 'groovy'
-
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-  mavenCentral()
-  maven {
-    url 'http://clojars.org/repo/'
-  }
-}
 
 dependencies {
   compile project(':impl')
@@ -23,6 +9,7 @@ dependencies {
 }
 
 sourceSets.main.java.srcDirs = []
+
 sourceSets.main {
   groovy.srcDirs = ['src']
 }

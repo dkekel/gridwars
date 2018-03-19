@@ -1,3 +1,38 @@
-task wrapper(type: Wrapper) {
-	gradleVersion = '2.3'
+description = 'GridWars - Core Project'
+
+subprojects {
+    // Defining buildscript and project dependency repositories for all subprojects.
+    // We simply add the Nexus public repo group that unifies all available repos.
+    buildscript {
+        repositories {
+            aisNexusPublic()
+        }
+    }
+
+    // Project dependencies, simply the same as the buildscript repos to avoid repetition.
+    repositories {
+        addAll(buildscript.repositories)
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    group = 'cern.ais.gridwars'
+    version = '2.0-SNAPSHOT'
+
+    // Specify the Java version uniformly
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // Puts sub-project name and version in the MANIFEST.MF files of every JAR, WAR and EAR file.
+    tasks.withType(Jar) {
+        manifest {
+            attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'CERN / AIS',
+                'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
+            )
+        }
+    }
 }

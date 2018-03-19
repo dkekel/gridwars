@@ -1,22 +1,8 @@
-apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'application'
 apply plugin: 'distribution'
 
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
-
 mainClassName = "cern.ais.gridwars.Visualizer"
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-	mavenCentral()
-	maven {
-		url 'http://clojars.org/repo/'
-	}
-}
 
 dependencies {
 	compile project(':impl')

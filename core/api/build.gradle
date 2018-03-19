@@ -1,14 +1,1 @@
-apply plugin: 'maven'
-apply plugin: 'java'
-
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-	mavenCentral()
-}
-
 sourceSets.main.java.srcDirs = ['src']
