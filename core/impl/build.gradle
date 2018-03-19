@@ -1,7 +1,3 @@
 dependencies {
 	compile project(':api')
 }
-
-sourceSets.main {
-	java.srcDirs = ['src']
-}

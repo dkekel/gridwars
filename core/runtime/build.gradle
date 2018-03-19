@@ -8,12 +8,6 @@ dependencies {
   compile 'org.codehaus.groovy:groovy-all:2.1.9'
 }
 
-sourceSets.main.java.srcDirs = []
-
-sourceSets.main {
-  groovy.srcDirs = ['src']
-}
-
 task createWorkerClassPath(type: Copy) {
   println("${ System.properties.GW_HOME }/workers/workerClassPath")
   into "${ System.properties.GW_HOME }/workers/workerClassPath"
