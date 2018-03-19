@@ -1,6 +1,20 @@
-/target/
-/res/
-/.idea/
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Gradle and build output
+.gradle/
+build/
+out/
+target/
+
+# Java build output
+*.class
+
+# Default excludes
+*.tmp
+*.zip
+*.log
 
 # web application files
 /web-app/WEB-INF/classes
