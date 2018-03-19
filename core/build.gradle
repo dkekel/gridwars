@@ -1,6 +1,11 @@
 description = 'GridWars - Core Project'
 
 subprojects {
+    // Extra properties shared by all sub-projects.
+    ext {
+        groovyVersion = '2.4.14'
+    }
+
     // Defining buildscript and project dependency repositories for all subprojects.
     // We simply add the Nexus public repo group that unifies all available repos.
     buildscript {

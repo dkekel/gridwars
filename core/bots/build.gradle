@@ -2,11 +2,11 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 apply plugin: 'distribution'
 
-mainClassName = "cern.ais.gridwars.Visualizer"
+mainClassName = 'cern.ais.gridwars.Visualizer'
 
 dependencies {
 	compile project(':emulator')
-	compile 'org.codehaus.groovy:groovy-all:2.1.9'
+	compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 }
 
 distributions {
@@ -19,4 +19,3 @@ distributions {
 		}
 	}
 }
-
