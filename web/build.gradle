@@ -5,7 +5,7 @@ buildscript {
 
     buildscript {
         repositories {
-            aisNexusPublic()
+            jcenter()
         }
     }
 
@@ -21,15 +21,23 @@ apply plugin: 'project-report' // for "htmlDependencyReport" task
 
 group = 'cern.ais.gridwars'
 version = '1-SNAPSHOT'
+description = 'GridWars - Web Project'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+bootJar {
+    baseName = "gridwars-${project.name}"
+}
 
 repositories {
     addAll(buildscript.repositories)
 }
 
 dependencies {
+    compile project(':core:api')
+    compile project(':core:impl')
+
 	compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')

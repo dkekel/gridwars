@@ -9,7 +9,7 @@ subprojects {
     // Defining buildscript and project dependency repositories for all subprojects.
     buildscript {
         repositories {
-            aisNexusPublic()
+            jcenter()
         }
     }
 
@@ -27,6 +27,10 @@ subprojects {
     // Specify the Java version uniformly
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+
+    jar {
+        baseName = "gridwars-${project.name}"
+    }
 
     // Puts sub-project name and version in the MANIFEST.MF files of every JAR and WAR file.
     tasks.withType(Jar) {

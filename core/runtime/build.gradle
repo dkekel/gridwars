@@ -1,5 +1,11 @@
 apply plugin: 'groovy'
 
+repositories {
+    maven {
+        url 'http://clojars.org/repo/'
+    }
+}
+
 dependencies {
   compile project(':core:impl')
   compile 'com.esotericsoftware:kryo:3.0.0'
