@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-  compile project(':impl')
+  compile project(':core:impl')
   compile 'com.esotericsoftware:kryo:3.0.0'
   compile 'kryonet:kryonet:2.21'
   compile 'org.codehaus.gpars:gpars:1.2.1'

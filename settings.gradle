@@ -1,0 +1,7 @@
+include ':core'
+include ':core:api'
+include ':core:impl'
+include ':core:bots'
+include ':core:emulator'
+include ':core:runtime'
+include ':web'

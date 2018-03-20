@@ -5,7 +5,7 @@ apply plugin: 'distribution'
 mainClassName = 'cern.ais.gridwars.Visualizer'
 
 dependencies {
-	compile project(':impl')
+	compile project(':core:impl')
 	compile 'org.jfree:jfreechart:1.0.19'
 	compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 }

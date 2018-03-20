@@ -5,7 +5,7 @@ apply plugin: 'distribution'
 mainClassName = 'cern.ais.gridwars.Visualizer'
 
 dependencies {
-	compile project(':emulator')
+	compile project(':core:emulator')
 	compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 }
 
