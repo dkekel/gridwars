@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class IndexController {
 
-    @GetMapping(path = { "", "/" })
+    @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("name", "Ben");
         return "index";
