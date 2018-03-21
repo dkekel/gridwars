@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <p th:text="'Hello, ' + ${name} + '!'">Fallback</p>
+    <p th:text="'Hello, ' + ${user} + '!'">Fallback</p>
+    <p><a th:href="@{/login(logout)}" target="_self">Log Out</a></p>
 </body>
 </html>

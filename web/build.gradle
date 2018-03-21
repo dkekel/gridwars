@@ -22,12 +22,17 @@ description = 'GridWars - Web Project'
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
+repositories {
+    addAll(buildscript.repositories)
+}
+
 bootJar {
     baseName = "gridwars-${project.name}"
 }
 
-repositories {
-    addAll(buildscript.repositories)
+bootRun {
+    // Enable live reloading of static resources
+    sourceResources sourceSets.main
 }
 
 dependencies {
@@ -39,8 +44,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-mail')
     compile('org.springframework.boot:spring-boot-starter-quartz')
+	compile('org.springframework.boot:spring-boot-devtools')
 
-	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('org.postgresql:postgresql')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')

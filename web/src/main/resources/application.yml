@@ -1,1 +1,3 @@
-keepme
+spring:
+    thymeleaf:
+        cache: false
