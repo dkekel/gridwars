@@ -1,8 +1,4 @@
 buildscript {
-	ext {
-		springBootVersion = '2.0.0.RELEASE'
-	}
-
     buildscript {
         repositories {
             jcenter()
@@ -19,12 +15,12 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'project-report' // for "htmlDependencyReport" task
 
-group = 'cern.ais.gridwars'
-version = '1-SNAPSHOT'
+group = gridwarsGroup
+version = gridwarsWebVersion
 description = 'GridWars - Web Project'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 bootJar {
     baseName = "gridwars-${project.name}"

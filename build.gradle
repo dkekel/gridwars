@@ -1,1 +1,16 @@
 description = 'GridWars - Root Project'
+
+subprojects {
+    // Defining some common properties that are shared by the sub-projects
+    ext {
+        gridwarsGroup = 'cern.ais.gridwars'
+
+        gridwarsCoreVersion = '2.0.0-SNAPSHOT'
+        gridwarsWebVersion = '1.0.0-SNAPSHOT'
+
+        javaVersion = 1.8
+        groovyVersion = '2.4.14'
+
+        springBootVersion = '2.0.0.RELEASE'
+    }
+}
