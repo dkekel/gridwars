@@ -1,0 +1,21 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>CERN - GridWars</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/static/favicon.ico}" rel="icon" type="image/x-icon"/>
+</head>
+<body>
+
+<div layout:fragment="content"></div>
+
+<!--/* Template docking point for the additional javascript coming from pages. */-->
+<div th:remove="tag" layout:fragment="javascript"></div>
+
+</body>
+</html>
