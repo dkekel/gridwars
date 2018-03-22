@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.controller;
 
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,9 +10,11 @@ import java.util.Optional;
 
 
 @Controller
-public class ErrorController {
+public class GlobalErrorController implements ErrorController {
 
-    @GetMapping("/error")
+    private static final String PATH = "/error";
+
+    @GetMapping(PATH)
     public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
         ModelAndView errorPage = new ModelAndView("pages/error");
         getErrorCode(httpRequest).ifPresent(errorCode -> populateErrorPageModel(errorPage, errorCode));
@@ -23,7 +26,7 @@ public class ErrorController {
     }
 
     private void populateErrorPageModel(ModelAndView errorPageModel, Integer errorCode) {
-        String errorMsg = "";
+        String errorMsg;
 
         switch (errorCode) {
             case 400: {
@@ -34,17 +37,29 @@ public class ErrorController {
                 errorMsg = "Unauthorized";
                 break;
             }
+            case 403: {
+                errorMsg = "Forbidden";
+                break;
+            }
             case 404: {
-                errorMsg = "Resource not found";
+                errorMsg = "Resource Not Found";
                 break;
             }
             case 500: {
                 errorMsg = "Internal Server Error";
                 break;
             }
+            default: {
+                errorMsg = "Unknown Error";
+            }
         }
 
         errorPageModel.addObject("errorCode", errorCode);
         errorPageModel.addObject("errorMsg", errorMsg);
+    }
+
+    @Override
+    public String getErrorPath() {
+        return PATH;
     }
 }

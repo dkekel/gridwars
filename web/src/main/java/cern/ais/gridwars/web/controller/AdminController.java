@@ -9,12 +9,12 @@ import java.util.Optional;
 
 
 @Controller
-public class IndexController {
+public class AdminController {
 
-    @GetMapping("/")
-    public String index(Model model, Principal currentUser) {
+    @GetMapping("/admin")
+    public String admin(Model model, Principal currentUser) {
         model.addAttribute("user", extractUsername(currentUser));
-        return "pages/index";
+        return "pages/admin";
     }
 
     private String extractUsername(Principal principal) {

@@ -11,11 +11,9 @@
     <link th:href="@{/static/favicon.ico}" rel="icon" type="image/x-icon"/>
 </head>
 <body>
+    <div layout:fragment="content"></div>
 
-<div layout:fragment="content"></div>
-
-<!--/* Template docking point for the additional javascript coming from pages. */-->
-<div th:remove="tag" layout:fragment="javascript"></div>
-
+    <!--/* Template docking point for the additional javascript coming from pages. */-->
+    <div th:remove="tag" layout:fragment="javascript"></div>
 </body>
 </html>
