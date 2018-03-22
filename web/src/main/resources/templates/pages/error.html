@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/main}">
+      layout:decorate="~{layouts/main}">
 <head>
-    <title>Hello World!</title>
+    <title>Error!</title>
 </head>
 <body>
     <div layout:fragment="content">
-        <p th:text="'Hello, ' + ${user} + '!'">Fallback</p>
-        <p><a th:href="@{/login(logout)}" target="_self">Log Out</a></p>
+        <h1 th:text="'ERROR ' + ${errorCode}"></h1>
+        <p th:text="${errorMsg}"></p>
     </div>
 </body>
 </html>
