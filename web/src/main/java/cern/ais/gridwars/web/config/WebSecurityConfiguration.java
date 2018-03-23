@@ -32,6 +32,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .logout().logoutSuccessUrl("/").permitAll();
         // @formatter:on
+
+        http.headers()
+            // Allow using iFrames from the same origin to support H2 console
+            .frameOptions().sameOrigin();
+
+        // TODO disable csrf for now, as it breaks i.e. H2 console
+        http.csrf().disable();
     }
 
     @Override
@@ -39,6 +46,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
+    // TODO Remove when database is set up
     @PostConstruct
     public void initTestUsers() {
         userService.createNormalUser(
