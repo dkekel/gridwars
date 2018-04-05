@@ -8,7 +8,7 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <p th:text="'Hello, ' + ${user} + '! Welcome to the welcome page!'">Fallback</p>
+        <p th:text="#{hello.user(${user})}">Fallback</p>
         <p><a th:href="@{/login}" target="_self">Log In</a></p>
         <p><form th:action="@{/logout}" method="POST"><input type="submit" value="Log Out"/></form></p>
     </div>
