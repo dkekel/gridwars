@@ -100,6 +100,10 @@ public class Bot {
         return this;
     }
 
+    public boolean isAdminBot() {
+        return getUser().isAdmin();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
