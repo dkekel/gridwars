@@ -14,7 +14,7 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model, Principal currentUser) {
         model.addAttribute("user", extractUsername(currentUser));
-        return "pages/index";
+        return "pages/user/index";
     }
 
     private String extractUsername(Principal principal) {

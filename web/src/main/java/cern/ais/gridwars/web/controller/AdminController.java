@@ -14,7 +14,7 @@ public class AdminController {
     @GetMapping("/admin")
     public String admin(Model model, Principal currentUser) {
         model.addAttribute("user", extractUsername(currentUser));
-        return "pages/admin";
+        return "pages/admin/index";
     }
 
     private String extractUsername(Principal principal) {
