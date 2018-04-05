@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -17,9 +18,11 @@ public class Bot {
     private String id;
 
     @Column(nullable = false)
+    @Size(max = 32)
     private String jarName;
 
     @Column(nullable = false)
+    @Size(max = 64)
     private String mainClassName;
 
     @Column(nullable = false)

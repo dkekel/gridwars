@@ -8,12 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-
 
 @Entity
 @Table(name = "user")
@@ -26,15 +26,19 @@ public class User implements UserDetails {
     private String id;
 
     @Column(nullable = false, unique = true)
+    @Size(max = 16)
     private String username;
 
     @Column(nullable = false)
+    @Size(max = 64)
     private String password;
 
     @Column(nullable = false)
+    @Size(max = 32)
     private String teamname;
 
     @Column(nullable = false, unique = true)
+    @Size(max = 64)
     private String email;
 
     @Column(nullable = false)
