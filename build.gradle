@@ -11,6 +11,6 @@ subprojects {
         javaVersion = 1.8
         groovyVersion = '2.4.14'
 
-        springBootVersion = '2.0.0.RELEASE'
+        springBootVersion = '2.0.1.RELEASE'
     }
 }
