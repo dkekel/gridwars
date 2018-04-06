@@ -1,25 +1,64 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>CERN - GridWars</title>
 
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <link th:href="@{/static/favicon.ico}" rel="icon" type="image/x-icon"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/static/css/gridwars.css}" rel="stylesheet" type="text/css">
 
     <script th:src="@{/static/js/jquery.min.js}"></script>
     <script th:src="@{/static/js/bootstrap.min.js}"></script>
 </head>
 <body>
-    <div layout:fragment="content"></div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">CERN GridWars</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <!--/* Template docking point for the additional javascript coming from pages. */-->
-    <div th:remove="tag" layout:fragment="javascript"></div>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div th:unless="${user}">
+                <a th:href="@{/login}" th:text="#{layout.main.signin}" target="_self" class="navbar-text"></a>
+            </div>
+
+            <form th:if="${user}" th:action="@{/logout}" method="POST" class="form-inline my-2 my-lg-0">
+                <a href="#" class="navbar-text">
+                    <span th:text="${user.username}"></span><span th:if="${user.admin}">&nbsp;(admin)</span>
+                </a>
+                <button th:text="#{layout.main.signout}" type="submit" class="btn btn-link"></button>
+            </form>
+        </div>
+    </nav>
+
+    <main role="main" class="container" layout:fragment="content"></main>
 </body>
 </html>

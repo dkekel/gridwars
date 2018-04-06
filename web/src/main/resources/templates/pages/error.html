@@ -7,9 +7,9 @@
     <title>Error!</title>
 </head>
 <body>
-    <div layout:fragment="content">
+    <main layout:fragment="content" class="container">
         <h1 th:text="'ERROR ' + ${errorCode}"></h1>
         <p th:text="${errorMsg}"></p>
-    </div>
+    </main>
 </body>
 </html>
