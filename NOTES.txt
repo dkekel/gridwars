@@ -6,6 +6,9 @@ Admin Links:
 
 Useful links:
 ========================================================================================================================
+- Spring Boot docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
+- Thymeleaf docs: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html
+
 - Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
 
 
