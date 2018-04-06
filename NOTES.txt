@@ -1,3 +1,16 @@
-Spring Boot Links:
-- Config properties: https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
--
+Admin Links:
+========================================================================================================================
+- H2 console: http://localhost:8080/admin/h2/
+- Spring Boot config properties: https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
+
+Useful links:
+========================================================================================================================
+- Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
+
+
+Functionality that I can avoid to create:
+========================================================================================================================
+- Forgot password: They should mail me, I will reset the password to a new one
+    - I still need to bcrypt it, so there must be such an admin functionality...
+    - Users must be able to change their password though
