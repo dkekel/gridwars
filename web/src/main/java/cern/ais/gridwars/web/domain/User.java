@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private String username;
 
     @Column(nullable = false)
-    @Size(max = 64)
+    @Size(max = 512) // This field stores a hash, so make it big enough!
     private String password;
 
     @Column(nullable = false)
