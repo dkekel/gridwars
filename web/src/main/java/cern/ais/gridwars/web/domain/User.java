@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,26 +29,36 @@ public class User implements UserDetails {
     private String id;
 
     @Column(nullable = false, unique = true)
-    @Size(max = 16)
+    @NotNull
+    @NotEmpty
+    @Size(min = 4, max = 16)
+    @Pattern(regexp = "[A-Za-z0-9-_]+")
     private String username;
 
     @Column(nullable = false)
-    @Size(max = 512) // This field stores a hash, so make it big enough!
+    @Size(min = 6, max = 512) // This field stores a hash, so make it big enough!
     private String password;
 
-    @Column(nullable = false)
-    @Size(max = 32)
+    @Column(nullable = false, unique = true)
+    @NotNull
+    @NotEmpty
+    @Size(min = 4, max = 32)
     private String teamname;
 
     @Column(nullable = false, unique = true)
-    @Size(max = 64)
+    @NotNull
+    @NotEmpty
+    // TODO Validate email
+    @Size(max = 32)
     private String email;
 
     @Column(nullable = false)
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     @Column(nullable = false)
     private boolean admin = false;
+
+    // TODO Add confirmation id that requires an email to be send with a confirmation link
 
     public String getId() {
         return id;

@@ -29,7 +29,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/**").permitAll()
             .and()
-                .formLogin().loginPage("/login").permitAll()
+                .formLogin().loginPage("/signin").permitAll()
             .and()
                 .logout().logoutSuccessUrl("/").permitAll();
         // @formatter:on
@@ -56,25 +56,41 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     // TODO Remove when database is set up
     @PostConstruct
     public void initTestUsers() {
-        userService.createNormalUser(
+        userService.create(
             new User()
                 .setUsername("user1")
-                .setPassword("bla")
+                .setPassword("bla1")
                 .setEmail("user1@cern.ch")
                 .setTeamname("Team User1"));
 
-        userService.createNormalUser(
+        userService.create(
             new User()
                 .setUsername("user2")
-                .setPassword("bla")
+                .setPassword("bla2")
                 .setEmail("user2@cern.ch")
                 .setTeamname("Team User2"));
 
-        userService.createAdminUser(
+        userService.create(
+            new User()
+                .setUsername("user3")
+                .setPassword("bla3")
+                .setEmail("user3@cern.ch")
+                .setTeamname("Team User3")
+                .setEnabled(false));
+
+        userService.create(
+            new User()
+                .setUsername("user4")
+                .setPassword("bla4")
+                .setEmail("user4@cern.ch")
+                .setTeamname("Team User4"));
+
+        userService.create(
             new User()
                 .setUsername("admin")
                 .setPassword("blabla")
                 .setEmail("admin@cern.ch")
-                .setTeamname("Team Admin"));
+                .setTeamname("Team Admin")
+                .setAdmin(true));
     }
 }

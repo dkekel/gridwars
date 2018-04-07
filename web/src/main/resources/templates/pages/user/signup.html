@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Sign Up - GridWars</title>
+</head>
+<body>
+<main layout:fragment="content" class="container">
+    <div class="login-form">
+        <h2 th:text="#{page.signup.title}"></h2>
+
+        <form action="/signup" th:object="${newUser}" class="was-validated" method="post" enctype="utf8">
+            <div class="form-group">
+                <label th:text="#{page.signup.username}" for="username"></label>
+                <input th:field="*{username}" id="username" class="form-control" type="text" th:placeholder="#{page.signup.username}" pattern="[A-Za-z0-9-_]+" minlength="4" maxlength="16" required autofocus/>
+                <p th:each="error: ${#fields.errors('username')}" th:text="${error}" class="text-danger">Validation error</p>
+            </div>
+            <div class="form-group">
+                <label th:text="#{page.signup.password}" for="password"></label>
+                <input th:field="*{password}" id="password" class="form-control" type="password" th:placeholder="#{page.signup.password}" minlength="6" maxlength="32" required/>
+                <p th:each="error: ${#fields.errors('password')}" th:text="${error}" class="text-danger">Validation error</p>
+            </div>
+            <div class="form-group">
+                <label th:text="#{page.signup.passwordMatch}" for="passwordMatch"></label>
+                <input id="passwordMatch" class="form-control" type="password" th:placeholder="#{page.signup.passwordMatch}" minlength="6" maxlength="32" required/>
+            </div>
+            <div class="form-group">
+                <label th:text="#{page.signup.email}" for="email"></label>
+                <input th:field="*{email}" id="email" class="form-control" type="email" th:placeholder="#{page.signup.email}" maxlength="32" required/>
+                <p th:each="error: ${#fields.errors('email')}" th:text="${error}" class="text-danger">Validation error</p>
+            </div>
+            <div class="form-group">
+                <label th:text="#{page.signup.teamname}" for="username"></label>
+                <input th:field="*{teamname}" id="teamname" class="form-control" type="text" th:placeholder="#{page.signup.teamname}" minlength="4" maxlength="32" required/>
+                <p th:each="error: ${#fields.errors('teamname')}" th:text="${error}" class="text-danger">Validation error</p>
+            </div>
+            <button th:text="#{page.signup.submit}" type="submit" class="btn btn-primary"></button>
+        </form>
+    </div>
+
+    <script>
+        var password = document.getElementById("password");
+        var passwordMatch = document.getElementById("passwordMatch");
+
+        function validatePassword() {
+            if (password.value && (password.value !== passwordMatch.value)) {
+                passwordMatch.setCustomValidity("Passwords do not match");
+            } else {
+                passwordMatch.setCustomValidity('');
+            }
+        }
+
+        password.onchange = validatePassword;
+        passwordMatch.onkeyup = validatePassword;
+    </script>
+</main>
+</body>
+</html>
