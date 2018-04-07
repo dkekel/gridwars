@@ -8,6 +8,7 @@ Useful links:
 ========================================================================================================================
 - Spring Boot docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
 - Thymeleaf docs: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html
+- Bootstrap docs: https://getbootstrap.com/docs/4.0/components/alerts/
 
 - Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
 
