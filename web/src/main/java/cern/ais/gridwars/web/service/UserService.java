@@ -3,7 +3,6 @@ package cern.ais.gridwars.web.service;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,10 +35,11 @@ public class UserService implements UserDetailsService {
     }
 
     private User populateAuthorities(final User user) {
-        user.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        user.clearAuthorities();
+        user.addAuthority(User.ROLE_USER_AUTHORITY);
 
         if (user.isAdmin()) {
-            user.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+            user.addAuthority(User.ROLE_ADMIN_AUTHORITY);
         }
 
         return user;
@@ -48,15 +48,15 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void create(final User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new FieldValueAlreadyExistsException("username", "user.error.exists.username");
+            throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new FieldValueAlreadyExistsException("email", "user.error.exists.email");
+            throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
         if (userRepository.existsByTeamname(user.getTeamname())) {
-            throw new FieldValueAlreadyExistsException("teamname", "user.error.exists.teamname");
+            throw new UserFieldValueException("teamname", "user.error.exists.teamname");
         }
 
         saveNewUser(user);
@@ -69,15 +69,15 @@ public class UserService implements UserDetailsService {
         }
 
         if (userRepository.existsByUsernameAndIdNot(user.getUsername(), user.getId())) {
-            throw new FieldValueAlreadyExistsException("username", "user.error.exists.username");
+            throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
         if (userRepository.existsByEmailAndIdNot(user.getEmail(), user.getId())) {
-            throw new FieldValueAlreadyExistsException("email", "user.error.exists.email");
+            throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
         if (userRepository.existsByTeamnameAndIdNot(user.getTeamname(), user.getId())) {
-            throw new FieldValueAlreadyExistsException("teamname", "user.error.exists.teamname");
+            throw new UserFieldValueException("teamname", "user.error.exists.teamname");
         }
 
         updateExistingUser(user);
@@ -115,13 +115,12 @@ public class UserService implements UserDetailsService {
         return (value != null) && !value.isEmpty();
     }
 
-    public static class FieldValueAlreadyExistsException extends RuntimeException {
+    public static class UserFieldValueException extends RuntimeException {
 
         private final String fieldName;
         private final String errorMessageCode;
 
-        public FieldValueAlreadyExistsException(final String fieldName, final String errorMessageCode) {
-            super();
+        public UserFieldValueException(final String fieldName, final String errorMessageCode) {
             this.fieldName = fieldName;
             this.errorMessageCode = errorMessageCode;
         }

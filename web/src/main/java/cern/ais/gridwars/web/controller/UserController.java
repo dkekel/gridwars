@@ -2,6 +2,7 @@ package cern.ais.gridwars.web.controller;
 
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,13 +20,14 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = Objects.requireNonNull(userService);
     }
 
     // IMPORTANT: Only map GET method here, not POST, to let the login filter to its work
     @GetMapping("/signin")
-    public String signin() {
+    public String showSignin() {
         return "pages/user/signin";
     }
 
@@ -39,16 +41,12 @@ public class UserController {
     @PostMapping("/signup")
     public String doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result, Errors errors, Model model) {
         if (!errors.hasErrors()) {
-            newUser.setUsername(trim(newUser.getUsername()));
-            newUser.setTeamname(trim(newUser.getTeamname()));
-            newUser.setEmail(trim(newUser.getEmail()));
-            newUser.setAdmin(false);
-            newUser.setEnabled(true);
+            preprocessNewUser(newUser);
 
             try {
                 userService.create(newUser);
-            } catch (UserService.FieldValueAlreadyExistsException fae) {
-                result.rejectValue(fae.getFieldName(), fae.getErrorMessageCode());
+            } catch (UserService.UserFieldValueException ufve) {
+                result.rejectValue(ufve.getFieldName(), ufve.getErrorMessageCode());
             }
         }
 
@@ -58,6 +56,15 @@ public class UserController {
         } else {
             return "redirect:/signin?created=" + newUser.getUsername();
         }
+    }
+
+    private void preprocessNewUser(User newUser) {
+        newUser.setId(null);
+        newUser.setUsername(trim(newUser.getUsername()));
+        newUser.setTeamname(trim(newUser.getTeamname()));
+        newUser.setEmail(trim(newUser.getEmail()));
+        newUser.setAdmin(false);
+        newUser.setEnabled(true);
     }
 
     private String trim(String value) {

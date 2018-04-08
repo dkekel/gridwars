@@ -78,12 +78,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .setTeamname("Team User3")
                 .setEnabled(false));
 
-        userService.create(
-            new User()
-                .setUsername("user4")
-                .setPassword("bla4")
-                .setEmail("user4@cern.ch")
-                .setTeamname("Team User4"));
+//        userService.create(
+//            new User()
+//                .setUsername("user4")
+//                .setPassword("bla4")
+//                .setEmail("user4@cern.ch")
+//                .setTeamname("Team User4"));
 
         userService.create(
             new User()

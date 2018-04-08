@@ -1,6 +1,7 @@
 package cern.ais.gridwars.web.domain;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Column;
@@ -21,6 +22,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
+
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final GrantedAuthority ROLE_USER_AUTHORITY = new SimpleGrantedAuthority(ROLE_USER);
+    public static final GrantedAuthority ROLE_ADMIN_AUTHORITY = new SimpleGrantedAuthority(ROLE_ADMIN);
 
     @Transient
     private final List<GrantedAuthority> authorities = new LinkedList<>();
@@ -112,8 +118,18 @@ public class User implements UserDetails {
     }
 
     public User setAuthorities(Collection<GrantedAuthority> authorities) {
-        this.authorities.clear();
+        clearAuthorities();
         this.authorities.addAll(authorities);
+        return this;
+    }
+
+    public User addAuthority(GrantedAuthority authority) {
+        this.authorities.add(authority);
+        return this;
+    }
+
+    public User clearAuthorities() {
+        this.authorities.clear();
         return this;
     }
 
