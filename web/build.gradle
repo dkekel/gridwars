@@ -33,6 +33,8 @@ bootJar {
 bootRun {
     // Enable live reloading of static resources
     sourceResources sourceSets.main
+
+    systemProperties["gridwars.workDir"] = "${project.projectDir.absolutePath}${File.separator}work"
 }
 
 dependencies {

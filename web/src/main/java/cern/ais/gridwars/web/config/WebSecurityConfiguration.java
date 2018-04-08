@@ -27,6 +27,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http.authorizeRequests()
             .antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/bot/**").fullyAuthenticated()
             .antMatchers("/**").permitAll()
             .and()
                 .formLogin().loginPage("/user/signin").permitAll()
@@ -77,13 +78,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .setEmail("user3@cern.ch")
                 .setTeamname("Team User3")
                 .setEnabled(false));
-
-//        userService.create(
-//            new User()
-//                .setUsername("user4")
-//                .setPassword("bla4")
-//                .setEmail("user4@cern.ch")
-//                .setTeamname("Team User4"));
 
         userService.create(
             new User()

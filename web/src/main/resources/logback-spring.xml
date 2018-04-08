@@ -2,7 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="cern.ais.gridwars.web" level="INFO"/>
+    <logger name="cern.ais.gridwars.web" level="DEBUG"/>
 
     <springProfile name="local">
         <!--<logger name="org.springframework.jdbc" level="DEBUG"/>-->
