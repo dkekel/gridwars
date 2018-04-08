@@ -15,7 +15,7 @@
 
         <div th:if="${param.created}" th:text="#{page.signin.created(${param.created})}" class="alert alert-success" role="alert"></div>
 
-        <form name="f" action="/signin" method="post">
+        <form th:action="@{/user/signin}" method="post">
             <div class="form-group">
                 <input name="username" type="text" class="form-control" th:placeholder="#{page.signin.username}" maxlength="16" autocomplete="username" required autofocus>
             </div>

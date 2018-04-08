@@ -47,11 +47,11 @@
             </ul>
 
             <div th:unless="${user}">
-                <a th:href="@{/signin}" th:text="#{layout.main.signin}" target="_self" class="navbar-text"></a>
-                <a th:href="@{/signup}" th:text="#{layout.main.signup}" target="_self" class="navbar-text ml-3"></a>
+                <a th:href="@{/user/signin}" th:text="#{layout.main.signin}" target="_self" class="navbar-text"></a>
+                <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" target="_self" class="navbar-text ml-3"></a>
             </div>
 
-            <form th:if="${user}" th:action="@{/logout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0">
+            <form th:if="${user}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0">
                 <a href="#" class="navbar-text">
                     <span th:text="${user.username}"></span><span th:if="${user.admin}" class="ml-1">(admin)</span>
                 </a>
