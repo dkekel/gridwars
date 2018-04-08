@@ -1,5 +1,5 @@
          .    .        .      .             . .     .        .          .          .
-  .    .          .                 .                    .                .    . 
+  .    .          .                 .                    .                .    .
            .               A long time ago in a galaxy far, far away...   .
     *         .               .           .               .        .             .
               .      .            .                 .                         +      .
@@ -41,23 +41,23 @@
          .      vast reaches of space and a thousand-thousand worlds, with only     .
              . their great courage - and the mystical power known as the Force -
    .         flaming a fire of hope.        .          .    .    .            .      .
-               .               ..       .       .   .             .           +          .   
-                     .              .       .              +     .      .    .          .  
-.        .               .       .     .            .        .                 .          .   
-   .           .        .                     .        .            .          .     .      .    
+               .               ..       .       .   .             .           +          .
+                     .              .       .              +     .      .    .          .
+.        .               .       .     .            .        .                 .          .
+   .           .        .                     .        .            .          .     .      .
              .               .    .          .              .   .         .
     _______ .______       __   _______     ____    __    ____  ___      .______      +   _______.
    /  _____||   _  \   . |  | |       \    \   \ ./  \  /   / /   \     |   _  \        /       |
   |  |  __  |  |_)  |    |  | |  .--.  |  . \   \/    \/   / /  ^  \  . |  |_)  |      |   (----`
-  |  | |_ | |      / .   |  | |  |  |  |     \            / /  /_\  \   |      /   .    \   \    
-  |  |__| | |  |\  \----.|  | |  '--'  |      \    /\    / /  _____  \  |  |\  \----.----)   | . 
+  |  | |_ | |      / .   |  | |  |  |  |     \            / /  /_\  \   |      /   .    \   \
+  |  |__| | |  |\  \----.|  | |  '--'  |      \    /\    / /  _____  \  |  |\  \----.----)   | .
    \______| | _| `._____||__| |_______/   .    \__/  \__/ /__/     \__\ | _| `._____|_______/    .
-     .             .             .         .               .                 . 
-.        .               .       .     .            .    .       *        .        .        .     
+     .             .             .         .               .                 .
+.        .               .       .     .            .    .       *        .        .        .
 
                                          Episode VII
 
-                            B A T T L E   F O R   G L A S G O W
+                            B A T T L E   F O R   R I G A
 
 ## Distribution Content:
 
@@ -71,9 +71,9 @@
 /lib/** (necessary dependencies. Do not touch)
 
 ## Build
- 
+
 There are two ways to work with sources given. With or without IDE.
-Although IDE work is recommended as it facilitates all operations, fully command-line build is also possible 
+Although IDE work is recommended as it facilitates all operations, fully command-line build is also possible
 (for people w/o IDE, small HDD and console/notepad maniacs).
 
 This section will first explain importing project in IDE, and then console build.
@@ -102,12 +102,12 @@ Consult web if you have problems at this step, there are plenty of guides and tu
 
 ## Example sources
 You have 3 simple Java bots and one Groovy bot as an example. They all implement PlayerBot API.
-You can use "cern.ais.gridwars.Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally. 
+You can use "cern.ais.gridwars.Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally.
 You can modify Visualizer's main method or create your own class calling aforementioned method.
 
 
 Play fair and…
-May the Code be with you!
+May the code be with you!
 
                                     _.=+._
  \::::::::::::::::::::::::::.\`--._/[_/~|;\_.--'/.:::::::::\

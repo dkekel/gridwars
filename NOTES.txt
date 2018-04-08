@@ -11,6 +11,24 @@ Useful links:
 - Bootstrap docs: https://getbootstrap.com/docs/4.0/components/alerts/
 
 - Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
+- Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
+- File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+
+
+TODO:
+========================================================================================================================
+User registration:
+- Confirmation link for new user registration
+- Additional information for user registration (ip, hostname, user agent)
+- User edit functionality
+
+Bot upload:
+- Modify GlobalErrorController to show better message when upload size is too big
+    - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+
+Web access log:
+- Simple web access log
+- Tag requests with unique id and show this id in log output to find the matching requests
 
 
 Functionality that I can avoid to create:
