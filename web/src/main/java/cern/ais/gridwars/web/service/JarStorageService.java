@@ -1,6 +1,5 @@
 package cern.ais.gridwars.web.service;
 
-import cern.ais.gridwars.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class JarStorageService {
         try {
             uploadedJarFile.transferTo(storedJarFile);
         } catch (IOException | IllegalStateException e) {
-            storedJarFile.delete();
+            FileUtils.deleteFile(storedJarFile);
             throw new RuntimeException("Failed to store uploaded bot jar file", e);
         }
 

@@ -18,15 +18,12 @@ public class Bot {
     private String id;
 
     @Column(nullable = false)
-    @Size(max = 32)
+    @Size(max = 256) // Contains a UUID, so make it big enough!
     private String jarName;
 
     @Column(nullable = false)
     @Size(max = 64)
-    private String mainClassName;
-
-    @Column(nullable = false)
-    private Integer sizeInKb;
+    private String botClassName;
 
     @Column(nullable = false)
     private Instant uploaded;
@@ -55,22 +52,22 @@ public class Bot {
         return this;
     }
 
-    public String getMainClassName() {
-        return mainClassName;
+    public String getBotClassName() {
+        return botClassName;
     }
 
-    public Bot setMainClassName(String mainClassName) {
-        this.mainClassName = mainClassName;
+    public Bot setBotClassName(String botClassName) {
+        this.botClassName = botClassName;
         return this;
     }
 
-    public Integer getSizeInKb() {
-        return sizeInKb;
-    }
-
-    public Bot setSizeInKb(Integer sizeInKb) {
-        this.sizeInKb = sizeInKb;
-        return this;
+    public String getShortBotClassName() {
+        if ((botClassName != null) && !botClassName.isEmpty()) {
+            String[] classNameParts = botClassName.split("\\.");
+            return classNameParts[classNameParts.length - 1];
+        } else {
+            return botClassName;
+        }
     }
 
     public Instant getUploaded() {

@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.domain.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,10 +85,10 @@ public class UserService implements UserDetailsService {
     }
 
     private void saveNewUser(final User user) {
-        user.setId(generateId());
+        user.setId(DomainUtils.generateId());
         user.setPassword(encodePassword(user.getPassword()));
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
     private void updateExistingUser(final User user) {
@@ -99,16 +100,12 @@ public class UserService implements UserDetailsService {
                existingUser.setPassword(encodePassword(user.getPassword()));
            }
 
-           userRepository.save(existingUser);
+           userRepository.saveAndFlush(existingUser);
        });
     }
 
     private String encodePassword(final String password) {
         return passwordEncoder.encode(password);
-    }
-
-    private String generateId() {
-        return UUID.randomUUID().toString();
     }
 
     private boolean isNotBlank(final String value) {

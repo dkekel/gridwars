@@ -44,7 +44,7 @@ public class BotController {
                 botJarFile.getSize(), user.getUsername());
 
         try {
-            botService.validateAndPersistBotJarFile(botJarFile, user, Instant.now());
+            botService.validateAndCreateNewBot(botJarFile, user, Instant.now());
             return "redirect:/bot/upload?success";
         } catch (BotService.BotUploadException bue) {
             model.addAttribute("error", bue.getMessage());
