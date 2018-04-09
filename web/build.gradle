@@ -34,7 +34,9 @@ bootRun {
     // Enable live reloading of static resources
     sourceResources sourceSets.main
 
-    systemProperties["gridwars.workDir"] = "${project.projectDir.absolutePath}${File.separator}work"
+    def workDir = "${project.projectDir.absolutePath}${File.separator}work"
+    systemProperties["gridwars.workDir"] = workDir
+    systemProperties["server.tomcat.basedir"] = "${workDir}${File.separator}server"
 }
 
 dependencies {

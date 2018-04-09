@@ -78,6 +78,9 @@ spring:
 server:
     compression:
         enabled: true
+    tomcat:
+        accesslog:
+            enabled: true
 
 # ==================================================================================================
 # GridWars Configuration
