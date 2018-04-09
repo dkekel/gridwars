@@ -75,8 +75,8 @@ public class AimedBot implements PlayerBot
 		for (Cell myCoord : myAttackCells)
 		{
 			long minMetrics = 1000000L;
-			Coordinates aim = myCoord.getRelative(Direction.LEFT).coords; //Á‡„ÎÛ¯Í‡
-			//Ë˘ÂÏ ·ÎËÊ‡È¯Û˛
+			Coordinates aim = myCoord.getRelative(Direction.LEFT).coords;
+
 			if (myCoord == null)
 				continue;
 			for (Coordinates battleCoord : battleCells)
@@ -85,7 +85,7 @@ public class AimedBot implements PlayerBot
 					continue;
 				int deltaY = battleCoord.getY() - myCoord.y;
 				int deltaX = battleCoord.getX() - myCoord.x;
-				//TODO ÔÓ‚ÂÍ‡ Ì‡ 0
+
 				long metrics = Math.abs(deltaX) + Math.abs(deltaY);
 				if (metrics < minMetrics) {
 					minMetrics = metrics;
@@ -105,7 +105,6 @@ public class AimedBot implements PlayerBot
 		if (troopsInCell == 0)
 			return;
 
-		//TODO ÔÓ‚ÂÍ‡ Ì‡ 0
 		double ratioX = Math.abs((double)Math.abs(deltaX) / ((double)Math.abs(deltaX) + (double)Math.abs(deltaY)));
 		double ratioY = Math.abs((double)Math.abs(deltaY) / ((double)Math.abs(deltaX) + (double)Math.abs(deltaY)));
 		int five = 8;

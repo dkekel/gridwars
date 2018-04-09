@@ -9,7 +9,6 @@ public class App {
 		Main bot2 = new Main();
 		bot2.setBot(new SplitBot(bot2));
 
-//		new Visualizer().runGame(bot2, new CernTechnologySelfOpponentAdvWithBuffer());
-		//new Visualizer().runGame(bot1, bot2);
+		new Visualizer().runGame(bot1, bot2);
 	}
 }

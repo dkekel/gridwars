@@ -102,7 +102,7 @@ Consult web if you have problems at this step, there are plenty of guides and tu
 
 ## Example sources
 You have 3 simple Java bots and one Groovy bot as an example. They all implement PlayerBot API.
-You can use "cern.ais.gridwars.Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally.
+You can use "Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally.
 You can modify Visualizer's main method or create your own class calling aforementioned method.
 
 

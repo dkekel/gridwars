@@ -26,6 +26,15 @@ public class Visualizer {
 	private int m_TimerSpeedId = 3;
 	private Game game;
 
+    public static void main(String[] args) throws FileNotFoundException {
+        new Visualizer().runGame(new IdleBot(), new MovingBot(MovementCommand.Direction.RIGHT));
+    }
+
+    public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
+        createGame(bot1, bot2);
+        createAndShowGUI();
+    }
+
 	private void createGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
 		game = new Game(Arrays.asList(new Player(0, bot1, new File("player1.log"), 0), new Player(1, bot2, new File("player2.log"), 1)), new Game.TurnCallback() {
 			@Override public void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus) {
@@ -82,7 +91,7 @@ public class Visualizer {
 		controlPanel.add(pauseButton);
 		controlPanel.add(createSpeedControlButton("+"), BorderLayout.EAST);
 		controlPanel.add(createSpeedControlButton("-"), BorderLayout.WEST);
-		
+
 		frame.setPreferredSize(new Dimension(500, 600));
 		frame.getContentPane().add(mainPanel);
 
@@ -116,16 +125,5 @@ public class Visualizer {
 			}
 		});
 		return control;
-	}
-
-	public static void main(String[] args) throws FileNotFoundException
-	{
-		new Visualizer().runGame(new GroovyBot(), new MovingBot(MovementCommand.Direction.RIGHT));
-	}
-
-	public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException
-	{
-		createGame(bot1, bot2);
-		createAndShowGUI();
 	}
 }

@@ -1,21 +1,7 @@
-apply plugin: 'groovy'
 apply plugin: 'application'
-apply plugin: 'distribution'
 
-mainClassName = 'cern.ais.gridwars.Visualizer'
+mainClassName = 'cern.ais.gridwars.App'
 
 dependencies {
 	compile project(':core:emulator')
-	compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
-}
-
-distributions {
-	main {
-		contents {
-			from { 'dist' }
-			into('src') {
-				from { 'src' }
-			}
-		}
-	}
 }

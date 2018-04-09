@@ -8,7 +8,7 @@ version = '1.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-mainClassName = "cern.ais.gridwars.Visualizer"
+mainClassName = "Visualizer"
 
 repositories {
 	mavenCentral()
