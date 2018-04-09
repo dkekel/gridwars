@@ -1,3 +1,10 @@
 body {
     padding-top: 5rem;
 }
+
+.signin-form,
+.signup-form {
+    max-width: 30rem;
+    margin-left: auto;
+    margin-right: auto;
+}
