@@ -13,11 +13,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
 
 @Entity
 @Table(name = "user")
@@ -58,13 +60,18 @@ public class User implements UserDetails {
     @Size(max = 32)
     private String email;
 
+    @Column(unique = true)
+    @Size(max = 256)
+    private String confirmationId;
+
+    @Column
+    private Instant confirmed;
+
     @Column(nullable = false)
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     @Column(nullable = false)
     private boolean admin = false;
-
-    // TODO Add confirmation id that requires an email to be send with a confirmation link
 
     public String getId() {
         return id;
@@ -100,6 +107,24 @@ public class User implements UserDetails {
 
     public User setEmail(String email) {
         this.email = email;
+        return this;
+    }
+
+    public String getConfirmationId() {
+        return confirmationId;
+    }
+
+    public User setConfirmationId(String confirmationId) {
+        this.confirmationId = confirmationId;
+        return this;
+    }
+
+    public Instant getConfirmed() {
+        return confirmed;
+    }
+
+    public User setConfirmed(Instant confirmed) {
+        this.confirmed = confirmed;
         return this;
     }
 

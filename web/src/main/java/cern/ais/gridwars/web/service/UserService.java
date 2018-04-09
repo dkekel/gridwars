@@ -47,7 +47,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void create(final User user) {
+    public User create(final User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
             throw new UserFieldValueException("teamname", "user.error.exists.teamname");
         }
 
-        saveNewUser(user);
+        return saveNewUser(user);
     }
 
     @Transactional
@@ -84,11 +84,20 @@ public class UserService implements UserDetailsService {
         updateExistingUser(user);
     }
 
-    private void saveNewUser(final User user) {
-        user.setId(DomainUtils.generateId());
-        user.setPassword(encodePassword(user.getPassword()));
+    private User saveNewUser(final User user) {
+        User newUser = new User()
+            .setId(DomainUtils.generateId())
+            .setUsername(user.getUsername())
+            .setPassword(encodePassword(user.getPassword()))
+            .setEmail(user.getEmail())
+            .setTeamname(user.getTeamname())
+            .setAdmin(user.isAdmin())
+            .setEnabled(user.isEnabled())
+            .setConfirmationId(DomainUtils.generateId())
+            .setConfirmed(null);
 
-        userRepository.saveAndFlush(user);
+        userRepository.saveAndFlush(newUser);
+        return newUser;
     }
 
     private void updateExistingUser(final User user) {

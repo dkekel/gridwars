@@ -30,14 +30,18 @@ public class DevConfiguration {
                 .setUsername("user1")
                 .setPassword("bla1")
                 .setEmail("user1@cern.ch")
-                .setTeamname("Team User1"));
+                .setTeamname("Team User1")
+                .setEnabled(true)
+        );
 
         userService.create(
             new User()
                 .setUsername("user2")
                 .setPassword("bla2")
                 .setEmail("user2@cern.ch")
-                .setTeamname("Team User2"));
+                .setTeamname("Team User2")
+                .setEnabled(true)
+        );
 
         userService.create(
             new User()
@@ -45,7 +49,8 @@ public class DevConfiguration {
                 .setPassword("bla3")
                 .setEmail("user3@cern.ch")
                 .setTeamname("Team User3")
-                .setEnabled(false));
+                .setEnabled(false)
+        );
 
         userService.create(
             new User()
@@ -53,7 +58,9 @@ public class DevConfiguration {
                 .setPassword("blabla")
                 .setEmail("admin@cern.ch")
                 .setTeamname("Team Admin")
-                .setAdmin(true));
+                .setAdmin(true)
+                .setEnabled(true)
+        );
     }
 
     private void initTestBots() {
