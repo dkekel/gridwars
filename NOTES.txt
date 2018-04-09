@@ -36,3 +36,5 @@ Functionality that I can avoid to create:
 - Forgot password: They should mail me, I will reset the password to a new one
     - I still need to bcrypt it, so there must be such an admin functionality...
     - Users must be able to change their password though
+
+- Service account: gridwars Fiba-Raxi
