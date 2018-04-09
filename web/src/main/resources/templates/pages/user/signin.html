@@ -12,8 +12,7 @@
         <h2 th:text="#{page.signin.title}"></h2>
 
         <div th:if="${param.error != null}" th:text="#{page.signin.error}" class="alert alert-danger" role="alert"></div>
-
-        <div th:if="${param.created}" th:text="#{page.signin.created(${param.created})}" class="alert alert-success" role="alert"></div>
+        <div th:if="${param.created != null}" th:text="#{page.signin.created(${param.created})}" class="alert alert-success" role="alert"></div>
 
         <form th:action="@{/user/signin}" method="post">
             <div class="form-group">

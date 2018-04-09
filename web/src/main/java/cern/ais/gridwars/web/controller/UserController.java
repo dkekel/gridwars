@@ -41,7 +41,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result, Errors errors, Model model) {
+    public String doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result, Errors errors,
+                           Model model) {
         if (!errors.hasErrors()) {
             preprocessNewUser(newUser);
 
