@@ -19,7 +19,7 @@ public class Bot {
 
     @Column(nullable = false)
     @Size(max = 256) // Contains a UUID, so make it big enough!
-    private String jarName;
+    private String jarFileName;
 
     @Column(nullable = false)
     @Size(max = 64)
@@ -43,12 +43,12 @@ public class Bot {
         return this;
     }
 
-    public String getJarName() {
-        return jarName;
+    public String getJarFileName() {
+        return jarFileName;
     }
 
-    public Bot setJarName(String jarName) {
-        this.jarName = jarName;
+    public Bot setJarFileName(String jarFileName) {
+        this.jarFileName = jarFileName;
         return this;
     }
 

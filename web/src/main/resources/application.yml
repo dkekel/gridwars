@@ -85,3 +85,5 @@ server:
 ---
 gridwars:
     workDir: '../'
+    matches:
+        number: 5

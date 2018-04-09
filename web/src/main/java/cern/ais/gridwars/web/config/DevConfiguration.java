@@ -1,12 +1,16 @@
 package cern.ais.gridwars.web.config;
 
+import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
+import cern.ais.gridwars.web.service.BotService;
+import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
 
 
 /**
@@ -19,13 +23,18 @@ public class DevConfiguration {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BotService botService;
+
+    @Autowired
+    private MatchService matchService;
+
     @PostConstruct
     public void initTestData() {
-        initTestUsers();
-    }
-
-    private void initTestUsers() {
-        userService.create(
+        // =====================================================================
+        // Users
+        // =====================================================================
+        User user1 = userService.create(
             new User()
                 .setUsername("user1")
                 .setPassword("bla1")
@@ -34,7 +43,7 @@ public class DevConfiguration {
                 .setEnabled(true)
         );
 
-        userService.create(
+        User user2 = userService.create(
             new User()
                 .setUsername("user2")
                 .setPassword("bla2")
@@ -43,7 +52,7 @@ public class DevConfiguration {
                 .setEnabled(true)
         );
 
-        userService.create(
+        User user3 = userService.create(
             new User()
                 .setUsername("user3")
                 .setPassword("bla3")
@@ -52,7 +61,7 @@ public class DevConfiguration {
                 .setEnabled(false)
         );
 
-        userService.create(
+        User admin1 = userService.create(
             new User()
                 .setUsername("admin")
                 .setPassword("blabla")
@@ -61,9 +70,17 @@ public class DevConfiguration {
                 .setAdmin(true)
                 .setEnabled(true)
         );
-    }
 
-    private void initTestBots() {
-        // TODO implement...
+        // =====================================================================
+        // Bots and Matches
+        // =====================================================================
+        Bot bot1 = botService.createNewBotRecord("testBot1.jar", "TestBot1", user1, Instant.now());
+        matchService.generateMatches(bot1);
+
+        Bot bot2 = botService.createNewBotRecord("testBot2.jar", "TestBot2", user2, Instant.now());
+        matchService.generateMatches(bot2);
+
+        Bot bot3 = botService.createNewBotRecord("testBot3.jar", "TestBot3", admin1, Instant.now());
+        matchService.generateMatches(bot3);
     }
 }

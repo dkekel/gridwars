@@ -1,10 +1,6 @@
 package cern.ais.gridwars.web.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -25,7 +21,8 @@ public class Match {
     private String id;
 
     @Column(nullable = false)
-    private Status status = Status.PENDING;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne(optional = false)
     private Bot player1;
@@ -34,6 +31,7 @@ public class Match {
     private Bot player2;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private Outcome outcome;
 
     @Column(nullable = false)
@@ -47,9 +45,6 @@ public class Match {
 
     @Column
     private Integer turns;
-
-    @Column
-    private Integer fileSize;
 
     public String getId() {
         return id;
@@ -129,15 +124,6 @@ public class Match {
 
     public Match setTurns(Integer turns) {
         this.turns = turns;
-        return this;
-    }
-
-    public Integer getFileSize() {
-        return fileSize;
-    }
-
-    public Match setFileSize(Integer fileSize) {
-        this.fileSize = fileSize;
         return this;
     }
 

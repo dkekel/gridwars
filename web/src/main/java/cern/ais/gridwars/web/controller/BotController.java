@@ -41,7 +41,7 @@ public class BotController {
                 botJarFile.getSize(), user.getUsername());
 
         try {
-            botService.validateAndCreateNewBot(botJarFile, user, Instant.now());
+            botService.validateAndCreateNewUploadedBot(botJarFile, user, Instant.now());
             redirectAttributes.addFlashAttribute("success", true);
         } catch (BotService.BotUploadException bue) {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());

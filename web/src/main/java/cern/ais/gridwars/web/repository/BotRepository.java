@@ -12,4 +12,5 @@ import java.util.List;
 public interface BotRepository extends JpaRepository<Bot, String> {
 
     List<Bot> findAllByUserAndActiveIsTrue(User user);
+    List<Bot> findAllByActiveIsTrue();
 }

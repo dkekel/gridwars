@@ -42,10 +42,10 @@ public class BotService {
     }
 
     @Transactional
-    public void validateAndCreateNewBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
+    public void validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
         File storedBotJarFile = null;
         try {
-            storedBotJarFile = storeBotJarFile(uploadedBotJarFile, user, uploadTime);
+            storedBotJarFile = storeUploadedBotJarFile(uploadedBotJarFile, user, uploadTime);
             String botClassName = validateBotJarFileAndGetBotClassName(storedBotJarFile);
             createNewBot(storedBotJarFile, botClassName, user, uploadTime);
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class BotService {
         }
     }
 
-    private File storeBotJarFile(MultipartFile uploadedJarFile, User user, Instant uploadTime) {
+    private File storeUploadedBotJarFile(MultipartFile uploadedJarFile, User user, Instant uploadTime) {
         return jarStorageService.storeJarFile(uploadedJarFile, user.getId(), uploadTime);
     }
 
@@ -127,33 +127,34 @@ public class BotService {
 
     private void validateBotClass(Class botClass) {
         if (botClass.isInterface() || Modifier.isAbstract(botClass.getModifiers())) {
-            throw new BotUploadException("Bot class must not be an interface or abstract: " + botClass.getName());
+            throw new BotUploadException("Bot class '" + botClass.getName() + "' must not be an interface or abstract");
         }
 
         if (!PlayerBot.class.isAssignableFrom(botClass)) {
-            throw new BotUploadException("Bot class does not implement required interface: " + PlayerBot.class.getName());
+            throw new BotUploadException("Bot class '" + botClass.getName() + "' does not implement required interface: " + PlayerBot.class.getName());
         }
     }
 
     private void createNewBot(File botJarFile, String botClassName, User user, Instant uploadTime) {
         inactivateOldBot(user);
-        Bot newBot = createNewBotRecord(botJarFile, botClassName, user, uploadTime);
+        Bot newBot = createNewBotRecord(botJarFile.getName(), botClassName, user, uploadTime);
         matchService.generateMatches(newBot);
     }
 
     private void inactivateOldBot(User user) {
         botRepository.findAllByUserAndActiveIsTrue(user).forEach(oldBot -> {
-            matchService.cancelMatches(oldBot);
+            matchService.cancelPendingMatches(oldBot);
             oldBot.setActive(false);
             botRepository.saveAndFlush(oldBot);
         });
     }
 
-    private Bot createNewBotRecord(File botFile, String botClassName, User user, Instant uploadTime) {
+    @Transactional
+    public Bot createNewBotRecord(String jarFileName, String botClassName, User user, Instant uploadTime) {
         Bot newBot = new Bot()
             .setId(DomainUtils.generateId())
             .setUser(user)
-            .setJarName(botFile.getName())
+            .setJarFileName(jarFileName)
             .setBotClassName(botClassName)
             .setUploaded(uploadTime)
             .setActive(true);
