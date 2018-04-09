@@ -25,6 +25,7 @@ User registration:
 Bot upload:
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+    - Or try to use ControllerAdvice or annotated controller error method
 
 Web access log:
 - Simple web access log
