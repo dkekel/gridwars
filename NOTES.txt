@@ -1,31 +1,14 @@
-Admin Links:
-========================================================================================================================
-- H2 console: http://localhost:8080/admin/h2/
-- Spring Boot config properties: https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
-
-
-Useful links:
-========================================================================================================================
-- Spring Boot docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
-- Thymeleaf docs: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html
-- Bootstrap docs: https://getbootstrap.com/docs/4.0/components/alerts/
-
-- Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
-- Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
-- File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
-
-
 TODO:
 ========================================================================================================================
 User registration:
 - Confirmation link for new user registration
 - Additional information for user registration (ip, hostname, user agent)
 - User edit functionality
+- Add a registration password that will be announced in the presentation and add it to the sign-up form
 
 Bot upload:
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
-    - Or try to use ControllerAdvice or annotated controller error method
 
 Web access log:
 - Simple web access log
@@ -38,4 +21,22 @@ Functionality that I can avoid to create:
     - I still need to bcrypt it, so there must be such an admin functionality...
     - Users must be able to change their password though
 
+Info:
+========================================================================================================================
 - Service account: gridwars Fiba-Raxi
+
+
+Useful links:
+========================================================================================================================
+- Spring Boot docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
+- Spring Boot config properties: https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+- Thymeleaf docs: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html
+- Bootstrap docs: https://getbootstrap.com/docs/4.0/components/alerts/
+- Spring Data JPA docs: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+
+- Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
+- Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
+- File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+
+
+
