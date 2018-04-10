@@ -1,6 +1,7 @@
-package cern.ais.gridwars.web.service;
+package cern.ais.gridwars.web.worker;
 
 import cern.ais.gridwars.web.domain.Match;
+import cern.ais.gridwars.web.service.MatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,6 +27,8 @@ public class MatchWorker implements Runnable {
     private volatile boolean running = false;
     private final MatchService matchService;
     private int workerNumber;
+
+    private final Random random = new Random();
 
     @Autowired
     public MatchWorker(MatchService matchService) {
@@ -83,10 +87,12 @@ public class MatchWorker implements Runnable {
     private void executeMatch(Match match) {
         logInfo("executing pending match: {}", match.getId());
 
-        // TODO implement remote process execution...
+        // TODO implement remote process execution, create some fake match results here.
         match.setEnded(Instant.now());
         match.setStatus(Match.Status.FINISHED);
-        match.setOutcome(Match.Outcome.WIN);
+        match.setOutcome(Match.Outcome.values()[random.nextInt(Match.Outcome.values().length)]);
+        match.setTurns(random.nextInt(3000));
+
         matchService.updateMatch(match);
     }
 

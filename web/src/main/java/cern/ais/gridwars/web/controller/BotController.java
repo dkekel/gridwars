@@ -2,6 +2,7 @@ package cern.ais.gridwars.web.controller;
 
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.BotService;
+import cern.ais.gridwars.web.service.BotUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,11 @@ public class BotController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    private final BotService botService;
+    private final BotUploadService botUploadService;
 
     @Autowired
-    public BotController(BotService botService) {
-        this.botService = Objects.requireNonNull(botService);
+    public BotController(BotUploadService botUploadService) {
+        this.botUploadService = Objects.requireNonNull(botUploadService);
     }
 
     @GetMapping("/upload")
@@ -41,9 +42,9 @@ public class BotController {
                 botJarFile.getSize(), user.getUsername());
 
         try {
-            botService.validateAndCreateNewUploadedBot(botJarFile, user, Instant.now());
+            botUploadService.uploadNewBot(botJarFile, user, Instant.now());
             redirectAttributes.addFlashAttribute("success", true);
-        } catch (BotService.BotUploadException bue) {
+        } catch (BotService.BotException bue) {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());
         }
 

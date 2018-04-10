@@ -19,9 +19,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Stream;
 
 
 @Service
@@ -31,23 +33,34 @@ public class BotService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final BotRepository botRepository;
-    private final MatchService matchService;
     private final JarStorageService jarStorageService;
 
     @Autowired
-    public BotService(BotRepository botRepository, MatchService matchService, JarStorageService jarStorageService) {
+    public BotService(BotRepository botRepository, JarStorageService jarStorageService) {
         this.botRepository = Objects.requireNonNull(botRepository);
-        this.matchService = Objects.requireNonNull(matchService);
         this.jarStorageService = Objects.requireNonNull(jarStorageService);
     }
 
+    @Transactional(readOnly = true)
+    public List<Bot> getAllActiveBots() {
+        return botRepository.findAllByActiveIsTrue();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Bot> getActiveBotsOfUser(User user) {
+        // Should usually only return a single result. Only returns a list in case there are multiple active bots,
+        // for whatever reason.
+        return botRepository.findAllByUserAndActiveIsTrue(user);
+    }
+
+    // TODO refactor this, the BotService should not be aware of any web classes (MultipartFile in this case)
     @Transactional
-    public void validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
+    public Bot validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
         File storedBotJarFile = null;
         try {
             storedBotJarFile = storeUploadedBotJarFile(uploadedBotJarFile, user, uploadTime);
-            String botClassName = validateBotJarFileAndGetBotClassName(storedBotJarFile);
-            createNewBot(storedBotJarFile, botClassName, user, uploadTime);
+            String botClassName = validateBotJarFileAndExtractBotClassName(storedBotJarFile);
+            return createNewBotRecord(storedBotJarFile.getName(), botClassName, user, uploadTime);
         } catch (Exception e) {
             LOG.error("Failed to validate and persist bot uploaded by user \"{}\": {}", user.getUsername(),
                 e.getMessage(), e);
@@ -57,16 +70,16 @@ public class BotService {
     }
 
     private File storeUploadedBotJarFile(MultipartFile uploadedJarFile, User user, Instant uploadTime) {
-        return jarStorageService.storeJarFile(uploadedJarFile, user.getId(), uploadTime);
+        return jarStorageService.storeUploadedJarFile(uploadedJarFile, user.getId(), uploadTime);
     }
 
-    private String validateBotJarFileAndGetBotClassName(File botJarFile) {
+    private String validateBotJarFileAndExtractBotClassName(File botJarFile) {
         try (JarFile jarFile = new JarFile(botJarFile)) {
             String botClassName = extractBotClassName(jarFile);
             loadAndValidateBotClass(botClassName, botJarFile);
             return botClassName;
         } catch (IOException e) {
-            throw new BotUploadException("Invalid jar file", e);
+            throw new BotException("Invalid jar file", e);
         }
     }
 
@@ -86,7 +99,7 @@ public class BotService {
         }
 
         if (manifest == null) {
-            throw new BotUploadException("Could not load META-INF/MANIFEST.MF file in bot jar file");
+            throw new BotException("Could not load META-INF/MANIFEST.MF file in bot jar file");
         }
 
         return manifest;
@@ -96,7 +109,7 @@ public class BotService {
         String fullyQualifiedBotClassName = manifest.getMainAttributes().getValue(BOT_CLASS_NAME_MANIFEST_HEADER);
 
         if (fullyQualifiedBotClassName == null) {
-            throw new BotUploadException("The META-INF/MANIFEST.MF file is missing the bot class name header: " + BOT_CLASS_NAME_MANIFEST_HEADER);
+            throw new BotException("The META-INF/MANIFEST.MF file is missing the bot class name header: " + BOT_CLASS_NAME_MANIFEST_HEADER);
         }
 
         return fullyQualifiedBotClassName.trim();
@@ -113,7 +126,7 @@ public class BotService {
         try (URLClassLoader classLoader = new URLClassLoader(new URL[] { botJarFileUrl }, getClass().getClassLoader())) {
             return Class.forName(botClassName, false, classLoader);
         } catch (Exception e) {
-            throw new BotUploadException("Failed to instantiate bot class: " + botClassName, e);
+            throw new BotException("Failed to instantiate bot class: " + botClassName, e);
         }
     }
 
@@ -127,26 +140,16 @@ public class BotService {
 
     private void validateBotClass(Class botClass) {
         if (botClass.isInterface() || Modifier.isAbstract(botClass.getModifiers())) {
-            throw new BotUploadException("Bot class '" + botClass.getName() + "' must not be an interface or abstract");
+            throw new BotException("Bot class '" + botClass.getName() + "' must not be an interface or abstract");
         }
 
         if (!PlayerBot.class.isAssignableFrom(botClass)) {
-            throw new BotUploadException("Bot class '" + botClass.getName() + "' does not implement required interface: " + PlayerBot.class.getName());
+            throw new BotException("Bot class '" + botClass.getName() + "' does not implement required interface: " + PlayerBot.class.getName());
         }
-    }
 
-    private void createNewBot(File botJarFile, String botClassName, User user, Instant uploadTime) {
-        inactivateOldBot(user);
-        Bot newBot = createNewBotRecord(botJarFile.getName(), botClassName, user, uploadTime);
-        matchService.generateMatches(newBot);
-    }
-
-    private void inactivateOldBot(User user) {
-        botRepository.findAllByUserAndActiveIsTrue(user).forEach(oldBot -> {
-            matchService.cancelPendingMatches(oldBot);
-            oldBot.setActive(false);
-            botRepository.saveAndFlush(oldBot);
-        });
+        if (Stream.of(botClass.getConstructors()).noneMatch(constructor -> constructor.getParameterCount() == 0)) {
+            throw new BotException("Bot class '" + botClass.getName() + "' does not define a parameterless default constructor");
+        }
     }
 
     @Transactional
@@ -163,13 +166,19 @@ public class BotService {
         return newBot;
     }
 
-    public static class BotUploadException extends RuntimeException {
+    @Transactional
+    public void inactivateBot(Bot bot) {
+        bot.setActive(false);
+        botRepository.saveAndFlush(bot);
+    }
 
-        public BotUploadException(String message) {
+    public static class BotException extends RuntimeException {
+
+        public BotException(String message) {
             super(message);
         }
 
-        public BotUploadException(String message, Throwable cause) {
+        public BotException(String message, Throwable cause) {
             super(message, cause);
         }
     }

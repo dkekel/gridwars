@@ -33,7 +33,7 @@ public class JarStorageService {
         return FileUtils.joinFilePaths(gridwarsWorkDir, "bots");
     }
 
-    public File storeJarFile(MultipartFile uploadedJarFile, String userId, Instant uploadTime) {
+    public File storeUploadedJarFile(MultipartFile uploadedJarFile, String userId, Instant uploadTime) {
         File storedJarFile = createNewJarFile(userId, uploadTime);
         LOG.info("Storing uploaded bot jar file: {}", storedJarFile.getAbsolutePath());
 

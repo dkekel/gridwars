@@ -23,30 +23,30 @@ public class MatchService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchRepository matchRepository;
-    private final BotRepository botRepository;
+    private final BotService botService;
     private final Integer numberOfMatches;
 
     @Autowired
-    public MatchService(MatchRepository matchRepository, BotRepository botRepository,
+    public MatchService(MatchRepository matchRepository, BotService botService,
                         @Value("${gridwars.matches.number}") Integer numberOfMatches) {
         this.matchRepository = Objects.requireNonNull(matchRepository);
-        this.botRepository = Objects.requireNonNull(botRepository);
+        this.botService = Objects.requireNonNull(botService);
         this.numberOfMatches = Objects.requireNonNull(numberOfMatches);
     }
 
     @Transactional
-    public void generateMatches(Bot player) {
-        botRepository.findAllByActiveIsTrue().stream()
-            .filter(otherPlayer -> !otherPlayer.equals(player))
-            .forEach(otherPlayer -> createMatches(player, otherPlayer));
+    public void generateMatches(Bot bot) {
+        botService.getAllActiveBots().stream()
+            .filter(otherPlayer -> !otherPlayer.equals(bot))
+            .forEach(otherPlayer -> createMatches(bot, otherPlayer));
     }
 
-    private void createMatches(Bot player1, Bot player2) {
+    private void createMatches(Bot bot1, Bot bot2) {
         for (int n = 0; n < numberOfMatches; n++) {
-            createSingleMatch(player1, player2);
+            createSingleMatch(bot1, bot2);
         }
         matchRepository.flush();
-        LOG.debug("Generated {} matches between bot {} and bot {}", numberOfMatches, player1.getId(), player2.getId());
+        LOG.debug("Generated {} matches between bot {} and bot {}", numberOfMatches, bot1.getId(), bot2.getId());
     }
 
     private void createSingleMatch(Bot player1, Bot player2) {
@@ -61,13 +61,13 @@ public class MatchService {
     }
 
     @Transactional
-    public void cancelPendingMatches(Bot player) {
-        matchRepository.findMatchesByPlayer1OrPlayer2(player, player).stream()
+    public void cancelPendingMatches(Bot bot) {
+        matchRepository.findMatchesByPlayer1OrPlayer2(bot, bot).stream()
             .filter(this::isPending)
             .forEach(this::cancelMatch);
 
         matchRepository.flush();
-        LOG.debug("Cancelled pending matches of bot {}", player.getId());
+        LOG.debug("Cancelled pending matches of bot {}", bot.getId());
     }
 
     private boolean isPending(Match match) {
@@ -79,6 +79,8 @@ public class MatchService {
         matchRepository.save(match);
     }
 
+    // TODO instead of using a synchronized method here, maybe try to obtain a read lock on the DB table?
+    // A locking exception would mean the row (match) was already taken by another worker.
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public synchronized Optional<Match> takeNextPendingMatch() {
         return matchRepository.findFirstByStatusOrderByPendingSinceAsc(Match.Status.PENDING)
