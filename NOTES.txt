@@ -14,6 +14,10 @@ Web access log:
 - Simple web access log
 - Tag requests with unique id and show this id in log output to find the matching requests
 
+Mailing:
+- Switch to HTML e-mails with templates rendered by Thymeleaf
+- Make some settings configuration via application.yml
+    - From sender, bcc recipients
 
 Functionality that I can avoid to create:
 ========================================================================================================================
@@ -30,9 +34,16 @@ Useful links:
 ========================================================================================================================
 - Spring Boot docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
 - Spring Boot config properties: https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
 - Thymeleaf docs: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html
+
 - Bootstrap docs: https://getbootstrap.com/docs/4.0/components/alerts/
+
 - Spring Data JPA docs: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+
+- Spring Mail docs: https://docs.spring.io/spring/docs/5.0.5.RELEASE/spring-framework-reference/integration.html#mail
+- Sending mails: http://www.baeldung.com/spring-email
+- Sending HTML mails with Thymeleaf: https://www.thymeleaf.org/doc/articles/springmail.html
 
 - Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
 - Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
