@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -17,6 +19,7 @@ import java.util.Objects;
 public class MatchExecutionService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final List<MatchWorker> matchWorkers = new LinkedList<>();
     private final TaskExecutor taskExecutor;
     private final ApplicationContext applicationContext;
     private final Integer workerCount;
@@ -29,19 +32,42 @@ public class MatchExecutionService {
         this.workerCount = Objects.requireNonNull(workerCount);
     }
 
+    public void wakeUpAllMatchWorkers() {
+        matchWorkers.forEach(MatchWorker::wakeUp);
+    }
+
     @PostConstruct
-    public void init() {
-        for (int i = 0; i < workerCount; i++) {
-            MatchWorker matchWorker = applicationContext.getBean(MatchWorker.class);
-            matchWorker.setWorkerNum(i + 1);
-            taskExecutor.execute(matchWorker);
-        }
+    protected void init() {
+        createMatchWorkers();
+        startAllMatchWorkers();
 
         LOG.debug("MatchExecutionService initialised, worker count: {}", workerCount);
     }
 
+    private void createMatchWorkers() {
+        for (int i = 0; i < workerCount; i++) {
+            createMatchWorker(i + 1);
+        }
+    }
+
+    private void createMatchWorker(int workerNumber) {
+        MatchWorker matchWorker = applicationContext.getBean(MatchWorker.class); // Will create a new bean on each call
+        matchWorker.setWorkerNumber(workerNumber);
+        matchWorkers.add(matchWorker);
+    }
+
+    private void startAllMatchWorkers() {
+        matchWorkers.forEach(taskExecutor::execute);
+    }
+
     @PreDestroy
-    public void destroy() {
+    protected void destroy() {
+        shutdownAllMatchWorkers();
+        matchWorkers.clear();
         LOG.debug("MatchExecutionService destroyed");
+    }
+
+    private void shutdownAllMatchWorkers() {
+        matchWorkers.forEach(MatchWorker::shutdown);
     }
 }

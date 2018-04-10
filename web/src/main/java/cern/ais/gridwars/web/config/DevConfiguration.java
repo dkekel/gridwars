@@ -86,5 +86,7 @@ public class DevConfiguration {
 
         Bot bot3 = botService.createNewBotRecord("testBot3.jar", "TestBot3", admin1, Instant.now());
         matchService.generateMatches(bot3);
+
+        matchExecutionService.wakeUpAllMatchWorkers();
     }
 }

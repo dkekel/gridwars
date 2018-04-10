@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 @Component
@@ -17,53 +20,103 @@ import java.util.Optional;
 public class MatchWorker implements Runnable {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Lock lock = new ReentrantLock();
+    private final Condition newMatchesAvailableCondition = lock.newCondition();
+    private volatile boolean running = false;
     private final MatchService matchService;
-    private int workerNum;
+    private int workerNumber;
 
     @Autowired
     public MatchWorker(MatchService matchService) {
         this.matchService = Objects.requireNonNull(matchService);
     }
 
-    public void setWorkerNum(int workerNum) {
-        this.workerNum = workerNum;
+    public void setWorkerNumber(int workerNumber) {
+        this.workerNumber = workerNumber;
     }
 
     @Override
-    public synchronized void run() {
-        LOG.debug("Worker [{}]: started", workerNum);
-        enterMainEventLoop();
-        LOG.debug("Worker [{}]: finished", workerNum);
+    public void run() {
+        if (running) {
+            return;
+        }
+
+        lock.lock();
+        try {
+            running = true;
+            logInfo("started");
+            runMainEventLoop();
+            logInfo("was shut down");
+        } catch (InterruptedException ignored) {
+            logInfo("received terminate signal");
+        } finally {
+            lock.unlock();
+        }
+
+        running = false;
+        logInfo("terminated");
     }
 
-    private void enterMainEventLoop(){
-        while (true) {
+    private void runMainEventLoop() throws InterruptedException {
+        while (running) {
             Optional<Match> match = takeNextPendingMatch();
 
-            if (match.isPresent()) {
-                executeMatch(match.get());
-            } else {
-                LOG.debug("Worker [{}]: No more pending matches available, going to sleep", workerNum);
-                try {
-                    wait();
-                } catch (InterruptedException ignored) {
-                    // Received quit signal
+            // TODO if the match was taken but the worker was shutdown, the match must be returned into the pending queue
+
+            if (running) {
+                if (match.isPresent()) {
+                    executeMatch(match.get());
+                } else {
+                    logDebug("no more pending matches available, sleeping until matches are available");
+                    newMatchesAvailableCondition.await();
+                    logDebug("woke up and will check for pending matches");
                 }
-                LOG.debug("Worker [{}]: woken up and will check for pending matches", workerNum);
             }
         }
     }
 
     private Optional<Match> takeNextPendingMatch() {
-        LOG.debug("Worker [{}]: checking for a pending match", workerNum);
+        logDebug("checking for a pending match");
         return matchService.takeNextPendingMatch();
     }
 
     private void executeMatch(Match match) {
-        LOG.debug("Worker [{}]: executing pending match: {}", workerNum, match.getId());
+        logInfo("executing pending match: {}", match.getId());
+
+        // TODO implement remote process execution...
         match.setEnded(Instant.now());
         match.setStatus(Match.Status.FINISHED);
         match.setOutcome(Match.Outcome.WIN);
         matchService.updateMatch(match);
+    }
+
+    public void wakeUp() {
+        // If the lock can't be acquired, the worker is not sleeping and therefore doesn't need to be woken up.
+        if (lock.tryLock()) {
+            try {
+                newMatchesAvailableCondition.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    public void shutdown() {
+        if (running) {
+            running = false;
+            wakeUp();
+        }
+    }
+
+    private void logDebug(String message, Object... params) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Worker [{}]: " + message, workerNumber, params);
+        }
+    }
+
+    private void logInfo(String message, Object... params) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Worker [{}]: " + message, workerNumber, params);
+        }
     }
 }
