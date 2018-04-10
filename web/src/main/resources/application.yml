@@ -83,6 +83,27 @@ server:
             enabled: true
 
 # ==================================================================================================
+# Mail Configuration
+# ==================================================================================================
+---
+spring:
+    mail:
+        host: smtp.cern.ch
+        port: 587
+        username: gridwars
+        password: Fiba-Raxi
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enabled: true
+                        required: true
+                    connectiontimeout: 5000
+                    timeout: 3000
+                    writetimeout: 5000
+
+# ==================================================================================================
 # GridWars Configuration
 # ==================================================================================================
 ---
