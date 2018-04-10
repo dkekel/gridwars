@@ -3,6 +3,7 @@ package cern.ais.gridwars.web.config;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.BotService;
+import cern.ais.gridwars.web.service.MatchExecutionService;
 import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class DevConfiguration {
 
     @Autowired
     private MatchService matchService;
+
+    @Autowired
+    private MatchExecutionService matchExecutionService;
 
     @PostConstruct
     public void initTestData() {

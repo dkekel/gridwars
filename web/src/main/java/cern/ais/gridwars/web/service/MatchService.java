@@ -46,7 +46,7 @@ public class MatchService {
             createSingleMatch(player1, player2);
         }
         matchRepository.flush();
-        LOG.debug("Generated {} matches between bot {} and bot {}", player1.getId(), player2.getId());
+        LOG.debug("Generated {} matches between bot {} and bot {}", numberOfMatches, player1.getId(), player2.getId());
     }
 
     private void createSingleMatch(Bot player1, Bot player2) {
@@ -90,5 +90,10 @@ public class MatchService {
         match.setStarted(Instant.now());
         matchRepository.saveAndFlush(match);
         return match;
+    }
+
+    @Transactional
+    public void updateMatch(Match match) {
+        matchRepository.saveAndFlush(match);
     }
 }
