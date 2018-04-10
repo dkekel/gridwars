@@ -19,6 +19,9 @@ Mailing:
 - Make some settings configuration via application.yml
     - From sender, bcc recipients
 
+- Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
+
+
 Functionality that I can avoid to create:
 ========================================================================================================================
 - Forgot password: They should mail me, I will reset the password to a new one
