@@ -1,6 +1,7 @@
 TODO:
 ========================================================================================================================
 User registration:
+- Validate the email address at the domain class level
 - Confirmation link for new user registration
 - Additional information for user registration (ip, hostname, user agent)
 - User edit functionality
@@ -20,6 +21,9 @@ Mailing:
     - From sender, bcc recipients
 
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
+
+- Have logs also printed to files under "work/logs"
+    - dated and rolling logs?
 
 
 Functionality that I can avoid to create:
@@ -51,6 +55,3 @@ Useful links:
 - Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
 - Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
 - File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
-
-
-
