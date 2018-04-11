@@ -11,12 +11,17 @@ Bot upload:
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 
+Match runtime process:
+- How to disable reflection?
+
 Web access log:
 - Simple web access log
 - Tag requests with unique id and show this id in log output to find the matching requests
 
 Mailing:
-- Switch to HTML e-mails with templates rendered by Thymeleaf
+- Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
+- create an e-group and add the external e-mail addresses by hand in order to send e-mails on behalf of grid.wars
+- set up mail client for "gridwars" (Outlook OWA?)
 
 GridWars API & Impl:
 - Provide a logger via the API to be able to log bot output to a dedicated file

@@ -21,6 +21,8 @@ public class Bot {
     @Size(max = 256) // Contains a UUID, so make it big enough!
     private String jarFileName;
 
+    // TODO the bot class name probably needs to be unique (for different users), otherwise they can't be loaded
+    // in the same JVM
     @Column(nullable = false)
     @Size(max = 64)
     private String botClassName;

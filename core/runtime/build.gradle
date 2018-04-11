@@ -1,3 +1,7 @@
+apply plugin: 'application'
+
+mainClassName = 'cern.ais.gridwars.runtime.MatchRuntime'
+
 dependencies {
   compile project(':core:impl')
 }

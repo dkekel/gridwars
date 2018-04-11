@@ -65,3 +65,5 @@ dependencies {
 // TODO create a task to clear the subfolders of the dev work folder
 
 // TODO create a task to set up an external work dir folder to allow running the app as a runnable jar
+
+// TODO create a command that runs before "bootRun" that copies the api, impl, and runtime jar into "work/runtime"
