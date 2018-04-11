@@ -166,7 +166,7 @@ public class MatchExecutor {
                 createMatchRuntimeClassPathPart(),
                 determineBotJarPath(match.getBot1()),
                 determineBotJarPath(match.getBot2())
-            ).collect(Collectors.joining(";"));
+            ).collect(Collectors.joining(File.pathSeparator));
 
         return Stream.of(
                 "-cp",
@@ -184,12 +184,16 @@ public class MatchExecutor {
         }
 
         return Stream.of(runtimeDirFile)
-            .filter(file -> file.getName().toLowerCase().endsWith(".jar"))
+            .filter(this::isJarFile)
             // It may be relevant that "-api.jar" comes before "-impl.jar" and "-runtime.jar", but not sure. To
             // avoid potential issues, we sort the jars by name to have a safe order: api, impl, runtime
             .sorted()
             .map(File::getAbsolutePath)
-            .collect(Collectors.joining(";"));
+            .collect(Collectors.joining(File.pathSeparator));
+    }
+
+    private boolean isJarFile(File file) {
+        return file.getName().toLowerCase().endsWith(".jar");
     }
 
     private String determineBotJarPath(Bot bot) {
