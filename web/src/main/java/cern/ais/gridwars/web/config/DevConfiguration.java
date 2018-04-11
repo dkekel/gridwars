@@ -62,7 +62,7 @@ public class DevConfiguration {
                 .setPassword("bla3")
                 .setEmail("user3@cern.ch")
                 .setTeamname("Team User3")
-                .setEnabled(false)
+                .setEnabled(true)
         );
 
         User admin1 = userService.create(
@@ -78,14 +78,14 @@ public class DevConfiguration {
         // =====================================================================
         // Bots and Matches
         // =====================================================================
-        Bot bot1 = botService.createNewBotRecord("testBot1.jar", "TestBot1", user1, Instant.now());
+        Bot bot1 = botService.createNewBotRecord("gridwars-jaegerbot.jar", "cern.ais.gridwars.JaegerBot", user1, Instant.now());
         matchService.generateMatches(bot1);
 
-        Bot bot2 = botService.createNewBotRecord("testBot2.jar", "TestBot2", user2, Instant.now());
+        Bot bot2 = botService.createNewBotRecord("gridwars-gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user2, Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord("testBot3.jar", "TestBot3", admin1, Instant.now());
-        matchService.generateMatches(bot3);
+//        Bot bot3 = botService.createNewBotRecord("gridwars-brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user3, Instant.now());
+//        matchService.generateMatches(bot3);
 
         matchWorkerService.wakeUpAllMatchWorkers();
 
