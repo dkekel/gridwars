@@ -17,8 +17,6 @@ Web access log:
 
 Mailing:
 - Switch to HTML e-mails with templates rendered by Thymeleaf
-- Make some settings configuration via application.yml
-    - From sender, bcc recipients
 
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 

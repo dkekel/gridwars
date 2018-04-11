@@ -2,10 +2,7 @@ package cern.ais.gridwars.web.config;
 
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
-import cern.ais.gridwars.web.service.BotService;
-import cern.ais.gridwars.web.service.MatchExecutionService;
-import cern.ais.gridwars.web.service.MatchService;
-import cern.ais.gridwars.web.service.UserService;
+import cern.ais.gridwars.web.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -32,6 +29,9 @@ public class DevConfiguration {
 
     @Autowired
     private MatchExecutionService matchExecutionService;
+
+    @Autowired
+    private MailService mailService;
 
     @PostConstruct
     public void initTestData() {
@@ -88,5 +88,12 @@ public class DevConfiguration {
         matchService.generateMatches(bot3);
 
         matchExecutionService.wakeUpAllMatchWorkers();
+
+
+//        mailService.sendMail(MailService.MailBuilder.newMail()
+//            .setTo("weltenrichter@gmail.com")
+//            .setSubject("Hello from GridWars")
+//            .setText("Mail sending is working!")
+//        );
     }
 }

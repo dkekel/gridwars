@@ -1,11 +1,13 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -13,16 +15,15 @@ import java.util.Objects;
 @Service
 public class MailService {
 
-    private static final String FROM = "CERN GridWars <grid.wars@cern.ch>";
-    private static final String BCC_RECIPIENT = "benjamin.wolff@cern.ch";
-
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final JavaMailSender mailSender;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
-    public MailService(JavaMailSender mailSender) {
+    public MailService(JavaMailSender mailSender, GridWarsProperties gridWarsProperties) {
         this.mailSender = Objects.requireNonNull(mailSender);
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     public void sendMail(MailBuilder mailBuilder) {
@@ -31,12 +32,17 @@ public class MailService {
 
     private SimpleMailMessage createMailMessage(MailBuilder mailBuilder) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(FROM);
+        message.setFrom(gridWarsProperties.getMail().getFrom());
         message.setTo(mailBuilder.getTo());
         message.setCc(mailBuilder.getCc());
-        message.setBcc(BCC_RECIPIENT);
         message.setSubject(mailBuilder.getSubject());
         message.setText(mailBuilder.getText());
+
+        String bccRecipient = gridWarsProperties.getMail().getBcc();
+        if (StringUtils.hasLength(bccRecipient)) {
+            message.setBcc(bccRecipient);
+        }
+
         return message;
     }
 
