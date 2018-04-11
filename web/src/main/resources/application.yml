@@ -1,6 +1,25 @@
 # ==================================================================================================
+# GridWars Configuration
+# ==================================================================================================
+gridwars:
+    directories:
+        # Default value, should be provided upon start by a system property.
+        baseWorkDir: './work'
+    matches:
+        number: 1
+        workerCount: 3
+        # TODO adjust the value below to a more realistic value. theoretically, a match can last 120 seconds, plus some millis for initialisation
+        executionTimeoutSeconds: 5
+        # Class name must correspond to the main class in the "core/runtime" sub-project
+        matchRuntimeMainClassName: 'cern.ais.gridwars.runtime.MatchRuntime'
+    mail:
+        from: 'CERN GridWars <grid.wars@cern.ch>'
+        bcc: 'benjamin.wolff@cern.ch'
+
+# ==================================================================================================
 # Spring Profiles Configuration
 # ==================================================================================================
+---
 spring:
     profiles:
         active: dev
@@ -40,7 +59,7 @@ spring:
         static-locations: classpath:/static/
         cache:
             cachecontrol:
-                max-age: 1h
+                max-age: 4h
 
 # ==================================================================================================
 # Spring Servlet Configuration
@@ -59,17 +78,8 @@ spring:
 ---
 spring:
     thymeleaf:
+        # TODO disable caching only in dev mode...
         cache: false
-
-# ==================================================================================================
-# Quartz Configuration
-# ==================================================================================================
----
-spring:
-    quartz:
-        job-store-type: memory
-        jdbc:
-            initialize-schema: never
 
 # ==================================================================================================
 # H2 Configuration
@@ -112,22 +122,3 @@ spring:
                     connectiontimeout: 5000
                     timeout: 3000
                     writetimeout: 5000
-
-# ==================================================================================================
-# GridWars Configuration
-# ==================================================================================================
----
-gridwars:
-    directories:
-        # Default value, should be provided upon start by a system property.
-        baseWorkDir: './work'
-    matches:
-        number: 1
-        workerCount: 3
-        # TODO adjust the value below to a more realistic value. theoretically, a match can last 120 seconds, plus some millis for initialisation
-        executionTimeoutSeconds: 5
-        # Class name must correspond to the main class in the "core/runtime" sub-project
-        matchRuntimeMainClassName: 'cern.ais.gridwars.runtime.MatchRuntime'
-    mail:
-        from: 'CERN GridWars <grid.wars@cern.ch>'
-        bcc: 'benjamin.wolff@cern.ch'
