@@ -4,9 +4,6 @@ import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.service.MatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -17,8 +14,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-@Component
-@Scope("prototype")
 public class MatchWorker implements Runnable {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -26,16 +21,12 @@ public class MatchWorker implements Runnable {
     private final Condition newMatchesAvailableCondition = lock.newCondition();
     private volatile boolean running = false;
     private final MatchService matchService;
-    private int workerNumber;
+    private final int workerNumber;
 
     private final Random random = new Random();
 
-    @Autowired
-    public MatchWorker(MatchService matchService) {
+    public MatchWorker(MatchService matchService, int workerNumber) {
         this.matchService = Objects.requireNonNull(matchService);
-    }
-
-    public void setWorkerNumber(int workerNumber) {
         this.workerNumber = workerNumber;
     }
 

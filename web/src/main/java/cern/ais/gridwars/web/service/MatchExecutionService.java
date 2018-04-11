@@ -5,7 +5,6 @@ import cern.ais.gridwars.web.worker.MatchWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +21,14 @@ public class MatchExecutionService {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final List<MatchWorker> matchWorkers = new LinkedList<>();
     private final TaskExecutor taskExecutor;
-    private final ApplicationContext applicationContext;
+    private final MatchService matchService;
     private final Integer workerCount;
 
     @Autowired
-    public MatchExecutionService(TaskExecutor taskExecutor, ApplicationContext applicationContext,
+    public MatchExecutionService(TaskExecutor taskExecutor, MatchService matchService,
                                  GridWarsProperties gridWarsProperties) {
         this.taskExecutor = Objects.requireNonNull(taskExecutor);
-        this.applicationContext = Objects.requireNonNull(applicationContext);
+        this.matchService = Objects.requireNonNull(matchService);
         this.workerCount = Objects.requireNonNull(gridWarsProperties.getMatches().getWorkerCount());
     }
 
@@ -52,8 +51,7 @@ public class MatchExecutionService {
     }
 
     private void createMatchWorker(int workerNumber) {
-        MatchWorker matchWorker = applicationContext.getBean(MatchWorker.class); // Will create a new bean on each call
-        matchWorker.setWorkerNumber(workerNumber);
+        MatchWorker matchWorker = new MatchWorker(matchService, workerNumber);
         matchWorkers.add(matchWorker);
     }
 
