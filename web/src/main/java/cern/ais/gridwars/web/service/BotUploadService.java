@@ -17,14 +17,14 @@ public class BotUploadService {
 
     private final BotService botService;
     private final MatchService matchService;
-    private final MatchExecutionService matchExecutionService;
+    private final MatchWorkerService matchWorkerService;
 
     @Autowired
     public BotUploadService(BotService botService, MatchService matchService,
-                      MatchExecutionService matchExecutionService) {
+                            MatchWorkerService matchWorkerService) {
         this.botService = Objects.requireNonNull(botService);
         this.matchService = Objects.requireNonNull(matchService);
-        this.matchExecutionService = Objects.requireNonNull(matchExecutionService);
+        this.matchWorkerService = Objects.requireNonNull(matchWorkerService);
     }
 
     @Transactional
@@ -35,7 +35,7 @@ public class BotUploadService {
         matchService.generateMatches(newBot);
 
         // TODO Do the following outside of the transaction, maybe in the controller, or in a transaction commit callback?
-        matchExecutionService.wakeUpAllMatchWorkers();
+        matchWorkerService.wakeUpAllMatchWorkers();
     }
 
     private void inactivateOldBots(List<Bot> oldBots) {

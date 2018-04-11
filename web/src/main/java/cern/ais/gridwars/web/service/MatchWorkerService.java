@@ -16,7 +16,7 @@ import java.util.Objects;
 
 
 @Service
-public class MatchExecutionService {
+public class MatchWorkerService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final List<MatchWorker> matchWorkers = new LinkedList<>();
@@ -25,8 +25,8 @@ public class MatchExecutionService {
     private final Integer workerCount;
 
     @Autowired
-    public MatchExecutionService(TaskExecutor taskExecutor, MatchService matchService,
-                                 GridWarsProperties gridWarsProperties) {
+    public MatchWorkerService(TaskExecutor taskExecutor, MatchService matchService,
+                              GridWarsProperties gridWarsProperties) {
         this.taskExecutor = Objects.requireNonNull(taskExecutor);
         this.matchService = Objects.requireNonNull(matchService);
         this.workerCount = Objects.requireNonNull(gridWarsProperties.getMatches().getWorkerCount());

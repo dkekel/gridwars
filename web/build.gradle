@@ -44,6 +44,7 @@ bootRun {
 dependencies {
     compile project(':core:api')
     compile project(':core:impl')
+    compile project(':core:runtime')
 
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-security')
@@ -60,3 +61,5 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
 }
+
+// TODO create a task to set up an external work dir folder to allow running the app as a runnable jar

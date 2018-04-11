@@ -19,11 +19,9 @@ public class MatchWorker implements Runnable {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final Lock lock = new ReentrantLock();
     private final Condition newMatchesAvailableCondition = lock.newCondition();
-    private volatile boolean running = false;
     private final MatchService matchService;
     private final int workerNumber;
-
-    private final Random random = new Random();
+    private volatile boolean running = false;
 
     public MatchWorker(MatchService matchService, int workerNumber) {
         this.matchService = Objects.requireNonNull(matchService);
@@ -80,6 +78,7 @@ public class MatchWorker implements Runnable {
         logInfo("executing pending match: {}", match.getId());
 
         // TODO implement remote process execution, create some fake match results here.
+        Random random = new Random();
         match.setEnded(Instant.now());
         match.setStatus(Match.Status.FINISHED);
         match.setOutcome(Match.Outcome.values()[random.nextInt(Match.Outcome.values().length)]);
