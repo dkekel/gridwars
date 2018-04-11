@@ -1,0 +1,4 @@
+jar {
+    // Bundle the Java source files in the jar to allow attaching sources in the IDE
+    from sourceSets.main.java
+}
