@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 
 @Service
@@ -21,16 +22,11 @@ public class JarStorageService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-    private final String jarStorageDir;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
     public JarStorageService(GridWarsProperties gridWarsProperties) {
-        this.jarStorageDir = determineJarStorageDir(gridWarsProperties.getWorkdir());
-        LOG.info("Bot jar storage dir: {}", jarStorageDir);
-    }
-
-    private String determineJarStorageDir(String gridwarsWorkDir) {
-        return FileUtils.joinFilePaths(gridwarsWorkDir, "bots");
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     public File storeUploadedJarFile(MultipartFile uploadedJarFile, String userId, Instant uploadTime) {
@@ -48,7 +44,8 @@ public class JarStorageService {
     }
 
     private File createNewJarFile(String userId, Instant uploadTime) {
-        return new File(jarStorageDir, determineBotJarFileName(userId, uploadTime));
+        return new File(gridWarsProperties.getDirectories().getBotJarDir(),
+                determineBotJarFileName(userId, uploadTime));
     }
 
     private String determineBotJarFileName(String userId, Instant uploadTime) {

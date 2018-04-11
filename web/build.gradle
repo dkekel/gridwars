@@ -37,7 +37,7 @@ bootRun {
     // Set up the work folders. When running from a runnable jar, these system properties need to be
     // provided by jvm start parameters.
     def workDir = "${project.projectDir.absolutePath}${File.separator}work"
-    systemProperties["gridwars.workdir"] = workDir
+    systemProperties["gridwars.directories.baseWorkDir"] = workDir
     systemProperties["server.tomcat.basedir"] = "${workDir}${File.separator}server"
 }
 

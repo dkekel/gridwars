@@ -1,45 +1,97 @@
 package cern.ais.gridwars.web.config;
 
+import cern.ais.gridwars.web.service.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
 
 
 @Configuration
 @ConfigurationProperties("gridwars")
 public class GridWarsProperties {
 
-    private String workdir;
-    private Matches matches = new Matches();
-    private Mail mail = new Mail();
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Directories directories = new Directories();
+    private final Matches matches = new Matches();
+    private final Mail mail = new Mail();
 
-    public String getWorkdir() {
-        return workdir;
+    @PostConstruct
+    public void init() {
+        directories.initDirs();
     }
 
-    public GridWarsProperties setWorkdir(String workdir) {
-        this.workdir = workdir;
-        return this;
+    public Directories getDirectories() {
+        return directories;
     }
 
     public Matches getMatches() {
         return matches;
     }
 
-    public GridWarsProperties setMatches(Matches matches) {
-        this.matches = matches;
-        return this;
-    }
-
     public Mail getMail() {
         return mail;
     }
 
-    public GridWarsProperties setMail(Mail mail) {
-        this.mail = mail;
-        return this;
+    public class Directories {
+        private String baseWorkDir;
+        private String botJarDir;
+        private String matchesDir;
+        private String runtimeDir;
+
+        protected void initDirs() {
+            botJarDir = FileUtils.joinFilePaths(baseWorkDir, "bots");
+            matchesDir = FileUtils.joinFilePaths(baseWorkDir, "matches");
+            runtimeDir = FileUtils.joinFilePaths(baseWorkDir, "runtime");
+
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Base work dir: {}", baseWorkDir);
+                LOG.info("Bot jar dir: {}", botJarDir);
+                LOG.info("Matches dir: {}", matchesDir);
+                LOG.info("Runtime dir: {}", runtimeDir);
+            }
+        }
+
+        public String getBaseWorkDir() {
+            return baseWorkDir;
+        }
+
+        public Directories setBaseWorkDir(String baseWorkDir) {
+            this.baseWorkDir = baseWorkDir;
+            return this;
+        }
+
+        public String getBotJarDir() {
+            return botJarDir;
+        }
+
+        public Directories setBotJarDir(String botJarDir) {
+            this.botJarDir = botJarDir;
+            return this;
+        }
+
+        public String getMatchesDir() {
+            return matchesDir;
+        }
+
+        public Directories setMatchesDir(String matchesDir) {
+            this.matchesDir = matchesDir;
+            return this;
+        }
+
+        public String getRuntimeDir() {
+            return runtimeDir;
+        }
+
+        public Directories setRuntimeDir(String runtimeDir) {
+            this.runtimeDir = runtimeDir;
+            return this;
+        }
     }
 
-    public static class Matches {
+    public class Matches {
         private Integer number;
         private Integer workerCount;
         private Integer executionTimeoutSeconds;
@@ -72,7 +124,7 @@ public class GridWarsProperties {
         }
     }
 
-    public static class Mail {
+    public class Mail {
         private String from;
         private String bcc;
 

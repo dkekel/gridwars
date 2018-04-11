@@ -118,8 +118,9 @@ spring:
 # ==================================================================================================
 ---
 gridwars:
-    # Default value, should be provided on start by a system property.
-    workdir: './'
+    directories:
+        # Default value, should be provided upon start by a system property.
+        baseWorkDir: './work'
     matches:
         number: 5
         workerCount: 3
