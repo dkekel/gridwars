@@ -46,6 +46,9 @@ public class Match {
     @Column
     private Integer turns;
 
+    @Column
+    private Integer duration;
+
     public String getId() {
         return id;
     }
@@ -124,6 +127,15 @@ public class Match {
 
     public Match setTurns(Integer turns) {
         this.turns = turns;
+        return this;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public Match setDuration(Integer duration) {
+        this.duration = duration;
         return this;
     }
 
