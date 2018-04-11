@@ -65,12 +65,13 @@ public class MatchWorker implements Runnable {
         while (running) {
             Optional<Match> match = takeNextPendingMatch();
 
-            // TODO if the match was taken but the worker was shutdown, the match must be returned into the pending queue
-
-            if (running) {
-                if (match.isPresent()) {
+            if (match.isPresent()) {
+                if (running) {
                     executeMatch(match.get());
-                } else {
+                }
+                // TODO if the match was taken but the worker was shutdown, the match must be returned into the pending queue
+            } else {
+                if (running) {
                     logDebug("no more pending matches available, sleeping until matches are available");
                     newMatchesAvailableCondition.await();
                     logDebug("woke up and will check for pending matches");
