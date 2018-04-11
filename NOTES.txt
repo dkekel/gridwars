@@ -10,9 +10,15 @@ User registration:
 Bot upload:
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+- Don't show a 500 error page when something goes south, but rather a error message in the upload form
+- Validate that two different users don't have bots with the same class name
+    - Otherwise both bot classes can't be loaded at the same time in the match process jvm
 
 Match runtime process:
 - How to disable reflection?
+    - Can be disabled using a SecurityManager and catching the SecurityException
+- Use a JSON file to communicate match results back to the web app
+- Use a library to de/serialize the match turn results to/from a file
 
 Web access log:
 - Simple web access log
@@ -21,13 +27,24 @@ Web access log:
 Mailing:
 - Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
 - create an e-group and add the external e-mail addresses by hand in order to send e-mails on behalf of grid.wars
-- set up mail client for "gridwars" (Outlook OWA?)
+    - Mails can be sent and received using OWA and the service account: https://mmm.cern.ch/owa/
 
-GridWars API & Impl:
-- Provide a logger via the API to be able to log bot output to a dedicated file
+API & Impl:
+- Ship source code with API jar so that the sources can be attached in IntelliJ
+- Clean up and reformat code
+
+Bots:
+- Clean up rubbish in core/bots and add new example bots
+
+Emulator:
+- Rename "Visualizer" into "Emulator" and put it into its own module
+- Create a new example/starter module that will be downloadable
 
 Misc:
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
+
+- Implement functionality to block bot upload and to stop/start match processing
+    - Could be simple admin controller actions
 
 - Have logs also printed to files under "work/logs"
     - dated and rolling logs?
@@ -62,3 +79,5 @@ Useful links:
 - Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
 - Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
 - File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+
+- Using ProcessBuilder: https://www.developer.com/java/data/understanding-java-process-and-java-processbuilder.html
