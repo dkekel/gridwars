@@ -58,13 +58,14 @@ public class MatchWorker implements Runnable {
             if (match.isPresent()) {
                 if (running) {
                     executeMatch(match.get());
+                } else {
+                    // TODO if the match was taken but the worker was shutdown, the match must be returned into the pending queue
                 }
-                // TODO if the match was taken but the worker was shutdown, the match must be returned into the pending queue
             } else {
                 if (running) {
-                    logDebug("no more pending matches available, sleeping until matches are available");
+                    logDebug("no more pending matches available, going to sleep ...");
                     newMatchesAvailableCondition.await();
-                    logDebug("woke up and will check for pending matches");
+                    logDebug("... woke up and will check for pending matches or shutdown");
                 }
             }
         }
@@ -115,13 +116,13 @@ public class MatchWorker implements Runnable {
 
     private void logDebug(String message, Object... params) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Worker [{}]: " + message, workerNumber, params);
+            LOG.debug("Worker [" + workerNumber + "]: " + message, params);
         }
     }
 
     private void logInfo(String message, Object... params) {
         if (LOG.isInfoEnabled()) {
-            LOG.info("Worker [{}]: " + message, workerNumber, params);
+            LOG.info("Worker [" + workerNumber + "]: " + message,params);
         }
     }
 }

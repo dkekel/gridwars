@@ -53,8 +53,8 @@ public class MatchService {
             .setId(DomainUtils.generateId())
             .setStatus(Match.Status.PENDING)
             .setPendingSince(Instant.now())
-            .setPlayer1(player1)
-            .setPlayer2(player2);
+            .setBot1(player1)
+            .setBot2(player2);
 
         matchRepository.save(newMatch);
     }

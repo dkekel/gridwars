@@ -35,6 +35,7 @@ public class BotUploadService {
         matchService.generateMatches(newBot);
 
         // TODO Do the following outside of the transaction, maybe in the controller, or in a transaction commit callback?
+        // Otherwise the workers may wake up before the transaction is committed and the changes are visible in the db.
         matchWorkerService.wakeUpAllMatchWorkers();
     }
 

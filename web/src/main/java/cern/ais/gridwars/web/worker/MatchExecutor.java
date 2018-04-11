@@ -15,16 +15,12 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MatchExecutor {
 
-    // Must correspond to the main class in the "core/runtime" sub-project
-    private static final String MATCH_RUNTIME_MAIN_CLASS = "cern.ais.gridwars.runtime.MatchRuntime";
+public class MatchExecutor {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final GridWarsProperties gridWarsProperties;
@@ -42,8 +38,8 @@ public class MatchExecutor {
            createOutputFiles();
            return doExecuteMatch(match);
         } catch (Exception e) {
-            // TODO catch and handle exception, mark match as failed... no exception should escape here...
-            throw e;
+            LOG.error("Execution of match failed before process could be started: {}", match.getId(), e);
+            return markMatchAsFailed(match);
         } finally {
             cleanUp();
         }
@@ -98,23 +94,26 @@ public class MatchExecutor {
 
     private Match doExecuteMatch(Match match) {
         match.setStarted(Instant.now());
-
-        MatchRuntimeResult result = executeRemoteMatchProcess(match);
-
-        Random random = new Random();
+        MatchRuntimeResult result = executeMatchProcess(match);
         match.setEnded(Instant.now());
-        match.setStatus(Match.Status.FINISHED);
-        match.setOutcome(Match.Outcome.values()[random.nextInt(Match.Outcome.values().length)]);
-        match.setTurns(random.nextInt(3000));
+
+        applyResultToMatch(result, match);
         return match;
     }
 
-    private MatchRuntimeResult executeRemoteMatchProcess(Match match) {
+    private MatchRuntimeResult executeMatchProcess(Match match) {
         List<String> jvmProcessArguments = createJvmProcessArguments(match);
+        int processTimeoutSeconds = gridWarsProperties.getMatches().getExecutionTimeoutSeconds();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Match process working folder: {}", matchDir.getAbsolutePath());
-            LOG.debug("Match process args: {}", jvmProcessArguments.stream().collect(Collectors.joining(" ")));
+            LOG.debug(
+                "Starting match process for match: {}" +
+                "\n\tprocess working folder: {}" +
+                "\n\tprocess args: {}",
+                match.getId(),
+                matchDir.getAbsolutePath(),
+                jvmProcessArguments.stream().collect(Collectors.joining(" "))
+            );
         }
 
         try {
@@ -124,19 +123,23 @@ public class MatchExecutor {
                 .redirectError(stdErrFile)
                 .start();
 
-            boolean exitedNormally = matchProcess.waitFor(gridWarsProperties.getMatches().getExecutionTimeoutSeconds(), TimeUnit.SECONDS);
+            LOG.debug("Started match process with, waiting for match to finish within {} seconds ...", processTimeoutSeconds);
+            boolean exitedNormally = matchProcess.waitFor(processTimeoutSeconds, TimeUnit.SECONDS);
 
             if (exitedNormally) {
-                LOG.debug("Match process exited normally with code: {}", matchProcess.exitValue());
-                return MatchRuntimeResult.fromReturnCode(matchProcess.exitValue());
+                int exitValue = matchProcess.exitValue();
+                MatchRuntimeResult result = MatchRuntimeResult.fromReturnCode(exitValue);
+
+                LOG.debug("... match process exited normally with code {}: {}", exitValue, result.name());
+                return result;
             } else {
-                LOG.debug("Match process timed out and will be killed");
+                LOG.debug("...match process timed out and will be killed");
                 // TODO make sure the process is really really killed...
                 matchProcess.destroyForcibly();
                 return MatchRuntimeResult.TIMEOUT;
             }
         } catch (IOException | InterruptedException e) {
-            LOG.error("Starting match JVM process failed", e);
+            LOG.error("Execution of match process failed for match id: {}", match.getId(), e);
             return MatchRuntimeResult.ERROR;
         }
     }
@@ -144,10 +147,10 @@ public class MatchExecutor {
     private List<String> createJvmProcessArguments(Match match) {
         List<String> args = new LinkedList<>();
         args.add(createJavaExecutablePath());
-        args.addAll(createMemoryAndGcArguments());
+        args.addAll(createJvmMemoryAndGcArguments());
         args.addAll(createClassPathArguments(match));
         args.addAll(createSysPropArguments(match));
-        args.add(MATCH_RUNTIME_MAIN_CLASS);
+        args.add(gridWarsProperties.getMatches().getMatchRuntimeMainClassName());
         return args;
     }
 
@@ -161,8 +164,8 @@ public class MatchExecutor {
     private List<String> createClassPathArguments(Match match) {
         String classPathArgument = Stream.of(
                 createMatchRuntimeClassPathPart(),
-                determineBotJarPath(match.getPlayer1()),
-                determineBotJarPath(match.getPlayer2())
+                determineBotJarPath(match.getBot1()),
+                determineBotJarPath(match.getBot2())
             ).collect(Collectors.joining(";"));
 
         return Stream.of(
@@ -172,13 +175,18 @@ public class MatchExecutor {
     }
 
     private String createMatchRuntimeClassPathPart() {
-        File[] runtimeDirFile = new File(gridWarsProperties.getDirectories().getRuntimeDir()).listFiles();
-        if (runtimeDirFile == null) {
+        String runtimeDirPath = gridWarsProperties.getDirectories().getRuntimeDir();
+        File[] runtimeDirFile = new File(runtimeDirPath).listFiles();
+        if ((runtimeDirFile == null) || (runtimeDirFile.length == 0)) {
+            LOG.warn("Match process runtime folder is be empty or does not exist, the match runtime process will " +
+                "very likely with ClassNotFound exceptions: {}", runtimeDirPath);
             return "";
         }
 
         return Stream.of(runtimeDirFile)
             .filter(file -> file.getName().toLowerCase().endsWith(".jar"))
+            // It may be relevant that "-api.jar" comes before "-impl.jar" and "-runtime.jar", but not sure. To
+            // avoid potential issues, we sort the jars by name to have a safe order: api, impl, runtime
             .sorted()
             .map(File::getAbsolutePath)
             .collect(Collectors.joining(";"));
@@ -188,7 +196,7 @@ public class MatchExecutor {
         return FileUtils.joinFilePaths(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName());
     }
 
-    private List<String> createMemoryAndGcArguments() {
+    private List<String> createJvmMemoryAndGcArguments() {
         return Stream.of(
             "-Xms256m",
             "-Xmx256m"
@@ -198,14 +206,42 @@ public class MatchExecutor {
 
     private List<String> createSysPropArguments(Match match) {
         return Stream.of(
-//            createSysPropArgument("gridwars.runtime.matchWorkDir", matchDir.getAbsolutePath()),
-            createSysPropArgument("gridwars.runtime.bot1ClassName", match.getPlayer1().getBotClassName()),
-            createSysPropArgument("gridwars.runtime.bot2ClassName", match.getPlayer2().getBotClassName())
+            createSysPropArgument("gridwars.runtime.bot1ClassName", match.getBot1().getBotClassName()),
+            createSysPropArgument("gridwars.runtime.bot2ClassName", match.getBot2().getBotClassName())
         ).collect(Collectors.toList());
     }
 
     private String createSysPropArgument(String key, String value) {
         return "-D" + key + "=\"" + value + "\"";
+    }
+
+    private void applyResultToMatch(MatchRuntimeResult result, Match match) {
+        switch (result) {
+            case DRAW:
+                match.setStatus(Match.Status.FINISHED);
+                match.setOutcome(Match.Outcome.DRAW);
+                break;
+            case BOT1_WINNER:
+                match.setStatus(Match.Status.FINISHED);
+                match.setOutcome(Match.Outcome.WIN);
+                break;
+            case BOT2_WINNER:
+                match.setStatus(Match.Status.FINISHED);
+                match.setOutcome(Match.Outcome.LOSS);
+                break;
+            default: // We consider all other results as failures
+                markMatchAsFailed(match);
+        }
+    }
+
+    private Match markMatchAsFailed(Match match) {
+        if (match.getEnded() == null) {
+            match.setEnded(Instant.now());
+        }
+
+        match.setStatus(Match.Status.FAILED);
+        match.setOutcome(Match.Outcome.DNF);
+        return match;
     }
 
     private void cleanUp() {
@@ -214,7 +250,7 @@ public class MatchExecutor {
         stdErrFile = null;
     }
 
-    public static final class MatchExecutionException extends RuntimeException {
+    public static class MatchExecutionException extends RuntimeException {
 
         public MatchExecutionException(String message) {
             super(message);

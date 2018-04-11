@@ -95,6 +95,7 @@ public class GridWarsProperties {
         private Integer number;
         private Integer workerCount;
         private Integer executionTimeoutSeconds;
+        private String matchRuntimeMainClassName;
 
         public Integer getNumber() {
             return number;
@@ -120,6 +121,15 @@ public class GridWarsProperties {
 
         public Matches setExecutionTimeoutSeconds(Integer executionTimeoutSeconds) {
             this.executionTimeoutSeconds = executionTimeoutSeconds;
+            return this;
+        }
+
+        public String getMatchRuntimeMainClassName() {
+            return matchRuntimeMainClassName;
+        }
+
+        public Matches setMatchRuntimeMainClassName(String matchRuntimeMainClassName) {
+            this.matchRuntimeMainClassName = matchRuntimeMainClassName;
             return this;
         }
     }

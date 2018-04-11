@@ -122,9 +122,12 @@ gridwars:
         # Default value, should be provided upon start by a system property.
         baseWorkDir: './work'
     matches:
-        number: 5
+        number: 1
         workerCount: 3
+        # TODO adjust the value below to a more realistic value. theoretically, a match can last 120 seconds, plus some millis for initialisation
         executionTimeoutSeconds: 5
+        # Class name must correspond to the main class in the "core/runtime" sub-project
+        matchRuntimeMainClassName: 'cern.ais.gridwars.runtime.MatchRuntime'
     mail:
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bcc: 'benjamin.wolff@cern.ch'

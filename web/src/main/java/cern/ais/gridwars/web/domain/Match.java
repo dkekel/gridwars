@@ -11,11 +11,52 @@ import java.util.Objects;
 public class Match {
 
     public enum Status {
-        PENDING, RUNNING, FINISHED, FAILED, CANCELLED
+        /**
+         * Pending to be executed
+         */
+        PENDING,
+
+        /**
+         * Currently running
+         */
+        RUNNING,
+
+        /**
+         * Finished without errors
+         */
+        FINISHED,
+
+        /**
+         * Failed with an error or abnormal termination
+         */
+        FAILED,
+
+        /**
+         * Cancelled before is could be executed
+         */
+        CANCELLED
     }
 
     public enum Outcome {
-        WIN, DRAW, LOSS, DNF
+        /**
+         * Bot 1 won
+         */
+        WIN,
+
+        /**
+         * Bot 1 lost (implies that bot 2 won)
+         */
+        LOSS,
+
+        /**
+         * Draw
+         */
+        DRAW,
+
+        /**
+         * Did not finish (error or abnormal termination)
+         */
+        DNF
     }
 
     @Id
@@ -26,10 +67,10 @@ public class Match {
     private Status status;
 
     @ManyToOne(optional = false)
-    private Bot player1;
+    private Bot bot1;
 
     @ManyToOne(optional = false)
-    private Bot player2;
+    private Bot bot2;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -45,7 +86,7 @@ public class Match {
     private Instant ended;
 
     @Column
-    private Integer turns;
+    private Integer turns; // TODO Do we need the number of turns here?? It could help to identify long or tight matches...
 
     public String getId() {
         return id;
@@ -65,21 +106,21 @@ public class Match {
         return this;
     }
 
-    public Bot getPlayer1() {
-        return player1;
+    public Bot getBot1() {
+        return bot1;
     }
 
-    public Match setPlayer1(Bot player1) {
-        this.player1 = player1;
+    public Match setBot1(Bot bot1) {
+        this.bot1 = bot1;
         return this;
     }
 
-    public Bot getPlayer2() {
-        return player2;
+    public Bot getBot2() {
+        return bot2;
     }
 
-    public Match setPlayer2(Bot player2) {
-        this.player2 = player2;
+    public Match setBot2(Bot bot2) {
+        this.bot2 = bot2;
         return this;
     }
 
