@@ -30,11 +30,11 @@ Mailing:
     - Mails can be sent and received using OWA and the service account: https://mmm.cern.ch/owa/
 
 API & Impl:
-- Ship source code with API jar so that the sources can be attached in IntelliJ
 - Clean up and reformat code
 
 Bots:
 - Clean up rubbish in core/bots and add new example bots
+- Have the project use the emulator module for playing matches
 
 Emulator:
 - Rename "Visualizer" into "Emulator" and put it into its own module
@@ -43,11 +43,12 @@ Emulator:
 Misc:
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 
-- Implement functionality to block bot upload and to stop/start match processing
+- Implement functionality to block bot upload, user registration, and to stop/start match processing
     - Could be simple admin controller actions
 
 - Have logs also printed to files under "work/logs"
     - dated and rolling logs?
+    - Only when running as a jar and not with bootRun...
 
 
 Functionality that I can avoid to create:
