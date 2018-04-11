@@ -65,11 +65,11 @@ public class MatchWorkerService {
     @PreDestroy
     protected void destroy() {
         shutdownAllMatchWorkers();
-        matchWorkers.clear();
         LOG.debug("MatchExecutionService destroyed");
     }
 
     private void shutdownAllMatchWorkers() {
         matchWorkers.forEach(MatchWorker::shutdown);
+        matchWorkers.clear();
     }
 }
