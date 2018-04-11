@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, String> {
 
-    List<Match> findMatchesByPlayer1OrPlayer2(Bot player1, Bot player2);
+    List<Match> findMatchesByBot1OrBot2(Bot bot1, Bot bot2);
     Optional<Match> findFirstByStatusOrderByPendingSinceAsc(Match.Status status);
 }

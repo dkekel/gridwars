@@ -36,8 +36,8 @@ public class MatchService {
     @Transactional
     public void generateMatches(Bot bot) {
         botService.getAllActiveBots().stream()
-            .filter(otherPlayer -> !otherPlayer.equals(bot))
-            .forEach(otherPlayer -> createMatches(bot, otherPlayer));
+            .filter(otherBot -> !otherBot.equals(bot))
+            .forEach(otherBot -> createMatches(bot, otherBot));
     }
 
     private void createMatches(Bot bot1, Bot bot2) {
@@ -48,20 +48,20 @@ public class MatchService {
         LOG.debug("Generated {} matches between bot {} and bot {}", numberOfMatches, bot1.getId(), bot2.getId());
     }
 
-    private void createSingleMatch(Bot player1, Bot player2) {
+    private void createSingleMatch(Bot bot1, Bot bot2) {
         Match newMatch = new Match()
             .setId(DomainUtils.generateId())
             .setStatus(Match.Status.PENDING)
             .setPendingSince(Instant.now())
-            .setBot1(player1)
-            .setBot2(player2);
+            .setBot1(bot1)
+            .setBot2(bot2);
 
         matchRepository.save(newMatch);
     }
 
     @Transactional
     public void cancelPendingMatches(Bot bot) {
-        matchRepository.findMatchesByPlayer1OrPlayer2(bot, bot).stream()
+        matchRepository.findMatchesByBot1OrBot2(bot, bot).stream()
             .filter(this::isPending)
             .forEach(this::cancelMatch);
 
@@ -98,9 +98,18 @@ public class MatchService {
     private Match markMatchAsStarted(Match match) {
         match.setStatus(Match.Status.RUNNING);
         match.setStarted(Instant.now());
-        // the call below will create and commit a transaction on the fly, that's what we want (see comment above)
+        // The call below will create and commit a transaction on the fly, that's what we want (see comment above!).
         matchRepository.saveAndFlush(match);
         return match;
+    }
+
+    @Transactional
+    public void returnMatchToPendingQueue(Match match) {
+        match.setStatus(Match.Status.PENDING);
+        match.setOutcome(null);
+        match.setStarted(null);
+        match.setEnded(null);
+        matchRepository.saveAndFlush(match);
     }
 
     @Transactional
