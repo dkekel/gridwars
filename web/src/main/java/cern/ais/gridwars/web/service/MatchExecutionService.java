@@ -1,10 +1,10 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.worker.MatchWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,10 @@ public class MatchExecutionService {
 
     @Autowired
     public MatchExecutionService(TaskExecutor taskExecutor, ApplicationContext applicationContext,
-        @Value("${gridwars.matches.workerCount}") Integer workerCount) {
+                                 GridWarsProperties gridWarsProperties) {
         this.taskExecutor = Objects.requireNonNull(taskExecutor);
         this.applicationContext = Objects.requireNonNull(applicationContext);
-        this.workerCount = Objects.requireNonNull(workerCount);
+        this.workerCount = Objects.requireNonNull(gridWarsProperties.getMatches().getWorkerCount());
     }
 
     public void wakeUpAllMatchWorkers() {

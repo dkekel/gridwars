@@ -20,6 +20,7 @@ spring:
 ---
 spring:
     jpa:
+        # Disable OSIV, we rely on the transactional annotations for transactions management.
         open-in-view: false
 
 # ==================================================================================================
@@ -117,7 +118,8 @@ spring:
 # ==================================================================================================
 ---
 gridwars:
-    workDir: '../'
+    # Default value, should be provided on start by a system property.
+    workdir: './'
     matches:
         number: 5
         workerCount: 3

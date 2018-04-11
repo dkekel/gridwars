@@ -1,14 +1,13 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.DomainUtils;
 import cern.ais.gridwars.web.domain.Match;
-import cern.ais.gridwars.web.repository.BotRepository;
 import cern.ais.gridwars.web.repository.MatchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +27,10 @@ public class MatchService {
 
     @Autowired
     public MatchService(MatchRepository matchRepository, BotService botService,
-                        @Value("${gridwars.matches.number}") Integer numberOfMatches) {
+                        GridWarsProperties gridWarsProperties) {
         this.matchRepository = Objects.requireNonNull(matchRepository);
         this.botService = Objects.requireNonNull(botService);
-        this.numberOfMatches = Objects.requireNonNull(numberOfMatches);
+        this.numberOfMatches = Objects.requireNonNull(gridWarsProperties.getMatches().getNumber());
     }
 
     @Transactional

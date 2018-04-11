@@ -34,8 +34,10 @@ bootRun {
     // Enable live reloading of static resources
     sourceResources sourceSets.main
 
+    // Set up the work folders. When running from a runnable jar, these system properties need to be
+    // provided by jvm start parameters.
     def workDir = "${project.projectDir.absolutePath}${File.separator}work"
-    systemProperties["gridwars.workDir"] = workDir
+    systemProperties["gridwars.workdir"] = workDir
     systemProperties["server.tomcat.basedir"] = "${workDir}${File.separator}server"
 }
 

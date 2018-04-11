@@ -1,9 +1,9 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +24,8 @@ public class JarStorageService {
     private final String jarStorageDir;
 
     @Autowired
-    public JarStorageService(@Value("${gridwars.workDir}") String gridwarsWorkDir) {
-        this.jarStorageDir = determineJarStorageDir(gridwarsWorkDir);
+    public JarStorageService(GridWarsProperties gridWarsProperties) {
+        this.jarStorageDir = determineJarStorageDir(gridWarsProperties.getWorkdir());
         LOG.info("Bot jar storage dir: {}", jarStorageDir);
     }
 
