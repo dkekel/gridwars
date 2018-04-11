@@ -5,7 +5,6 @@ mainClassName = 'cern.ais.gridwars.Visualizer'
 
 dependencies {
 	compile project(':core:impl')
-	compile 'org.jfree:jfreechart:1.0.19'
 }
 
 distributions {
