@@ -78,16 +78,15 @@ public class DevConfiguration {
         // =====================================================================
         // Bots and Matches
         // =====================================================================
-        Bot bot1 = botService.createNewBotRecord("gridwars-jaegerbot.jar", "cern.ais.gridwars.JaegerBot", user1, Instant.now());
+        Bot bot1 = botService.createNewBotRecord("jaegerbot.jar", "cern.ais.gridwars.JaegerBot", user1, Instant.now());
 
-        Bot bot2 = botService.createNewBotRecord("gridwars-gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user2, Instant.now());
+        Bot bot2 = botService.createNewBotRecord("gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user2, Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord("gridwars-brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user3, Instant.now());
+        Bot bot3 = botService.createNewBotRecord("brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user3, Instant.now());
         matchService.generateMatches(bot3);
 
         matchWorkerService.wakeUpAllMatchWorkers();
-
 
 //        mailService.sendMail(MailService.MailBuilder.newMail()
 //            .setTo("weltenrichter@gmail.com")
