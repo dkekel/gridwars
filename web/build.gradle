@@ -13,7 +13,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'project-report' // for "htmlDependencyReport" task
 
 group = gridwarsGroup
 version = gridwarsWebVersion
