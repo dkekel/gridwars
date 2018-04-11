@@ -42,6 +42,7 @@ public class GridWarsProperties {
     public static class Matches {
         private Integer number;
         private Integer workerCount;
+        private Integer executionTimeoutSeconds;
 
         public Integer getNumber() {
             return number;
@@ -58,6 +59,15 @@ public class GridWarsProperties {
 
         public Matches setWorkerCount(Integer workerCount) {
             this.workerCount = workerCount;
+            return this;
+        }
+
+        public Integer getExecutionTimeoutSeconds() {
+            return executionTimeoutSeconds;
+        }
+
+        public Matches setExecutionTimeoutSeconds(Integer executionTimeoutSeconds) {
+            this.executionTimeoutSeconds = executionTimeoutSeconds;
             return this;
         }
     }

@@ -62,4 +62,6 @@ dependencies {
 	testCompile('org.springframework.security:spring-security-test')
 }
 
+// TODO create a task to clear the subfolders of the dev work folder
+
 // TODO create a task to set up an external work dir folder to allow running the app as a runnable jar

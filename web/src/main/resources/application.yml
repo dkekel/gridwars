@@ -123,6 +123,7 @@ gridwars:
     matches:
         number: 5
         workerCount: 3
+        executionTimeoutSeconds: 30
     mail:
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bcc: 'benjamin.wolff@cern.ch'

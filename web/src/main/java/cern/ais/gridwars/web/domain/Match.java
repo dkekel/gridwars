@@ -46,8 +46,9 @@ public class Match {
     @Column
     private Integer turns;
 
+    // TODO is duration needed?? We already have started and ended dates with a millisecond granularity...
     @Column
-    private Integer duration;
+    private Long duration;
 
     public String getId() {
         return id;
@@ -130,11 +131,11 @@ public class Match {
         return this;
     }
 
-    public Integer getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public Match setDuration(Integer duration) {
+    public Match setDuration(Long duration) {
         this.duration = duration;
         return this;
     }

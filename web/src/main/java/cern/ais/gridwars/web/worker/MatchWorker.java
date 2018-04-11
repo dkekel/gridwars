@@ -1,14 +1,13 @@
 package cern.ais.gridwars.web.worker;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.service.MatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,13 +18,15 @@ public class MatchWorker implements Runnable {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final Lock lock = new ReentrantLock();
     private final Condition newMatchesAvailableCondition = lock.newCondition();
+    private final MatchExecutor matchExecutor;
     private final MatchService matchService;
     private final int workerNumber;
     private volatile boolean running = false;
 
-    public MatchWorker(MatchService matchService, int workerNumber) {
+    public MatchWorker(MatchService matchService, int workerNumber, GridWarsProperties gridWarsProperties) {
         this.matchService = Objects.requireNonNull(matchService);
         this.workerNumber = workerNumber;
+        this.matchExecutor = new MatchExecutor(gridWarsProperties);
     }
 
     @Override
@@ -70,21 +71,27 @@ public class MatchWorker implements Runnable {
     }
 
     private Optional<Match> takeNextPendingMatch() {
-        logDebug("checking for a pending match");
-        return matchService.takeNextPendingMatch();
+        try {
+            logDebug("checking for a pending match");
+            return matchService.takeNextPendingMatch();
+        } catch (Exception e) {
+            LOG.error("Checking for next pending match failed: {}", e.getMessage(), e);
+            return Optional.empty();
+        }
     }
 
     private void executeMatch(Match match) {
-        logInfo("executing pending match: {}", match.getId());
+        try {
+            logInfo("start executing pending match: {} ...", match.getId());
 
-        // TODO implement remote process execution, create some fake match results here.
-        Random random = new Random();
-        match.setEnded(Instant.now());
-        match.setStatus(Match.Status.FINISHED);
-        match.setOutcome(Match.Outcome.values()[random.nextInt(Match.Outcome.values().length)]);
-        match.setTurns(random.nextInt(3000));
+            Match executedMatch = matchExecutor.executeMatch(match);
+            matchService.updateMatch(executedMatch);
 
-        matchService.updateMatch(match);
+            logInfo("... finished executing pending match in {} ms: {}", executedMatch.getDuration(),
+                executedMatch.getId());
+        } catch (Exception e) {
+            LOG.error("Execution of match {} failed: {}", match.getId(), e.getMessage(), e);
+        }
     }
 
     public void wakeUp() {

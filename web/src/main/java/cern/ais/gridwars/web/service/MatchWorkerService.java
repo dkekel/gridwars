@@ -22,14 +22,14 @@ public class MatchWorkerService {
     private final List<MatchWorker> matchWorkers = new LinkedList<>();
     private final TaskExecutor taskExecutor;
     private final MatchService matchService;
-    private final Integer workerCount;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
     public MatchWorkerService(TaskExecutor taskExecutor, MatchService matchService,
                               GridWarsProperties gridWarsProperties) {
         this.taskExecutor = Objects.requireNonNull(taskExecutor);
         this.matchService = Objects.requireNonNull(matchService);
-        this.workerCount = Objects.requireNonNull(gridWarsProperties.getMatches().getWorkerCount());
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     public void wakeUpAllMatchWorkers() {
@@ -41,17 +41,20 @@ public class MatchWorkerService {
         createMatchWorkers();
         startAllMatchWorkers();
 
-        LOG.debug("MatchExecutionService initialised, worker count: {}", workerCount);
+        LOG.debug("MatchExecutionService initialised, worker count: {}",
+            gridWarsProperties.getMatches().getWorkerCount());
     }
 
     private void createMatchWorkers() {
+        int workerCount = gridWarsProperties.getMatches().getWorkerCount();
+
         for (int i = 0; i < workerCount; i++) {
             createMatchWorker(i + 1);
         }
     }
 
     private void createMatchWorker(int workerNumber) {
-        MatchWorker matchWorker = new MatchWorker(matchService, workerNumber);
+        MatchWorker matchWorker = new MatchWorker(matchService, workerNumber, gridWarsProperties);
         matchWorkers.add(matchWorker);
     }
 
