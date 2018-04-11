@@ -1,6 +1,7 @@
 package cern.ais.gridwars.web.worker;
 
 
+import cern.ais.gridwars.runtime.MatchRuntimeResult;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.Match;
@@ -9,11 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,8 +29,8 @@ public class MatchExecutor {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final GridWarsProperties gridWarsProperties;
     private File matchDir;
-//    private File stdOutFile;
-//    private File stdErrFile;
+    private File stdOutFile;
+    private File stdErrFile;
 
     public MatchExecutor(GridWarsProperties gridWarsProperties) {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
@@ -34,17 +38,18 @@ public class MatchExecutor {
 
     public Match executeMatch(Match match) {
         try {
-           createMatchDir(match);
-           List<String> processArguments = createJvmProcessStartArguments(match);
-           LOG.debug("\n    " + processArguments.stream().collect(Collectors.joining("\n    ")));
-//           createOutputFiles();
+           createMatchWorkDir(match);
+           createOutputFiles();
            return doExecuteMatch(match);
+        } catch (Exception e) {
+            // TODO catch and handle exception, mark match as failed... no exception should escape here...
+            throw e;
         } finally {
             cleanUp();
         }
     }
 
-    private void createMatchDir(Match match) {
+    private void createMatchWorkDir(Match match) {
         String matchDirPath = FileUtils.joinFilePaths(gridWarsProperties.getDirectories().getMatchesDir(),
                 match.getId());
         matchDir = new File(matchDirPath);
@@ -71,7 +76,72 @@ public class MatchExecutor {
         }
     }
 
-    private List<String> createJvmProcessStartArguments(Match match) {
+    private void createOutputFiles() {
+        stdOutFile = createOutputFile("stdout");
+        stdErrFile = createOutputFile("stderr");
+    }
+
+    private File createOutputFile(String namePrefix) {
+        String outputFilePath = FileUtils.joinFilePaths(matchDir.getAbsolutePath(), namePrefix + ".txt");
+        File outputFile = new File(outputFilePath);
+
+        try {
+            if (!outputFile.createNewFile()) {
+                throw new MatchExecutionException("Could not create output file: " + outputFilePath);
+            }
+        } catch (IOException e) {
+            throw new MatchExecutionException("Could not create output file: " + outputFilePath, e);
+        }
+
+        return outputFile;
+    }
+
+    private Match doExecuteMatch(Match match) {
+        match.setStarted(Instant.now());
+
+        MatchRuntimeResult result = executeRemoteMatchProcess(match);
+
+        Random random = new Random();
+        match.setEnded(Instant.now());
+        match.setStatus(Match.Status.FINISHED);
+        match.setOutcome(Match.Outcome.values()[random.nextInt(Match.Outcome.values().length)]);
+        match.setTurns(random.nextInt(3000));
+        return match;
+    }
+
+    private MatchRuntimeResult executeRemoteMatchProcess(Match match) {
+        List<String> jvmProcessArguments = createJvmProcessArguments(match);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Match process working folder: {}", matchDir.getAbsolutePath());
+            LOG.debug("Match process args: {}", jvmProcessArguments.stream().collect(Collectors.joining(" ")));
+        }
+
+        try {
+            Process matchProcess = new ProcessBuilder(jvmProcessArguments)
+                .directory(matchDir)
+                .redirectOutput(stdOutFile)
+                .redirectError(stdErrFile)
+                .start();
+
+            boolean exitedNormally = matchProcess.waitFor(gridWarsProperties.getMatches().getExecutionTimeoutSeconds(), TimeUnit.SECONDS);
+
+            if (exitedNormally) {
+                LOG.debug("Match process exited normally with code: {}", matchProcess.exitValue());
+                return MatchRuntimeResult.fromReturnCode(matchProcess.exitValue());
+            } else {
+                LOG.debug("Match process timed out and will be killed");
+                // TODO make sure the process is really really killed...
+                matchProcess.destroyForcibly();
+                return MatchRuntimeResult.TIMEOUT;
+            }
+        } catch (IOException | InterruptedException e) {
+            LOG.error("Starting match JVM process failed", e);
+            return MatchRuntimeResult.ERROR;
+        }
+    }
+
+    private List<String> createJvmProcessArguments(Match match) {
         List<String> args = new LinkedList<>();
         args.add(createJavaExecutablePath());
         args.addAll(createMemoryAndGcArguments());
@@ -109,6 +179,7 @@ public class MatchExecutor {
 
         return Stream.of(runtimeDirFile)
             .filter(file -> file.getName().toLowerCase().endsWith(".jar"))
+            .sorted()
             .map(File::getAbsolutePath)
             .collect(Collectors.joining(";"));
     }
@@ -120,16 +191,14 @@ public class MatchExecutor {
     private List<String> createMemoryAndGcArguments() {
         return Stream.of(
             "-Xms256m",
-            "-Xmx256m",
-            "-Xgc:parallel",
-            "-XXaggressive:memory"
+            "-Xmx256m"
+            // TODO add some more GC optimisation flags
         ).collect(Collectors.toList());
     }
 
     private List<String> createSysPropArguments(Match match) {
         return Stream.of(
-            // TODO is the following argument necessary or can it be set directly on the ProcessBuilder?
-            createSysPropArgument("gridwars.runtime.matchWorkDir", matchDir.getAbsolutePath()),
+//            createSysPropArgument("gridwars.runtime.matchWorkDir", matchDir.getAbsolutePath()),
             createSysPropArgument("gridwars.runtime.bot1ClassName", match.getPlayer1().getBotClassName()),
             createSysPropArgument("gridwars.runtime.bot2ClassName", match.getPlayer2().getBotClassName())
         ).collect(Collectors.toList());
@@ -139,46 +208,10 @@ public class MatchExecutor {
         return "-D" + key + "=\"" + value + "\"";
     }
 
-//    private void createOutputFiles() {
-//        stdOutFile = createOutputFile("stdout");
-//        stdErrFile = createOutputFile("stderr");
-//    }
-//
-//    private File createOutputFile(String namePrefix) {
-//        String outputFilePath = FileUtils.joinFilePaths(matchWorkDir, namePrefix + ".txt");
-//        File outputFile = new File(outputFilePath);
-//
-//        try {
-//            if (!outputFile.createNewFile()) {
-//                throw new MatchExecutionException("Could not create output file: " + outputFilePath);
-//            }
-//        } catch (IOException e) {
-//            throw new MatchExecutionException("Could not create output file: " + outputFilePath, e);
-//        }
-//
-//        return outputFile;
-//    }
-
-    private Match doExecuteMatch(Match match) {
-        long startTimeMillis = System.currentTimeMillis();
-
-        // TODO implement remote process execution, create some fake match results here.
-        Random random = new Random();
-        match.setEnded(Instant.now());
-        match.setStatus(Match.Status.FINISHED);
-        match.setOutcome(Match.Outcome.values()[random.nextInt(Match.Outcome.values().length)]);
-        match.setTurns(random.nextInt(3000));
-
-        long durationMillis = System.currentTimeMillis() - startTimeMillis;
-        match.setDuration(durationMillis);
-
-        return match;
-    }
-
     private void cleanUp() {
         matchDir = null;
-//        stdOutFile = null;
-//        stdErrFile = null;
+        stdOutFile = null;
+        stdErrFile = null;
     }
 
     public static final class MatchExecutionException extends RuntimeException {

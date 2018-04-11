@@ -87,9 +87,10 @@ public class MatchWorker implements Runnable {
             Match executedMatch = matchExecutor.executeMatch(match);
             matchService.updateMatch(executedMatch);
 
-            logInfo("... finished executing pending match in {} ms: {}", executedMatch.getDuration(),
+            logInfo("... finished executing pending match in {} ms: {}", executedMatch.getDurationMillis(),
                 executedMatch.getId());
         } catch (Exception e) {
+            // TODO if the execution fails, update the match also to have failed...?
             LOG.error("Execution of match {} failed: {}", match.getId(), e.getMessage(), e);
         }
     }

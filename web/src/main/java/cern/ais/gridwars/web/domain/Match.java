@@ -1,6 +1,7 @@
 package cern.ais.gridwars.web.domain;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -45,10 +46,6 @@ public class Match {
 
     @Column
     private Integer turns;
-
-    // TODO is duration needed?? We already have started and ended dates with a millisecond granularity...
-    @Column
-    private Long duration;
 
     public String getId() {
         return id;
@@ -131,13 +128,8 @@ public class Match {
         return this;
     }
 
-    public Long getDuration() {
-        return duration;
-    }
-
-    public Match setDuration(Long duration) {
-        this.duration = duration;
-        return this;
+    public Long getDurationMillis() {
+        return (started != null && ended != null) ? Duration.between(started, ended).toMillis() : null;
     }
 
     @Override
