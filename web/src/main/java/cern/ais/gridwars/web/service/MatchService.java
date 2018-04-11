@@ -78,9 +78,18 @@ public class MatchService {
         matchRepository.save(match);
     }
 
-    // TODO instead of using a synchronized method here, maybe try to obtain a read lock on the DB table?
-    // A locking exception would mean the row (match) was already taken by another worker.
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    // IMPORTANT: This method is a critical join point of several worker threads and must ensure to
+    // never hand out the same match twice, even if it's called in parallel by several worker threads. This is
+    // ensure by making this method synchronized so that it can never be accessed more than once at the same time.
+    //
+    // Furthermore, this method MUST NOT BE EXECUTED within an ongoing transaction!! The transaction is committed
+    // after the method finishes, which means that another thread can already execute the query here before
+    // the changes of the last access are already committed. This can lead to the race condition where the
+    // same match is returned twice. We ensure this by using Propagation.NEVER on this method (which will cause
+    // an exception). This method modifies and updates the match object in the database, but this will be done in
+    // an adhoc transaction when the ""matchRepository method is called. This guarantees that the changes are
+    // visible in the database when this method here finishes.
+    @Transactional(propagation = Propagation.NEVER)
     public synchronized Optional<Match> takeNextPendingMatch() {
         return matchRepository.findFirstByStatusOrderByPendingSinceAsc(Match.Status.PENDING)
             .map(this::markMatchAsStarted);
@@ -89,6 +98,7 @@ public class MatchService {
     private Match markMatchAsStarted(Match match) {
         match.setStatus(Match.Status.RUNNING);
         match.setStarted(Instant.now());
+        // the call below will create and commit a transaction on the fly, that's what we want (see comment above)
         matchRepository.saveAndFlush(match);
         return match;
     }
