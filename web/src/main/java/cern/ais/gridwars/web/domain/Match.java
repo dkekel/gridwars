@@ -84,7 +84,7 @@ public class Match {
 
     private Instant ended;
 
-    private Integer turns;
+    private Integer turnCount;
 
     @Size(max = 1024)
     private String failReason;
@@ -161,12 +161,12 @@ public class Match {
         return this;
     }
 
-    public Integer getTurns() {
-        return turns;
+    public Integer getTurnCount() {
+        return turnCount;
     }
 
-    public Match setTurns(Integer turns) {
-        this.turns = turns;
+    public Match setTurnCount(Integer turnCount) {
+        this.turnCount = turnCount;
         return this;
     }
 

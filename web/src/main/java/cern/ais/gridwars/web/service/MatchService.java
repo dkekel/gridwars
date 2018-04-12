@@ -112,6 +112,11 @@ public class MatchService {
         matchRepository.saveAndFlush(match);
     }
 
+    @Transactional(readOnly = true)
+    public Match loadMatch(String matchId) {
+        return matchRepository.findById(matchId).orElse(null);
+    }
+
     @Transactional
     public void updateMatch(Match match) {
         matchRepository.saveAndFlush(match);

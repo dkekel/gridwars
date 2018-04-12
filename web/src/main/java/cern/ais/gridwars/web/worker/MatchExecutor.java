@@ -251,7 +251,7 @@ class MatchExecutor {
     }
 
     private void applyResultToMatch(MatchResult result, Match match) {
-        match.setTurns(result.getTurns());
+        match.setTurnCount(result.getTurns());
 
         switch (result.getOutcome()) {
             case BOT_1_WON:

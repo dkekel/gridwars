@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Show Match - GridWars</title>
+    <script th:src="@{/static/js/matchviewer.js}"></script>
+</head>
+<body th:onload="'initws(\'' + ${matchDataUrl} + '\', \'' + ${turnCount} + '\')'">
+<main layout:fragment="content" class="container">
+    <div id="gameView" hidden>
+        <canvas id="gameCanvas" style="border: 1px solid black;" width="600" height="600"></canvas>
+
+        <div>
+            <button onclick="goToStart();">|&lt;</button>
+            <button onclick="drawFrame(--currentRenderedFrame);">&lt;</button>
+            <button onclick="togglePlay();">Play / pause</button>
+            <button onclick="drawFrame(++currentRenderedFrame);">&gt;</button>
+            <button onclick="decreaseSpeed();">Decrease speed</button>
+            <button onclick="increaseSpeed();">Increase speed</button>
+            Current displayed turn: <span id="currentTurn"></span>
+        </div>
+    </div>
+
+    <canvas id="preCanvas" hidden="hidden"></canvas>
+</main>
+</body>
+</html>
