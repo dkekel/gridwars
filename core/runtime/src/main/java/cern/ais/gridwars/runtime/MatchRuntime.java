@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -87,7 +86,7 @@ public class MatchRuntime {
         try {
             loadBotsAndPlayMatch();
         } catch (Exception e) {
-            error("Match execution failed", e);
+            error("Match execution failed: " + e.getMessage(), e);
             populateErrorMatchResult(e.getMessage());
         } finally {
             cleanUp();
@@ -107,8 +106,14 @@ public class MatchRuntime {
 
     private PlayerBot loadAndInstantiateBotClass(String botJarPath, String botClassName, int botNumber) {
         info("Load and instantiate bot " + botNumber + " class \"" + botClassName +"\" from jar: " + botJarPath);
-        return botClassLoader.loadAndInstantiateBot(botJarPath, botClassName);
-    }
+
+        try {
+            return botClassLoader.loadAndInstantiateBot(botJarPath, botClassName);
+        } catch (Exception e) {
+            error("Failed to load and instantiate bot " + botNumber + ": " + e.getMessage());
+            throw e;
+        }
+     }
 
     private void playMatch(PlayerBot bot1, PlayerBot bot2) {
         info("Starting match ...");
@@ -166,7 +171,7 @@ public class MatchRuntime {
 
     private void populateErrorMatchResult(String errorMessage) {
         matchResult.setOutcome(MatchResult.Outcome.ERROR);
-        matchResult.setErrorMessage("Match failed: " + errorMessage);
+        matchResult.setErrorMessage(errorMessage);
     }
 
     private void cleanUp() {

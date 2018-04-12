@@ -15,6 +15,16 @@ public class JaegerBot implements PlayerBot {
 	public JaegerBot() {
 		System.out.println("Constructor called on: " + getClass().getName() + " version 1");
         //System.out.println("Constructor called on: " + getClass().getName() + " version 2");
+
+        System.out.println("I'm initialising, but I think I'm going to sleep for a while first ...");
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ignored) {
+            System.out.println("... zzzZZZZZzzzZZZZ, oh, I got woken up ...");
+        }
+
+        System.out.println("... ok, ok, I'll initialise already!!");
 	}
 
 	@Override

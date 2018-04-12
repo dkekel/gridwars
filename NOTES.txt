@@ -17,8 +17,6 @@ Match runtime process:
 - How to disable reflection?
     - Can be disabled using a SecurityManager and catching the SecurityException
 
-- Instantiate bot classes in a separate thread to enforce initialisation timeout
-
 Web access log:
 - Simple web access log
 - Tag requests with unique id and show this id in log output to find the matching requests
@@ -43,7 +41,7 @@ UI:
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 
 Misc:
-- Prepare some aliases on the gridwars machine to quickly list match processes etc.
+- Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
 
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 
@@ -65,6 +63,7 @@ Functionality that I can avoid to create:
 Info:
 ========================================================================================================================
 - Service account: gridwars Fiba-Raxi
+
 
 GridWars Machine:
 ========================================================================================================================
