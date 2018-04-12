@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 
+// TODO dump all config values to the logs in PostConstruct to see what options apply
 
 @Configuration
 @ConfigurationProperties("gridwars")

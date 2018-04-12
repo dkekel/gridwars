@@ -1,7 +1,8 @@
 package cern.ais.gridwars.web.worker;
 
 
-import cern.ais.gridwars.runtime.MatchRuntimeResult;
+import cern.ais.gridwars.runtime.MatchResult;
+import cern.ais.gridwars.runtime.MatchRuntimeConstants;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.Match;
@@ -22,6 +23,9 @@ import java.util.stream.Stream;
 
 public class MatchExecutor {
 
+    private static final String STDOUT_FILE_NAME = "stdout.txt";
+    private static final String STDERR_FILE_NAME = "stderr.txt";
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final GridWarsProperties gridWarsProperties;
     private File matchDir;
@@ -39,7 +43,7 @@ public class MatchExecutor {
            return doExecuteMatch(match);
         } catch (Exception e) {
             LOG.error("Execution of match failed before process could be started: {}", match.getId(), e);
-            return markMatchAsFailed(match);
+            return markMatchAsFailed(match, "Execution of match failed before process could be started");
         } finally {
             cleanUp();
         }
@@ -73,20 +77,20 @@ public class MatchExecutor {
     }
 
     private void createOutputFiles() {
-        stdOutFile = createOutputFile("stdout");
-        stdErrFile = createOutputFile("stderr");
+        stdOutFile = createOutputFile(STDOUT_FILE_NAME);
+        stdErrFile = createOutputFile(STDERR_FILE_NAME);
     }
 
-    private File createOutputFile(String namePrefix) {
-        String outputFilePath = FileUtils.joinFilePaths(matchDir.getAbsolutePath(), namePrefix + ".txt");
+    private File createOutputFile(String fileName) {
+        String outputFilePath = FileUtils.joinFilePaths(matchDir.getAbsolutePath(), fileName);
         File outputFile = new File(outputFilePath);
 
         try {
             if (!outputFile.createNewFile()) {
-                throw new MatchExecutionException("Could not create output file: " + outputFilePath);
+                throw new MatchExecutionException("Failed to create output file: " + outputFilePath);
             }
         } catch (IOException e) {
-            throw new MatchExecutionException("Could not create output file: " + outputFilePath, e);
+            throw new MatchExecutionException("Failed to create output file: " + outputFilePath, e);
         }
 
         return outputFile;
@@ -94,14 +98,14 @@ public class MatchExecutor {
 
     private Match doExecuteMatch(Match match) {
         match.setStarted(Instant.now());
-        MatchRuntimeResult result = executeMatchProcess(match);
+        MatchResult result = executeMatchProcess(match);
         match.setEnded(Instant.now());
 
         applyResultToMatch(result, match);
         return match;
     }
 
-    private MatchRuntimeResult executeMatchProcess(Match match) {
+    private MatchResult executeMatchProcess(Match match) {
         List<String> jvmProcessArguments = createJvmProcessArguments(match);
         int processTimeoutSeconds = gridWarsProperties.getMatches().getExecutionTimeoutSeconds();
 
@@ -128,19 +132,23 @@ public class MatchExecutor {
 
             if (exitedNormally) {
                 int exitValue = matchProcess.exitValue();
-                MatchRuntimeResult result = MatchRuntimeResult.fromReturnCode(exitValue);
 
-                LOG.debug("... match process exited normally with code {}: {}", exitValue, result.name());
-                return result;
+                if (0 == exitValue) {
+                    LOG.debug("... match process exited normally with code {}", exitValue);
+                    return createSuccessfulExecutionMatchResult();
+                } else {
+                    LOG.debug("... match process exited abnormally with error code {}", exitValue);
+                    return createAbnormalExitCodeMatchResult(exitValue);
+                }
             } else {
                 LOG.debug("...match process timed out and will be killed");
                 // TODO make sure the process is really really killed...
                 matchProcess.destroyForcibly();
-                return MatchRuntimeResult.TIMEOUT;
+                return createTimeoutMatchResult();
             }
         } catch (IOException | InterruptedException e) {
             LOG.error("Execution of match process failed for match id: {}", match.getId(), e);
-            return MatchRuntimeResult.ERROR;
+            return createProcessExceptionMatchResult(e.getMessage());
         }
     }
 
@@ -219,32 +227,70 @@ public class MatchExecutor {
         return "-D" + key + "=\"" + value + "\"";
     }
 
-    private void applyResultToMatch(MatchRuntimeResult result, Match match) {
-        switch (result) {
+    private MatchResult createSuccessfulExecutionMatchResult() {
+        String matchResultFilePath = getMatchResultFilePath();
+        try {
+            return MatchResult.loadFromFile(matchResultFilePath);
+        } catch (Exception e) {
+            LOG.error("Could not load match result file: {}", matchResultFilePath, e);
+            return createErrorMatchResult("Failed to load match result file: " + e.getMessage());
+        }
+    }
+
+    private String getMatchResultFilePath() {
+        return FileUtils.joinFilePaths(matchDir.getAbsolutePath(), MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
+    }
+
+    private MatchResult createAbnormalExitCodeMatchResult(int exitCode) {
+        return createErrorMatchResult("Match process exited with abnormal code: " + exitCode);
+    }
+
+    private MatchResult createTimeoutMatchResult() {
+        return createErrorMatchResult("Match execution process timed out");
+    }
+
+    private MatchResult createProcessExceptionMatchResult(String exceptionMessage) {
+        return createErrorMatchResult("Match execution process failed with exception: " + exceptionMessage);
+    }
+
+    private MatchResult createErrorMatchResult(String errorMessage) {
+        return new MatchResult()
+            .setOutcome(MatchResult.Outcome.ERROR)
+            .setErrorMessage(errorMessage);
+    }
+
+    private void applyResultToMatch(MatchResult result, Match match) {
+        match.setTurns(result.getTurns());
+
+        switch (result.getOutcome()) {
+            case BOT_1_WON:
+                match.setStatus(Match.Status.FINISHED);
+                match.setOutcome(Match.Outcome.WIN);
+                break;
+            case BOT_2_WON:
+                match.setStatus(Match.Status.FINISHED);
+                match.setOutcome(Match.Outcome.LOSS);
+                break;
             case DRAW:
                 match.setStatus(Match.Status.FINISHED);
                 match.setOutcome(Match.Outcome.DRAW);
                 break;
-            case BOT1_WINNER:
-                match.setStatus(Match.Status.FINISHED);
-                match.setOutcome(Match.Outcome.WIN);
+            case ERROR:
+                markMatchAsFailed(match, result.getErrorMessage());
                 break;
-            case BOT2_WINNER:
-                match.setStatus(Match.Status.FINISHED);
-                match.setOutcome(Match.Outcome.LOSS);
-                break;
-            default: // We consider all other results as failures
-                markMatchAsFailed(match);
+            default:
+                markMatchAsFailed(match, "Unknown match outcome: " + result.getOutcome());
         }
     }
 
-    private Match markMatchAsFailed(Match match) {
+    private Match markMatchAsFailed(Match match, String errorMessage) {
         if (match.getEnded() == null) {
             match.setEnded(Instant.now());
         }
 
         match.setStatus(Match.Status.FAILED);
         match.setOutcome(Match.Outcome.DNF);
+        match.setFailReason(errorMessage);
         return match;
     }
 

@@ -86,7 +86,10 @@ public class Match {
     private Instant ended;
 
     @Column
-    private Integer turns; // TODO Do we need the number of turns here?? It could help to identify long or tight matches...
+    private Integer turns;
+
+    @Column
+    private String failReason;
 
     public String getId() {
         return id;
@@ -166,6 +169,15 @@ public class Match {
 
     public Match setTurns(Integer turns) {
         this.turns = turns;
+        return this;
+    }
+
+    public String getFailReason() {
+        return failReason;
+    }
+
+    public Match setFailReason(String failReason) {
+        this.failReason = failReason;
         return this;
     }
 

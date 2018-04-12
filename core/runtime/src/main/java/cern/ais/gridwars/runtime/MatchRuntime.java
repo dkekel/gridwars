@@ -3,6 +3,7 @@ package cern.ais.gridwars.runtime;
 import cern.ais.gridwars.bot.PlayerBot;
 
 import java.nio.file.FileSystems;
+import java.util.Random;
 import java.util.stream.Stream;
 
 public class MatchRuntime {
@@ -42,6 +43,9 @@ public class MatchRuntime {
         PlayerBot bot2 = instantiateBotClass(bot2Class);
         System.out.println("Bot 2 class instantiated: " + bot2);
 
+        System.out.println("Create mock match result...");
+        createMockMatchResult();
+
         System.out.println("... finished match runtime");
     }
 
@@ -59,5 +63,20 @@ public class MatchRuntime {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void createMockMatchResult() {
+        Random random = new Random();
+        MatchResult result = new MatchResult();
+        result.setOutcome(MatchResult.Outcome.values()[random.nextInt(MatchResult.Outcome.values().length)]);
+        result.setTurns(random.nextInt(2000));
+
+        if (MatchResult.Outcome.ERROR == result.getOutcome()) {
+            result.setErrorMessage("Some comprehensive error message...");
+        }
+
+        result.storeToFile(MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
+
+        System.out.println("Generated match result: " + result.getOutcome().name());
     }
 }

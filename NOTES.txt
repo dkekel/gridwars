@@ -17,8 +17,6 @@ Bot upload:
 Match runtime process:
 - How to disable reflection?
     - Can be disabled using a SecurityManager and catching the SecurityException
-- Use a JSON file to communicate match results back to the web app
-- Use a library to de/serialize the match turn results to/from a file
 
 Web access log:
 - Simple web access log
