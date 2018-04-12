@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 
 
@@ -90,6 +91,7 @@ public class UserService implements UserDetailsService {
             .setUsername(user.getUsername())
             .setPassword(encodePassword(user.getPassword()))
             .setEmail(user.getEmail())
+            .setCreated(Instant.now())
             .setTeamname(user.getTeamname())
             .setAdmin(user.isAdmin())
             .setEnabled(user.isEnabled())

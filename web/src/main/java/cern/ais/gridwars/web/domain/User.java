@@ -58,6 +58,9 @@ public class User implements UserDetails {
     @Size(max = 32)
     private String email;
 
+    @Column(nullable = false)
+    private Instant created;
+
     @Column(unique = true)
     @Size(max = 256)
     private String confirmationId;
@@ -104,6 +107,15 @@ public class User implements UserDetails {
 
     public User setEmail(String email) {
         this.email = email;
+        return this;
+    }
+
+    public Instant getCreated() {
+        return created;
+    }
+
+    public User setCreated(Instant created) {
+        this.created = created;
         return this;
     }
 
