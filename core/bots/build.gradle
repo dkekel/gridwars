@@ -2,6 +2,16 @@ apply plugin: 'application'
 
 mainClassName = 'cern.ais.gridwars.App'
 
+jar {
+    manifest {
+        attributes(
+//				'Bot-Class-Name': 'cern.ais.gridwars.JaegerBot'
+//				'Bot-Class-Name': 'cern.ais.gridwars.GinTonicBot'
+            'Bot-Class-Name': 'cern.ais.gridwars.BrugalColaBot'
+        )
+    }
+}
+
 dependencies {
 	compile project(':core:emulator')
 }
