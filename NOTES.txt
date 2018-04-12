@@ -18,6 +18,8 @@ Match runtime process:
 - How to disable reflection?
     - Can be disabled using a SecurityManager and catching the SecurityException
 
+- Instantiate bot classes in a separate thread to enforce initialisation timeout
+
 Web access log:
 - Simple web access log
 - Tag requests with unique id and show this id in log output to find the matching requests
@@ -37,6 +39,9 @@ Bots:
 Emulator:
 - Rename "Visualizer" into "Emulator" and put it into its own module
 - Create a new example/starter module that will be downloadable
+
+UI:
+- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 
 Misc:
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
