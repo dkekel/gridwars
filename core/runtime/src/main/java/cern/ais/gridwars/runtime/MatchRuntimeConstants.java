@@ -2,6 +2,8 @@ package cern.ais.gridwars.runtime;
 
 public final class MatchRuntimeConstants {
 
+    public static final String BOT_1_CLASS_NAME_SYS_PROP_KEY = "gridwars.runtime.bot1ClassName";
+    public static final String BOT_2_CLASS_NAME_SYS_PROP_KEY = "gridwars.runtime.bot2ClassName";
     public static final String BOT_1_OUTPUT_FILE_NAME = "bot1.txt";
     public static final String BOT_2_OUTPUT_FILE_NAME = "bot2.txt";
     public static final String MATCH_RESULT_FILE_NAME = "result.properties";

@@ -21,8 +21,8 @@ public class MatchRuntime {
         String workDir = FileSystems.getDefault().getPath("").toAbsolutePath().toString();
         String javaHome = System.getProperty("java.home");
         String classPath = System.getProperty("java.class.path");
-        String bot1ClassName = System.getProperty("gridwars.runtime.bot1ClassName");
-        String bot2ClassName = System.getProperty("gridwars.runtime.bot2ClassName");
+        String bot1ClassName = System.getProperty(MatchRuntimeConstants.BOT_1_CLASS_NAME_SYS_PROP_KEY);
+        String bot2ClassName = System.getProperty(MatchRuntimeConstants.BOT_2_CLASS_NAME_SYS_PROP_KEY);
 
         Stream.of(
             "Work dir: " + workDir,

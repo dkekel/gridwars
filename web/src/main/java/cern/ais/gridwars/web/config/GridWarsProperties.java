@@ -43,9 +43,9 @@ public class GridWarsProperties {
         private String runtimeDir;
 
         protected void initDirs() {
-            botJarDir = FileUtils.joinFilePaths(baseWorkDir, "bots");
-            matchesDir = FileUtils.joinFilePaths(baseWorkDir, "matches");
-            runtimeDir = FileUtils.joinFilePaths(baseWorkDir, "runtime");
+            botJarDir = FileUtils.joinFilePathsToSinglePath(baseWorkDir, "bots");
+            matchesDir = FileUtils.joinFilePathsToSinglePath(baseWorkDir, "matches");
+            runtimeDir = FileUtils.joinFilePathsToSinglePath(baseWorkDir, "runtime");
 
             if (LOG.isInfoEnabled()) {
                 LOG.info("Base work dir: {}", baseWorkDir);

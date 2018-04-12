@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class MatchExecutor {
     }
 
     private void createMatchWorkDir(Match match) {
-        String matchDirPath = FileUtils.joinFilePaths(gridWarsProperties.getDirectories().getMatchesDir(),
+        String matchDirPath = FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getMatchesDir(),
                 match.getId());
         matchDir = new File(matchDirPath);
 
@@ -82,7 +83,7 @@ public class MatchExecutor {
     }
 
     private File createOutputFile(String fileName) {
-        String outputFilePath = FileUtils.joinFilePaths(matchDir.getAbsolutePath(), fileName);
+        String outputFilePath = FileUtils.joinFilePathsToSinglePath(matchDir.getAbsolutePath(), fileName);
         File outputFile = new File(outputFilePath);
 
         try {
@@ -170,16 +171,15 @@ public class MatchExecutor {
     }
 
     private List<String> createClassPathArguments(Match match) {
-        String classPathArgument = Stream.of(
+        String classPathArgument = FileUtils.joinFilePathsToSeparatedPaths(
                 createMatchRuntimeClassPathPart(),
                 determineBotJarPath(match.getBot1()),
                 determineBotJarPath(match.getBot2())
-            ).collect(Collectors.joining(File.pathSeparator));
+            );
 
-        return Stream.of(
-                "-cp",
-                "\"" + classPathArgument + "\""
-            ).collect(Collectors.toList());
+        // we might have to check that happens if the "classPathArgument" string contains whitespaces. Maybe it
+        // is necessary to wrap it in double quotes then?
+        return Arrays.asList("-cp", classPathArgument);
     }
 
     private String createMatchRuntimeClassPathPart() {
@@ -205,26 +205,26 @@ public class MatchExecutor {
     }
 
     private String determineBotJarPath(Bot bot) {
-        return FileUtils.joinFilePaths(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName());
+        return FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName());
     }
 
     private List<String> createJvmMemoryAndGcArguments() {
-        return Stream.of(
+        return Arrays.asList(
             "-Xms256m",
             "-Xmx256m"
             // TODO add some more GC optimisation flags
-        ).collect(Collectors.toList());
+        );
     }
 
     private List<String> createSysPropArguments(Match match) {
-        return Stream.of(
-            createSysPropArgument("gridwars.runtime.bot1ClassName", match.getBot1().getBotClassName()),
-            createSysPropArgument("gridwars.runtime.bot2ClassName", match.getBot2().getBotClassName())
-        ).collect(Collectors.toList());
+        return Arrays.asList(
+            createSysPropArgument(MatchRuntimeConstants.BOT_1_CLASS_NAME_SYS_PROP_KEY, match.getBot1().getBotClassName()),
+            createSysPropArgument(MatchRuntimeConstants.BOT_2_CLASS_NAME_SYS_PROP_KEY, match.getBot2().getBotClassName())
+        );
     }
 
     private String createSysPropArgument(String key, String value) {
-        return "-D" + key + "=\"" + value + "\"";
+        return "-D" + key + "=" + value;
     }
 
     private MatchResult createSuccessfulExecutionMatchResult() {
@@ -238,7 +238,7 @@ public class MatchExecutor {
     }
 
     private String getMatchResultFilePath() {
-        return FileUtils.joinFilePaths(matchDir.getAbsolutePath(), MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
+        return FileUtils.joinFilePathsToSinglePath(matchDir.getAbsolutePath(), MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
     }
 
     private MatchResult createAbnormalExitCodeMatchResult(int exitCode) {
