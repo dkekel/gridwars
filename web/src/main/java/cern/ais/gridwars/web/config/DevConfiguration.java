@@ -92,11 +92,11 @@ public class DevConfiguration {
         Bot bot2 = botService.createNewBotRecord("jaegerbot2.jar", "cern.ais.gridwars.JaegerBot", user2, Instant.now());
         matchService.generateMatches(bot2);
 
-        //Bot bot3 = botService.createNewBotRecord("gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
-        //matchService.generateMatches(bot3);
+        Bot bot3 = botService.createNewBotRecord("gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
+        matchService.generateMatches(bot3);
 
-        //Bot bot4 = botService.createNewBotRecord("brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
-        //matchService.generateMatches(bot4);
+        Bot bot4 = botService.createNewBotRecord("brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
+        matchService.generateMatches(bot4);
 
         matchWorkerService.wakeUpAllMatchWorkers();
 

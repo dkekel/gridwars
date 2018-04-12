@@ -8,11 +8,13 @@ import java.util.List;
 public class JaegerBot implements PlayerBot {
 
 	static {
-		System.out.println("Static init block was called on: cern.ais.gridwars.JaegerBot");
+		System.out.println("Static init block was called on: cern.ais.gridwars.JaegerBot version 1");
+        //System.out.println("Static init block was called on: cern.ais.gridwars.JaegerBot version 2");
 	}
 
 	public JaegerBot() {
-		System.out.println("Constructor called on: " + getClass().getName());
+		System.out.println("Constructor called on: " + getClass().getName() + " version 1");
+        //System.out.println("Constructor called on: " + getClass().getName() + " version 2");
 	}
 
 	@Override
