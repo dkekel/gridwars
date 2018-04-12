@@ -28,7 +28,6 @@ public class Player {
     this.outputFile = outputFile;
     this.outputStream = outputFile != null ? new FileOutputStream(outputFile) : null;
     this.colorIndex = colorIndex;
-    System.out.println("Player " + id);
   }
 
   public long getId()
