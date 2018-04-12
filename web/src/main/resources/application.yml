@@ -90,6 +90,8 @@ spring:
         console:
             enabled: true
             path: /admin/h2
+            settings:
+                web-allow-others: true
 
 # ==================================================================================================
 # Server Configuration
