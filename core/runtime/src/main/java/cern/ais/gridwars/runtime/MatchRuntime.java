@@ -45,7 +45,6 @@ public class MatchRuntime {
     private final String bot1ClassName;
     private final String bot2ClassName;
     private long matchDurationMillis;
-    private int turns; // TODO do I need this variable?? The turns are implied by the size of turnStates, no??
 
     public static void main(String[] args) {
         new MatchRuntime().executeMatch();
@@ -126,13 +125,11 @@ public class MatchRuntime {
         matchResult.clear();
         players.clear();
         turnStates.clear();
-        turns = 0;
 
         players.add(createPlayer(0, bot1, MatchRuntimeConstants.BOT_1_OUTPUT_FILE_NAME));
         players.add(createPlayer(1, bot2, MatchRuntimeConstants.BOT_2_OUTPUT_FILE_NAME));
 
         Game game = new Game(players, (player, turn, movementCommands, binaryGameStatus) -> {
-            turns = turn;
             turnStates.add(binaryGameStatus.array());
         });
 
@@ -147,7 +144,7 @@ public class MatchRuntime {
                 game.nextTurn();
             }
 
-            populateSuccessfulMatchResult(game.getWinner(), turns);
+            populateSuccessfulMatchResult(game.getWinner());
         } catch (TimeoutException ignored) {
             String errorMessage = "Match execution took too long and timed out after " + MATCH_TIME_OUT_MILLIS + " ms";
             error(errorMessage);
@@ -166,7 +163,7 @@ public class MatchRuntime {
         }
     }
 
-    private void populateSuccessfulMatchResult(Player winner, int turns) {
+    private void populateSuccessfulMatchResult(Player winner) {
         if (players.get(0).equals(winner)) {
             matchResult.setOutcome(MatchResult.Outcome.BOT_1_WON);
         } else if (players.get(1).equals(winner)) {
@@ -176,7 +173,7 @@ public class MatchRuntime {
             matchResult.setOutcome(MatchResult.Outcome.DRAW);
         }
 
-        matchResult.setTurns(turns);
+        matchResult.setTurns(turnStates.size());
     }
 
     private void populateErrorMatchResult(String errorMessage) {
