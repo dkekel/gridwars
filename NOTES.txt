@@ -13,6 +13,9 @@ Bot upload:
 - Don't show a 500 error page when something goes south, but rather a error message in the upload form
 - Validate that two different users don't have bots with the same class name
     - Otherwise both bot classes can't be loaded at the same time in the match process jvm
+    - OR BETTER: pass in the bot jars paths as parameters and use URLClassLoaders to load the bot classes
+        - This won't make it necessary to have different fully qualified class names!
+- Create a hash fingerprint of the uploaded file and store it, just to see who uses the same jar file...
 
 Match runtime process:
 - How to disable reflection?
@@ -44,6 +47,8 @@ UI:
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 
 Misc:
+- Prepare some aliases on the gridwars machine to quickly list match processes etc.
+
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 
 - Implement functionality to block bot upload, user registration, and to stop/start match processing
@@ -60,9 +65,29 @@ Functionality that I can avoid to create:
     - I still need to bcrypt it, so there must be such an admin functionality...
     - Users must be able to change their password though
 
+
 Info:
 ========================================================================================================================
 - Service account: gridwars Fiba-Raxi
+
+GridWars Machine:
+========================================================================================================================
+Setup:
+- Connect with root@gridwars
+    - Put allowed public keys in /root/.ssh/authorized_keys
+- Install Java JDK: yum install java-1.8.0-oracle-devel
+- Install Git: yum install git
+- Create SSH keypair: ssh-keygen -t rsa
+    - Add that keypair to the Bitbucket repo to have access to the GridWars repo
+
+Firewall:
+- See: https://stackoverflow.com/questions/24729024/open-firewall-port-on-centos-7
+- firewall-cmd --get-active-zones
+- firewall-cmd --zone=public --add-port=80/tcp --permanent
+- firewall-cmd --zone=public --add-port=443/tcp --permanent
+- firewall-cmd --zone=public --add-port=8080/tcp --permanent
+- firewall-cmd --zone=public --add-port=8443/tcp --permanent
+- firewall-cmd --reload
 
 
 Useful links:
