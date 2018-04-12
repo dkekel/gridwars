@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -24,24 +25,27 @@ import static cern.ais.gridwars.runtime.LogUtils.*;
  * JVM from failing. Also, this gives us more control over the memory, the available class path, reflections,
  * etc.
  *
- * This runtime class is used in a very lightweight class path environment. Therfore, it should not make
+ * This runtime class is used in a very lightweight class path environment. Therefore, it should not make
  * use of any 3rd party libraries and stick to default JDK APIs. The class path will be set up with the
  * GridWars API and implementation and with the player bot jars.
  */
 public class MatchRuntime {
 
     // TODO determine adequate match timeout
+    // TODO should I make this configurable via sys prop??
     private static final long MATCH_TIME_OUT_MILLIS = 60 * 1000; // 60 seconds
 
     private final BotClassLoader botClassLoader = new BotClassLoader();
+    private final MatchTurnStateSerializer matchTurnStateSerializer = new MatchTurnStateSerializer();
     private final MatchResult matchResult = new MatchResult();
     private final List<Player> players = new ArrayList<>(2);
+    private final List<byte[]> turnStates = new LinkedList<>();
     private final String bot1JarPath;
     private final String bot2JarPath;
     private final String bot1ClassName;
     private final String bot2ClassName;
     private long matchDurationMillis;
-    private int turns;
+    private int turns; // TODO do I need this variable?? The turns are implied by the size of turnStates, no??
 
     public static void main(String[] args) {
         new MatchRuntime().executeMatch();
@@ -80,21 +84,23 @@ public class MatchRuntime {
     }
 
     private void executeMatch() {
-        info("Start match execution ...");
-        matchResult.clear();
-
         try {
-            loadBotsAndPlayMatch();
-        } catch (Exception e) {
-            error("Match execution failed: " + e.getMessage(), e);
-            populateErrorMatchResult(e.getMessage());
+            info("Start match execution ...");
+
+            try {
+                loadBotsAndPlayMatch();
+                logMatchResult();
+                persistTurnStates();
+            } catch (Exception e) {
+                error("Match execution failed: " + e.getMessage(), e);
+                populateErrorMatchResult(e.getMessage());
+            }
+
+            persistMatchResult();
+            info("... finished match execution");
         } finally {
             cleanUp();
         }
-
-        persistMatchResult();
-        logMatchResult();
-        info("... finished match execution");
     }
 
 
@@ -117,19 +123,23 @@ public class MatchRuntime {
 
     private void playMatch(PlayerBot bot1, PlayerBot bot2) {
         info("Starting match ...");
+        matchResult.clear();
         players.clear();
+        turnStates.clear();
+        turns = 0;
+
         players.add(createPlayer(0, bot1, MatchRuntimeConstants.BOT_1_OUTPUT_FILE_NAME));
         players.add(createPlayer(1, bot2, MatchRuntimeConstants.BOT_2_OUTPUT_FILE_NAME));
 
         Game game = new Game(players, (player, turn, movementCommands, binaryGameStatus) -> {
             turns = turn;
-            // TODO implement storing binary game data
+            turnStates.add(binaryGameStatus.array());
         });
 
         long matchStartTimeMillis = System.currentTimeMillis();
-        turns = 0;
-        game.startUp();
         try {
+            game.startUp();
+
             while (!game.done()) {
                 if ((System.currentTimeMillis() - matchStartTimeMillis) > MATCH_TIME_OUT_MILLIS) {
                     throw new TimeoutException();
@@ -140,7 +150,7 @@ public class MatchRuntime {
             populateSuccessfulMatchResult(game.getWinner(), turns);
         } catch (TimeoutException ignored) {
             String errorMessage = "Match execution took too long and timed out after " + MATCH_TIME_OUT_MILLIS + " ms";
-            info(errorMessage); // Should be error log instead??
+            error(errorMessage);
             populateErrorMatchResult(errorMessage);
         }
         matchDurationMillis = System.currentTimeMillis() - matchStartTimeMillis;
@@ -162,7 +172,7 @@ public class MatchRuntime {
         } else if (players.get(1).equals(winner)) {
             matchResult.setOutcome(MatchResult.Outcome.BOT_2_WON);
         } else {
-            // winner == null means a draw
+            // winner == null means a draw... yeah, intuitive API, I know...
             matchResult.setOutcome(MatchResult.Outcome.DRAW);
         }
 
@@ -174,14 +184,11 @@ public class MatchRuntime {
         matchResult.setErrorMessage(errorMessage);
     }
 
-    private void cleanUp() {
-        for (Player player : players) {
-            try {
-                player.getOutputStream().close();
-            } catch (IOException ignored) {
-            }
-        }
-        players.clear();
+    private void persistTurnStates() {
+        info("Persisting turn states data of size [mb]: " + matchTurnStateSerializer.calculateTurnStatesSizeInMb(turnStates.size()));
+        long start = System.currentTimeMillis();
+        matchTurnStateSerializer.serializeToFile(turnStates, MatchRuntimeConstants.MATCH_TURNS_PAYLOAD_FILE_NAME);
+        info("Persisting turn states data took [ms]: " + (System.currentTimeMillis() - start));
     }
 
     private void persistMatchResult() {
@@ -189,8 +196,21 @@ public class MatchRuntime {
     }
 
     private void logMatchResult() {
-        info("Match finished after " + matchResult.getTurns() + " turns in " +
-            matchDurationMillis + " ms with result: " + matchResult.getOutcome());
+        info("Match finished after " + matchResult.getTurns() + " turns in " + matchDurationMillis +
+            " ms with outcome: " + matchResult.getOutcome());
+    }
+
+    private void cleanUp() {
+        matchResult.clear();
+        turnStates.clear();
+
+        for (Player player : players) {
+            try {
+                player.getOutputStream().close();
+            } catch (IOException ignored) {
+            }
+        }
+        players.clear();
     }
 
     public static class MatchExecutionException extends RuntimeException {
