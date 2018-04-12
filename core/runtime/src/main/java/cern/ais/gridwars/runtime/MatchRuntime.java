@@ -6,6 +6,9 @@ import java.nio.file.FileSystems;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import static cern.ais.gridwars.runtime.LogUtils.*;
+
+
 public class MatchRuntime {
 
     public static void main(String[] args) {
@@ -13,7 +16,7 @@ public class MatchRuntime {
     }
 
     public void executeMatch() {
-        System.out.println("Started match runtime ...");
+        info("Start executing match ...");
 
         String workDir = FileSystems.getDefault().getPath("").toAbsolutePath().toString();
         String classPath = System.getProperty("java.class.path");
@@ -27,26 +30,26 @@ public class MatchRuntime {
             "Bot 2 class name: " + bot2ClassName
         ).forEach(System.out::println);
 
-        System.out.println("Trying to load bot classes ...");
+        info("Trying to load bot classes ...");
 
         Class bot1Class = loadClass(bot1ClassName);
-        System.out.println("Bot 1 class loaded: " + bot1Class);
+        info("Bot 1 class loaded: " + bot1Class);
 
         Class bot2Class = loadClass(bot2ClassName);
-        System.out.println("Bot 2 class loaded: " + bot2Class);
+        info("Bot 2 class loaded: " + bot2Class);
 
-        System.out.println("Trying to instantiate bot classes ...");
+        info("Trying to instantiate bot classes ...");
 
         PlayerBot bot1 = instantiateBotClass(bot1Class);
-        System.out.println("Bot 1 class instantiated: " + bot1);
+        info("Bot 1 class instantiated: " + bot1);
 
         PlayerBot bot2 = instantiateBotClass(bot2Class);
-        System.out.println("Bot 2 class instantiated: " + bot2);
+        info("Bot 2 class instantiated: " + bot2);
 
-        System.out.println("Create mock match result...");
+        info("Create mock match result...");
         createMockMatchResult();
 
-        System.out.println("... finished match runtime");
+        info("... finished executing match");
     }
 
     private Class loadClass(String className) {
@@ -77,6 +80,6 @@ public class MatchRuntime {
 
         result.storeToFile(MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
 
-        System.out.println("Generated match result: " + result.getOutcome().name());
+        info("Generated match result: " + result.getOutcome().name());
     }
 }
