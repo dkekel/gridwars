@@ -6,12 +6,10 @@ gridwars:
         # Default value, should be provided upon start by a system property.
         baseWorkDir: './work'
     matches:
-        number: 1
+        number: 1 # TODO give this property a better name, maybe matchCountPerOpponent?
         workerCount: 3
         # TODO adjust the value below to a more realistic value
         executionTimeoutSeconds: 70
-        # Class name must correspond to the main class in the "core/runtime" sub-project
-        matchRuntimeMainClassName: 'cern.ais.gridwars.runtime.MatchRuntime'
     mail:
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bcc: 'benjamin.wolff@cern.ch'

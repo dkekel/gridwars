@@ -156,7 +156,7 @@ class MatchExecutor {
         args.addAll(createJvmMemoryAndGcArguments());
         args.addAll(createMatchRuntimeClassPathArguments());
         args.addAll(createSysPropArguments(match));
-        args.add(gridWarsProperties.getMatches().getMatchRuntimeMainClassName());
+        args.add(MatchRuntimeConstants.MATCH_RUNTIME_MAIN_CLASS_NAME);
         return args;
     }
 

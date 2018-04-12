@@ -10,6 +10,7 @@ public final class MatchRuntimeConstants {
     public static final String BOT_2_OUTPUT_FILE_NAME = "bot_2_output.txt";
     public static final String MATCH_RESULT_FILE_NAME = "result.properties";
     public static final String MATCH_TURNS_PAYLOAD_FILE_NAME = "turns.bin";
+    public static final String MATCH_RUNTIME_MAIN_CLASS_NAME = MatchRuntime.class.getName();
 
     private MatchRuntimeConstants() {
     }
