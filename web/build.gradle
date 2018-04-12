@@ -21,6 +21,11 @@ description = 'GridWars - Web Project'
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
+ext {
+    // Project work dir subfolder name used during development
+    workDirName = 'work'
+}
+
 repositories {
     addAll(buildscript.repositories)
 }
@@ -35,9 +40,8 @@ bootRun {
 
     // Set up the work folders. When running from a runnable jar, these system properties need to be
     // provided by jvm start parameters.
-    def workDir = "${project.projectDir.absolutePath}${File.separator}work"
-    systemProperties["gridwars.directories.baseWorkDir"] = workDir
-    systemProperties["server.tomcat.basedir"] = "${workDir}${File.separator}server"
+    systemProperties["gridwars.directories.baseWorkDir"] = project.file(workDirName).absolutePath
+    systemProperties["server.tomcat.basedir"] = project.file("${workDirName}/server").absolutePath
 }
 
 dependencies {
@@ -60,8 +64,15 @@ dependencies {
 	testCompile('org.springframework.security:spring-security-test')
 }
 
-// TODO create a task to clear the subfolders of the dev work folder
+task setUpRuntimeLibWorkDir(type: Copy, dependsOn: classes) {
+    from project(':core:api').jar
+    from project(':core:impl').jar
+    from project(':core:runtime').jar
 
+    into project.file("${workDirName}/runtime")
+}
+bootRun.dependsOn(setUpRuntimeLibWorkDir)
+
+// TODO create a task to clear the subfolders of the dev work folder
 // TODO create a task to set up an external work dir folder to allow running the app as a runnable jar
 
-// TODO create a command that runs before "bootRun" that copies the api, impl, and runtime jar into "work/runtime"
