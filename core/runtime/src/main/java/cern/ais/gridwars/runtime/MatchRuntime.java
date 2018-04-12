@@ -19,16 +19,18 @@ public class MatchRuntime {
         info("Start executing match ...");
 
         String workDir = FileSystems.getDefault().getPath("").toAbsolutePath().toString();
+        String javaHome = System.getProperty("java.home");
         String classPath = System.getProperty("java.class.path");
         String bot1ClassName = System.getProperty("gridwars.runtime.bot1ClassName");
         String bot2ClassName = System.getProperty("gridwars.runtime.bot2ClassName");
 
         Stream.of(
-            "Class path: " + classPath,
             "Work dir: " + workDir,
+            "Java home: " + javaHome,
+            "Class path: " + classPath,
             "Bot 1 class name: " + bot1ClassName,
             "Bot 2 class name: " + bot2ClassName
-        ).forEach(System.out::println);
+        ).forEach(LogUtils::info);
 
         info("Trying to load bot classes ...");
 
@@ -54,6 +56,7 @@ public class MatchRuntime {
 
     private Class loadClass(String className) {
         try {
+            info("Loading class: " + className);
             return getClass().getClassLoader().loadClass(className);
         } catch (ClassNotFoundException cnfe) {
             throw new RuntimeException(cnfe);
