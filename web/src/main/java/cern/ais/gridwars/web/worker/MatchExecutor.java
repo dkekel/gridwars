@@ -6,7 +6,7 @@ import cern.ais.gridwars.runtime.MatchRuntimeConstants;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.Match;
-import cern.ais.gridwars.web.service.FileUtils;
+import cern.ais.gridwars.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

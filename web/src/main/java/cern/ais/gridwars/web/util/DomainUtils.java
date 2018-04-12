@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.domain;
+package cern.ais.gridwars.web.util;
 
 import java.util.UUID;
 

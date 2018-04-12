@@ -1,6 +1,6 @@
 package cern.ais.gridwars.web.config;
 
-import cern.ais.gridwars.web.service.FileUtils;
+import cern.ais.gridwars.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -2,9 +2,10 @@ package cern.ais.gridwars.web.service;
 
 import cern.ais.gridwars.bot.PlayerBot;
 import cern.ais.gridwars.web.domain.Bot;
-import cern.ais.gridwars.web.domain.DomainUtils;
+import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.BotRepository;
+import cern.ais.gridwars.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

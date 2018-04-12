@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.service;
+package cern.ais.gridwars.web.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

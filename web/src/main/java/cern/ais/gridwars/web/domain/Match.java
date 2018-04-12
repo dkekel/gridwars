@@ -1,5 +1,7 @@
 package cern.ais.gridwars.web.domain;
 
+import cern.ais.gridwars.web.util.DomainUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.Duration;

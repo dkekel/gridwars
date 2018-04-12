@@ -1,6 +1,6 @@
 package cern.ais.gridwars.web.service;
 
-import cern.ais.gridwars.web.domain.DomainUtils;
+import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package cern.ais.gridwars.web.service;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Bot;
-import cern.ais.gridwars.web.domain.DomainUtils;
+import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.repository.MatchRepository;
 import org.slf4j.Logger;
