@@ -20,7 +20,7 @@ import java.util.Objects;
 @Service
 public class JarStorageService {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final GridWarsProperties gridWarsProperties;
@@ -54,6 +54,6 @@ public class JarStorageService {
     }
 
     private String formatInstant(Instant instant) {
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(FORMATTER);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(INSTANT_FORMATTER);
     }
 }

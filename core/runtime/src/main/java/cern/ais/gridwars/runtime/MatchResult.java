@@ -78,6 +78,7 @@ public class MatchResult {
     private String outcomeToString(Outcome outcome) {
         return (outcome == null) ? "" : outcome.name();
     }
+
     private String integerToString(Integer integer) {
         return (integer == null) ? "" : integer.toString();
     }
