@@ -134,10 +134,10 @@ public class MatchExecutor {
                 int exitValue = matchProcess.exitValue();
 
                 if (0 == exitValue) {
-                    LOG.debug("... match process exited normally with code {}", exitValue);
+                    LOG.debug("... match process exited normally with code: {}", exitValue);
                     return createSuccessfulExecutionMatchResult();
                 } else {
-                    LOG.debug("... match process exited abnormally with error code {}", exitValue);
+                    LOG.debug("... match process exited abnormally with error code: {}", exitValue);
                     return createAbnormalExitCodeMatchResult(exitValue);
                 }
             } else {

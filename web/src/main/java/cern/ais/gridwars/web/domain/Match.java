@@ -1,6 +1,7 @@
 package cern.ais.gridwars.web.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
@@ -89,6 +90,7 @@ public class Match {
     private Integer turns;
 
     @Column
+    @Size(max = 1024)
     private String failReason;
 
     public String getId() {
@@ -177,7 +179,7 @@ public class Match {
     }
 
     public Match setFailReason(String failReason) {
-        this.failReason = failReason;
+        this.failReason = DomainUtils.truncate(failReason, 1024);
         return this;
     }
 
