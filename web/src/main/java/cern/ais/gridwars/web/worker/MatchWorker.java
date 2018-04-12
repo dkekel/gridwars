@@ -62,6 +62,8 @@ public class MatchWorker implements Runnable {
                     // In case the worker took a pending match but was shut down before it could be executed, it's
                     // important to return the match back to the pending queue. Otherwise it would still be marked
                     // as "running" but never executed, because no other worker would ever take the match.
+                    logDebug("worker obtained a pending match but was shut down before match could be " +
+                        "executed, return match back to pending queue");
                     matchService.returnMatchToPendingQueue(match.get());
                 }
             } else {

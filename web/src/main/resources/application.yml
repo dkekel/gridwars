@@ -8,8 +8,8 @@ gridwars:
     matches:
         number: 1
         workerCount: 3
-        # TODO adjust the value below to a more realistic value. theoretically, a match can last 120 seconds, plus some millis for initialisation
-        executionTimeoutSeconds: 5
+        # TODO adjust the value below to a more realistic value
+        executionTimeoutSeconds: 70
         # Class name must correspond to the main class in the "core/runtime" sub-project
         matchRuntimeMainClassName: 'cern.ais.gridwars.runtime.MatchRuntime'
     mail:

@@ -63,7 +63,7 @@ public class MatchResult {
             Properties props = toProperties();
             props.store(fos, null);
         } catch (Exception e) {
-            throw new RuntimeException("Storing match result to file failed", e);
+            throw new RuntimeException("Failed to store match result to file: " + filePath, e);
         }
     }
 
@@ -93,7 +93,7 @@ public class MatchResult {
             props.load(fis);
             return new MatchResult().fromProps(props);
         } catch (Exception e) {
-            throw new RuntimeException("Loading match result from file failed", e);
+            throw new RuntimeException("Loading match result from file failed: " + filePath, e);
         }
     }
 
@@ -117,5 +117,11 @@ public class MatchResult {
         } catch (NumberFormatException ignored) {
             return null;
         }
+    }
+
+    public void clear() {
+        setOutcome(null);
+        setTurns(null);
+        setErrorMessage(null);
     }
 }
