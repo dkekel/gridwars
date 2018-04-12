@@ -13,16 +13,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class MatchExecutor {
+class MatchExecutor {
 
     private static final String STDOUT_FILE_NAME = "stdout.txt";
     private static final String STDERR_FILE_NAME = "stderr.txt";
@@ -33,11 +30,11 @@ public class MatchExecutor {
     private File stdOutFile;
     private File stdErrFile;
 
-    public MatchExecutor(GridWarsProperties gridWarsProperties) {
+    MatchExecutor(GridWarsProperties gridWarsProperties) {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
-    public Match executeMatch(Match match) {
+    Match executeMatch(Match match) {
         try {
            createMatchWorkDir(match);
            createOutputFiles();
@@ -157,7 +154,7 @@ public class MatchExecutor {
         List<String> args = new LinkedList<>();
         args.add(createJavaExecutablePath());
         args.addAll(createJvmMemoryAndGcArguments());
-        args.addAll(createClassPathArguments(match));
+        args.addAll(createMatchRuntimeClassPathArguments());
         args.addAll(createSysPropArguments(match));
         args.add(gridWarsProperties.getMatches().getMatchRuntimeMainClassName());
         return args;
@@ -170,44 +167,6 @@ public class MatchExecutor {
         return javaExe.exists() ? javaExe.getAbsolutePath() : javaBin.getAbsolutePath();
     }
 
-    private List<String> createClassPathArguments(Match match) {
-        String classPathArgument = FileUtils.joinFilePathsToSeparatedPaths(
-                createMatchRuntimeClassPathPart(),
-                determineBotJarPath(match.getBot1()),
-                determineBotJarPath(match.getBot2())
-            );
-
-        // we might have to check that happens if the "classPathArgument" string contains whitespaces. Maybe it
-        // is necessary to wrap it in double quotes then?
-        return Arrays.asList("-cp", classPathArgument);
-    }
-
-    private String createMatchRuntimeClassPathPart() {
-        String runtimeDirPath = gridWarsProperties.getDirectories().getRuntimeDir();
-        File[] runtimeDirFile = new File(runtimeDirPath).listFiles();
-        if ((runtimeDirFile == null) || (runtimeDirFile.length == 0)) {
-            LOG.warn("Match process runtime folder is be empty or does not exist, the match runtime process will " +
-                "very likely with ClassNotFound exceptions: {}", runtimeDirPath);
-            return "";
-        }
-
-        return Stream.of(runtimeDirFile)
-            .filter(this::isJarFile)
-            // It may be relevant that "-api.jar" comes before "-impl.jar" and "-runtime.jar", but not sure. To
-            // avoid potential issues, we sort the jars by name to have a safe order: api, impl, runtime
-            .sorted()
-            .map(File::getAbsolutePath)
-            .collect(Collectors.joining(File.pathSeparator));
-    }
-
-    private boolean isJarFile(File file) {
-        return file.getName().toLowerCase().endsWith(".jar");
-    }
-
-    private String determineBotJarPath(Bot bot) {
-        return FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName());
-    }
-
     private List<String> createJvmMemoryAndGcArguments() {
         return Arrays.asList(
             "-Xms256m",
@@ -216,8 +175,36 @@ public class MatchExecutor {
         );
     }
 
+    private List<String> createMatchRuntimeClassPathArguments() {
+        String runtimeDirPath = gridWarsProperties.getDirectories().getRuntimeDir();
+        File[] runtimeDirFile = new File(runtimeDirPath).listFiles();
+        if ((runtimeDirFile == null) || (runtimeDirFile.length == 0)) {
+            LOG.warn("Match process runtime folder is be empty or does not exist, the match runtime process will " +
+                "very likely with ClassNotFound exceptions: {}", runtimeDirPath);
+            return Collections.emptyList();
+        }
+
+        String runtimeJarFilePaths = Stream.of(runtimeDirFile)
+            .filter(this::isJarFile)
+            // It may be relevant that "-api.jar" comes before "-impl.jar" and "-runtime.jar", but not sure. To
+            // avoid potential issues, we sort the jars by name to have a safe order: api, impl, runtime
+            .sorted()
+            .map(File::getAbsolutePath)
+            .collect(Collectors.joining(File.pathSeparator));
+
+        // we might have to check that happens if the "classPathArgument" string contains whitespaces. Maybe it
+        // is necessary to wrap it in double quotes then?
+        return Arrays.asList("-cp", runtimeJarFilePaths);
+    }
+
+    private boolean isJarFile(File file) {
+        return file.getName().toLowerCase().endsWith(".jar");
+    }
+
     private List<String> createSysPropArguments(Match match) {
         return Arrays.asList(
+            createSysPropArgument(MatchRuntimeConstants.BOT_1_JAR_PATH_SYS_PROP_KEY, determineBotJarPath(match.getBot1())),
+            createSysPropArgument(MatchRuntimeConstants.BOT_2_JAR_PATH_SYS_PROP_KEY, determineBotJarPath(match.getBot2())),
             createSysPropArgument(MatchRuntimeConstants.BOT_1_CLASS_NAME_SYS_PROP_KEY, match.getBot1().getBotClassName()),
             createSysPropArgument(MatchRuntimeConstants.BOT_2_CLASS_NAME_SYS_PROP_KEY, match.getBot2().getBotClassName())
         );
@@ -225,6 +212,10 @@ public class MatchExecutor {
 
     private String createSysPropArgument(String key, String value) {
         return "-D" + key + "=" + value;
+    }
+
+    private String determineBotJarPath(Bot bot) {
+        return FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName());
     }
 
     private MatchResult createSuccessfulExecutionMatchResult() {
@@ -302,11 +293,11 @@ public class MatchExecutor {
 
     public static class MatchExecutionException extends RuntimeException {
 
-        public MatchExecutionException(String message) {
+        MatchExecutionException(String message) {
             super(message);
         }
 
-        public MatchExecutionException(String message, Throwable cause) {
+        MatchExecutionException(String message, Throwable cause) {
             super(message, cause);
         }
     }

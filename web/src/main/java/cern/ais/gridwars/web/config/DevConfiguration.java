@@ -65,6 +65,15 @@ public class DevConfiguration {
                 .setEnabled(true)
         );
 
+        User user4 = userService.create(
+            new User()
+                .setUsername("user4")
+                .setPassword("bla4")
+                .setEmail("user4@cern.ch")
+                .setTeamname("Team User4")
+                .setEnabled(true)
+        );
+
         User admin1 = userService.create(
             new User()
                 .setUsername("admin")
@@ -78,13 +87,16 @@ public class DevConfiguration {
         // =====================================================================
         // Bots and Matches
         // =====================================================================
-        Bot bot1 = botService.createNewBotRecord("jaegerbot.jar", "cern.ais.gridwars.JaegerBot", user1, Instant.now());
+        Bot bot1 = botService.createNewBotRecord("jaegerbot1.jar", "cern.ais.gridwars.JaegerBot", user1, Instant.now());
 
-        Bot bot2 = botService.createNewBotRecord("gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user2, Instant.now());
+        Bot bot2 = botService.createNewBotRecord("jaegerbot2.jar", "cern.ais.gridwars.JaegerBot", user2, Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord("brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user3, Instant.now());
-        matchService.generateMatches(bot3);
+        //Bot bot3 = botService.createNewBotRecord("gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
+        //matchService.generateMatches(bot3);
+
+        //Bot bot4 = botService.createNewBotRecord("brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
+        //matchService.generateMatches(bot4);
 
         matchWorkerService.wakeUpAllMatchWorkers();
 

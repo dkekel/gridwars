@@ -11,10 +11,6 @@ Bot upload:
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 - Don't show a 500 error page when something goes south, but rather a error message in the upload form
-- Validate that two different users don't have bots with the same class name
-    - Otherwise both bot classes can't be loaded at the same time in the match process jvm
-    - OR BETTER: pass in the bot jars paths as parameters and use URLClassLoaders to load the bot classes
-        - This won't make it necessary to have different fully qualified class names!
 - Create a hash fingerprint of the uploaded file and store it, just to see who uses the same jar file...
 
 Match runtime process:

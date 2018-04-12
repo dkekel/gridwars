@@ -7,6 +7,8 @@ import cern.ais.gridwars.bot.PlayerBot;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -35,6 +37,10 @@ public class MatchRuntime {
     private final BotClassLoader botClassLoader = new BotClassLoader();
     private final MatchResult matchResult = new MatchResult();
     private final List<Player> players = new ArrayList<>(2);
+    private final String bot1JarPath;
+    private final String bot2JarPath;
+    private final String bot1ClassName;
+    private final String bot2ClassName;
     private long matchDurationMillis;
     private int turns;
 
@@ -42,37 +48,26 @@ public class MatchRuntime {
         new MatchRuntime().executeMatch();
     }
 
-    public void executeMatch() {
-        info("Start executing match ...");
-        matchResult.clear();
+    private MatchRuntime() {
+        bot1JarPath = retrieveMandatorySysProp(MatchRuntimeConstants.BOT_1_JAR_PATH_SYS_PROP_KEY);
+        bot2JarPath = retrieveMandatorySysProp(MatchRuntimeConstants.BOT_2_JAR_PATH_SYS_PROP_KEY);
+        bot1ClassName = retrieveMandatorySysProp(MatchRuntimeConstants.BOT_1_CLASS_NAME_SYS_PROP_KEY);
+        bot2ClassName = retrieveMandatorySysProp(MatchRuntimeConstants.BOT_2_CLASS_NAME_SYS_PROP_KEY);
+
         logEnvironmentInfo();
-
-        try {
-            loadBotsAndPlayMatch();
-        } catch (Exception e) {
-            error("Match execution failed", e);
-            populateErrorMatchResult(e.getMessage());
-        } finally {
-            cleanUp();
-        }
-
-        persistMatchResult();
-        logMatchResult();
-        info("... finished executing match");
     }
 
     private void logEnvironmentInfo() {
+        info("=====================================================================================");
+        info("Time: " + LocalDateTime.now().toString());
         info("Work dir: " + FileSystems.getDefault().getPath("").toAbsolutePath().toString());
         info("Java home: " + System.getProperty("java.home"));
         info("Class path: " + System.getProperty("java.class.path"));
-    }
-
-    private void loadBotsAndPlayMatch() {
-        String bot1ClassName = retrieveMandatorySysProp(MatchRuntimeConstants.BOT_1_CLASS_NAME_SYS_PROP_KEY);
-        String bot2ClassName = retrieveMandatorySysProp(MatchRuntimeConstants.BOT_2_CLASS_NAME_SYS_PROP_KEY);
-        PlayerBot bot1 = loadAndInstantiateBotClass(bot1ClassName, 1);
-        PlayerBot bot2 = loadAndInstantiateBotClass(bot2ClassName, 2);
-        playMatch(bot1, bot2);
+        info("Bot 1 jar path: " + bot1JarPath);
+        info("Bot 2 jar path: " + bot2JarPath);
+        info("Bot 1 class name: " + bot1ClassName);
+        info("Bot 2 class name: " + bot2ClassName);
+        info("=====================================================================================");
     }
 
     private String retrieveMandatorySysProp(String sysPropKey) {
@@ -85,9 +80,34 @@ public class MatchRuntime {
         return value;
     }
 
-    private PlayerBot loadAndInstantiateBotClass(String botClassName, int botNumber) {
-        info("Load and instantiate bot " + botNumber + " class: " + botClassName);
-        return botClassLoader.loadAndInstantiateBot(botClassName);
+    private void executeMatch() {
+        info("Start match execution ...");
+        matchResult.clear();
+
+        try {
+            loadBotsAndPlayMatch();
+        } catch (Exception e) {
+            error("Match execution failed", e);
+            populateErrorMatchResult(e.getMessage());
+        } finally {
+            cleanUp();
+        }
+
+        persistMatchResult();
+        logMatchResult();
+        info("... finished match execution");
+    }
+
+
+    private void loadBotsAndPlayMatch() {
+        PlayerBot bot1 = loadAndInstantiateBotClass(bot1JarPath, bot1ClassName, 1);
+        PlayerBot bot2 = loadAndInstantiateBotClass(bot2JarPath, bot2ClassName, 2);
+        playMatch(bot1, bot2);
+    }
+
+    private PlayerBot loadAndInstantiateBotClass(String botJarPath, String botClassName, int botNumber) {
+        info("Load and instantiate bot " + botNumber + " class \"" + botClassName +"\" from jar: " + botJarPath);
+        return botClassLoader.loadAndInstantiateBot(botJarPath, botClassName);
     }
 
     private void playMatch(PlayerBot bot1, PlayerBot bot2) {
@@ -170,11 +190,11 @@ public class MatchRuntime {
 
     public static class MatchExecutionException extends RuntimeException {
 
-        public MatchExecutionException(String message) {
+        MatchExecutionException(String message) {
             super(message);
         }
 
-        public MatchExecutionException(String message, Throwable cause) {
+        MatchExecutionException(String message, Throwable cause) {
             super(message, cause);
         }
     }
