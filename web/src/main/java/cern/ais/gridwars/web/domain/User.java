@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,7 +21,6 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "user")
 public class User implements UserDetails {
 
     public static final String ROLE_USER = "ROLE_USER";
@@ -64,7 +62,6 @@ public class User implements UserDetails {
     @Size(max = 256)
     private String confirmationId;
 
-    @Column
     private Instant confirmed;
 
     @Column(nullable = false)

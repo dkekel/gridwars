@@ -4,14 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Objects;
 
 
 @Entity
-@Table(name = "bot")
 public class Bot {
 
     @Id

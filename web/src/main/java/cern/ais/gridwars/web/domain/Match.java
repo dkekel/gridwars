@@ -8,7 +8,6 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "match")
 public class Match {
 
     public enum Status {
@@ -73,23 +72,18 @@ public class Match {
     @ManyToOne(optional = false)
     private Bot bot2;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private Outcome outcome;
 
     @Column(nullable = false)
     private Instant pendingSince;
 
-    @Column
     private Instant started;
 
-    @Column
     private Instant ended;
 
-    @Column
     private Integer turns;
 
-    @Column
     @Size(max = 1024)
     private String failReason;
 
