@@ -14,13 +14,13 @@ subprojects {
     apply plugin: 'java'
 
     group = gridwarsGroup
-    version = gridwarsCoreVersion
+    version = gridwarsVersion
 
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
 
     jar {
-        baseName = "gridwars-${project.name}"
+        archiveName = "gridwars-${project.name}.jar"
     }
 
     // Puts sub-project name and version in the MANIFEST.MF files of every JAR and WAR file.

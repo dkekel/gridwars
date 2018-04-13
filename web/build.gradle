@@ -15,7 +15,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = gridwarsGroup
-version = gridwarsWebVersion
+version = gridwarsVersion
 description = 'GridWars - Web Project'
 
 sourceCompatibility = javaVersion
@@ -31,7 +31,7 @@ repositories {
 }
 
 bootJar {
-    baseName = "gridwars-${project.name}"
+    archiveName = "gridwars-${project.name}.jar"
 }
 
 bootRun {
