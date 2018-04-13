@@ -26,14 +26,14 @@ public class MatchService {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchRepository matchRepository;
     private final BotService botService;
-    private final Integer numberOfMatches;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
     public MatchService(MatchRepository matchRepository, BotService botService,
                         GridWarsProperties gridWarsProperties) {
         this.matchRepository = Objects.requireNonNull(matchRepository);
         this.botService = Objects.requireNonNull(botService);
-        this.numberOfMatches = Objects.requireNonNull(gridWarsProperties.getMatches().getNumber());
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     @Transactional
@@ -44,6 +44,8 @@ public class MatchService {
     }
 
     private void createMatches(Bot bot1, Bot bot2) {
+        int numberOfMatches = gridWarsProperties.getMatches().getMatchCountPerOpponent();
+
         for (int n = 0; n < numberOfMatches; n++) {
             createSingleMatch(bot1, bot2);
         }

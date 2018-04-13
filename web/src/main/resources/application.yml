@@ -6,7 +6,7 @@ gridwars:
         # Default value, should be provided upon start by a system property.
         baseWorkDir: 'work'
     matches:
-        number: 1 # TODO give this property a better name, maybe matchCountPerOpponent?
+        matchCountPerOpponent: 1
         workerCount: 2
         workerHeapSize: 256m
         executionTimeoutSeconds: 70 # TODO adjust the value below to a more realistic value

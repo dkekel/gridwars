@@ -93,17 +93,17 @@ public class GridWarsProperties {
     }
 
     public class Matches {
-        private Integer number;
+        private Integer matchCountPerOpponent;
         private Integer workerCount;
         private String workerHeapSize;
         private Integer executionTimeoutSeconds;
 
-        public Integer getNumber() {
-            return number;
+        public Integer getMatchCountPerOpponent() {
+            return matchCountPerOpponent;
         }
 
-        public Matches setNumber(Integer number) {
-            this.number = number;
+        public Matches setMatchCountPerOpponent(Integer matchCountPerOpponent) {
+            this.matchCountPerOpponent = matchCountPerOpponent;
             return this;
         }
 
