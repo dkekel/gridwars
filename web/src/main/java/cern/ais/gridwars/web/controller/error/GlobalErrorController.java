@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.controller;
+package cern.ais.gridwars.web.controller.error;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

@@ -3,7 +3,7 @@ package cern.ais.gridwars.web.controller;
 import cern.ais.gridwars.runtime.MatchRuntimeConstants;
 import cern.ais.gridwars.runtime.MatchTurnStateSerializer;
 import cern.ais.gridwars.web.config.GridWarsProperties;
-import cern.ais.gridwars.web.domain.Match;
+import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.util.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -45,12 +45,14 @@ public class MatchController {
 
     @GetMapping("/{matchId}")
     public ModelAndView show(@PathVariable String matchId) {
-        Match match = matchService.loadMatch(matchId);
-
-        ModelAndView mav = new ModelAndView("pages/match/show");
-        mav.addObject("matchDataUrl", "/match/data/" + matchId);
-        mav.addObject("turnCount", match.getTurnCount());
-        return mav;
+        return matchService.loadMatch(matchId)
+            .map(match -> {
+                ModelAndView mav = new ModelAndView("pages/match/show");
+                mav.addObject("matchDataUrl", "/match/data/" + matchId);
+                mav.addObject("turnCount", match.getTurnCount());
+                return mav;
+            })
+            .orElseThrow(NotFoundException::new);
     }
 
     // IMPORTANT: This controller mapping is usually excluded from the Spring security

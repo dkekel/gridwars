@@ -4,12 +4,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Error - Gridwars</title>
+    <title th:text="'ERROR ' + ${errorCode} + ' - GridWars'"></title>
+
+    <style>
+        .error-container {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <main layout:fragment="content" class="container">
+    <main layout:fragment="content" class="container error-container">
         <h1 th:text="'ERROR ' + ${errorCode}"></h1>
-        <p th:text="${errorMsg}"></p>
+        <p th:text="${errorMsg}" class="alert alert-danger"><</p>
     </main>
 </body>
 </html>
