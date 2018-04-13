@@ -53,7 +53,10 @@ public class MatchTurnStateSerializer {
             return Optional.empty();
         }
 
-        try (FileInputStream fis = new FileInputStream(file)) {
+        try {
+            // IMPORTANT: this input stream is return to the caller code, which will read from it, so it must
+            // not be closed here!
+            FileInputStream fis = new FileInputStream(file);
             return uncompress
                 ? Optional.of(new GZIPInputStream(fis, GZIP_STREAM_BUFFER_SIZE))
                 : Optional.of(fis);
