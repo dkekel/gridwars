@@ -34,12 +34,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/user/signout").logoutSuccessUrl("/").permitAll();
         // @formatter:on
 
-        http.headers()
-            // Allow using iFrames from the same origin to support H2 console
-            .frameOptions().sameOrigin();
+        // Allow using iFrames from the same origin to support H2 console
+        http.headers().frameOptions().sameOrigin();
 
-        // TODO disable csrf for now, as it breaks i.e. H2 console
-        http.csrf().disable();
+        // CSRF protection needs to be disabled for the H2 console
+        http.csrf().ignoringAntMatchers("/admin/h2/**");
     }
 
     @Override
