@@ -5,7 +5,7 @@ window.matchViewer = (function() {
     const bytesPerTurn = universeSize * universeSize * 4;
     const baseDelayMillis = 50;
     const defaultSpeedStepIndex = 2;
-    const speedSteps = [0.33, 0.66, 1, 2, 3, 4, 8, 16];
+    const speedSteps = [0.33, 0.66, 1, 2, 4, 8, 16];
     const turnDataArray = [];
 
     let totalTurnCount = 0;
@@ -123,7 +123,7 @@ window.matchViewer = (function() {
     }
 
     function updateCurrentTurnLabel() {
-        currentTurnLabel.innerHTML = '' + (currentTurn + 1) + ' / ' + totalTurnCount;
+        currentTurnLabel.innerHTML = (currentTurn + 1) + ' / ' + totalTurnCount;
     }
 
     function drawNextTurn() {
@@ -190,17 +190,20 @@ window.matchViewer = (function() {
     }
 
     function increaseSpeed() {
-        speedStepIndex = Math.min(speedSteps.length - 1, speedStepIndex  + 1);
-        saveSelectedSpeedStep();
-        updateSpeedLabel();
-
-        if (isPlaying) {
-            restartPlay();
-        }
+        setSpeedStep(speedStepIndex + 1);
     }
 
     function decreaseSpeed() {
-        speedStepIndex = Math.max(0, speedStepIndex  - 1);
+        setSpeedStep(speedStepIndex - 1);
+    }
+
+    function resetSpeed() {
+        setSpeedStep(defaultSpeedStepIndex);
+    }
+
+    function setSpeedStep(newSpeedStepIndex) {
+        speedStepIndex = Math.max(0, Math.min(speedSteps.length - 1, newSpeedStepIndex));
+
         saveSelectedSpeedStep();
         updateSpeedLabel();
 
@@ -210,7 +213,7 @@ window.matchViewer = (function() {
     }
 
     function updateSpeedLabel() {
-        speedLabel.innerHTML = ''+  speedSteps[speedStepIndex];
+        speedLabel.innerHTML = speedSteps[speedStepIndex].toString();
     }
 
     return {
@@ -221,6 +224,7 @@ window.matchViewer = (function() {
         goToNextTurn: goToNextTurn,
         togglePlay: togglePlay,
         increaseSpeed: increaseSpeed,
-        decreaseSpeed: decreaseSpeed
+        decreaseSpeed: decreaseSpeed,
+        resetSpeed: resetSpeed
     }
 })();
