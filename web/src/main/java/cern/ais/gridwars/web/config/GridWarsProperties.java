@@ -95,6 +95,7 @@ public class GridWarsProperties {
     public class Matches {
         private Integer number;
         private Integer workerCount;
+        private String workerHeapSize;
         private Integer executionTimeoutSeconds;
 
         public Integer getNumber() {
@@ -112,6 +113,15 @@ public class GridWarsProperties {
 
         public Matches setWorkerCount(Integer workerCount) {
             this.workerCount = workerCount;
+            return this;
+        }
+
+        public String getWorkerHeapSize() {
+            return workerHeapSize;
+        }
+
+        public Matches setWorkerHeapSize(String workerHeapSize) {
+            this.workerHeapSize = workerHeapSize;
             return this;
         }
 

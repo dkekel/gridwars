@@ -168,9 +168,11 @@ class MatchExecutor {
     }
 
     private List<String> createJvmMemoryAndGcArguments() {
+        String workerHeapSize = gridWarsProperties.getMatches().getWorkerHeapSize();
+
         return Arrays.asList(
-            "-Xms256m",
-            "-Xmx256m"
+            "-Xms" + workerHeapSize,
+            "-Xmx" + workerHeapSize
             // TODO add some more GC optimisation flags
         );
     }

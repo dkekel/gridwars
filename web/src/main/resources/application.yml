@@ -7,7 +7,8 @@ gridwars:
         baseWorkDir: './work'
     matches:
         number: 1 # TODO give this property a better name, maybe matchCountPerOpponent?
-        workerCount: 3
+        workerCount: 2
+        workerHeapSize: 256m
         # TODO adjust the value below to a more realistic value
         executionTimeoutSeconds: 70
     mail:
@@ -38,7 +39,7 @@ spring:
 spring:
     jpa:
         # Disable OSIV, we rely on the transactional annotations for transactions management.
-        open-in-view: false
+        open-in-view: true # TODO check what the effect on the transactions is during view rendering
 
 # ==================================================================================================
 # Spring MVC Configuration

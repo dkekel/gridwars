@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -115,6 +114,13 @@ public class MatchService {
     @Transactional(readOnly = true)
     public Match loadMatch(String matchId) {
         return matchRepository.findById(matchId).orElse(null);
+    }
+
+    @Transactional
+    public List<Match> loadAllFinishedMatches() {
+        return matchRepository.findAllByStatusInOrderByEndedDesc(
+                Arrays.asList(Match.Status.FINISHED, Match.Status.FAILED)
+        );
     }
 
     @Transactional

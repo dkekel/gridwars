@@ -5,12 +5,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class MatchTurnStateSerializerTests {
@@ -21,9 +19,11 @@ public class MatchTurnStateSerializerTests {
         final List<byte[]> expectedTurnStates = generateTestTurnData();
         final MatchTurnStateSerializer serializer = new MatchTurnStateSerializer();
         final int expectedBytesCount = serializer.serializeToFile(expectedTurnStates, turnsFile.getAbsolutePath());
+        final Optional<InputStream> deserializedTurnStates = serializer.deserializeUncompressedFromFile(turnsFile.getAbsolutePath());
 
+        assertTrue(deserializedTurnStates.isPresent());
         assertThatDeserializedTurnStatesBytesMatchExpectedTurnStatesBytes(expectedTurnStates, expectedBytesCount,
-            serializer.deserializeFromFile(turnsFile.getAbsolutePath()));
+           deserializedTurnStates.get());
     }
 
     private File createTurnsTmpFile() throws IOException {
@@ -36,7 +36,7 @@ public class MatchTurnStateSerializerTests {
         final Random random = new Random();
         final List<byte[]> turnStates = new LinkedList<>();
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 10; i++) {
             byte[] turnState = new byte[MatchTurnStateSerializer.BYTES_PER_TURN_STATE];
             random.nextBytes(turnState);
             turnStates.add(turnState);

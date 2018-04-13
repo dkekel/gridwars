@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface MatchRepository extends JpaRepository<Match, String> {
 
     List<Match> findMatchesByBot1OrBot2(Bot bot1, Bot bot2);
+    List<Match> findAllByStatusInOrderByEndedDesc(List<Match.Status> matchStates);
     Optional<Match> findFirstByStatusOrderByPendingSinceAsc(Match.Status status);
 }

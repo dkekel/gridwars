@@ -1,0 +1,35 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Matches - GridWars</title>
+</head>
+<body>
+<main layout:fragment="content" class="container">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Winner</th>
+                <th scope="col">Player 1</th>
+                <th scope="col">Player 2</th>
+                <th scope="col">Result</th>
+                <th scope="col">Turns</th>
+                <th scope="col">Duration [ms]</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="match : ${matches}">
+                <td th:text="${match.winnerLabel}"></td>
+                <td th:text="${match.bot1.teamBotLabel}"></td>
+                <td th:text="${match.bot2.teamBotLabel}"></td>
+                <td ><a th:text="${match.status}" th:href="@{'/match/' + ${match.id}}"></a></td>
+                <td th:text="${match.turnCount}"></td>
+                <td th:text="${match.durationMillis}"></td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

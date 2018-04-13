@@ -45,7 +45,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // Disable security chain for static resources
-        web.ignoring().antMatchers("/static/**", "**/favicon.ico");
+        web.ignoring().antMatchers(
+            "/static/**",
+            "**/favicon.ico",
+            "/match/data/**" // there is nothing secret in the match turn data
+        );
     }
 
     @Override

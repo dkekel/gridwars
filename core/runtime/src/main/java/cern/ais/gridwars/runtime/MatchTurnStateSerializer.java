@@ -2,8 +2,10 @@ package cern.ais.gridwars.runtime;
 
 import cern.ais.gridwars.GameConstants;
 
+import javax.swing.text.html.Option;
 import java.io.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -34,9 +36,25 @@ public class MatchTurnStateSerializer {
         return ((double) turnCount * (double) BYTES_PER_TURN_STATE) / MEGA_BYTE_FACTOR;
     }
 
-    public InputStream deserializeFromFile(String filePath) {
+    public Optional<InputStream> deserializeUncompressedFromFile(String filePath) {
+        return deserializeFromFile(filePath, true);
+    }
+
+    public Optional<InputStream> deserializeCompressedFromFile(String filePath) {
+        return deserializeFromFile(filePath, false);
+    }
+
+    private Optional<InputStream> deserializeFromFile(String filePath, boolean uncompress) {
+        File file = new File(filePath);
+        if (!file.exists() || !file.canRead()) {
+            return Optional.empty();
+        }
+
         try {
-            return new GZIPInputStream(new FileInputStream(filePath), GZIP_STREAM_BUFFER_SIZE);
+            FileInputStream fis = new FileInputStream(file);
+            return uncompress
+                ? Optional.of(new GZIPInputStream(fis, GZIP_STREAM_BUFFER_SIZE))
+                : Optional.of(fis);
         } catch (IOException e) {
             throw new MatchTurnStateSerializerException("Failed to deserialize turn states from file: " + filePath, e);
         }

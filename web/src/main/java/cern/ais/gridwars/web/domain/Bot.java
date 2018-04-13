@@ -61,15 +61,6 @@ public class Bot {
         return this;
     }
 
-    public String getShortBotClassName() {
-        if ((botClassName != null) && !botClassName.isEmpty()) {
-            String[] classNameParts = botClassName.split("\\.");
-            return classNameParts[classNameParts.length - 1];
-        } else {
-            return botClassName;
-        }
-    }
-
     public Instant getUploaded() {
         return uploaded;
     }
@@ -99,6 +90,20 @@ public class Bot {
 
     public boolean isAdminBot() {
         return getUser().isAdmin();
+    }
+
+
+    public String getShortBotClassName() {
+        if ((botClassName != null) && !botClassName.isEmpty()) {
+            String[] classNameParts = botClassName.split("\\.");
+            return classNameParts[classNameParts.length - 1];
+        } else {
+            return botClassName;
+        }
+    }
+
+    public String getTeamBotLabel() {
+        return user.getTeamname() + " (" + getShortBotClassName() + ")";
     }
 
     @Override

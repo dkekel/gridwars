@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Entity
@@ -181,6 +182,23 @@ public class Match {
 
     public Long getDurationMillis() {
         return (started != null && ended != null) ? Duration.between(started, ended).toMillis() : null;
+    }
+
+    public Optional<Bot> getWinner() {
+        if (Status.FINISHED != status) {
+            return Optional.empty();
+        }
+        if (Outcome.WIN == outcome) {
+            return Optional.of(bot1);
+        } else if (Outcome.LOSS == outcome) {
+            return Optional.of(bot2);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public String getWinnerLabel() {
+        return getWinner().map(Bot::getTeamBotLabel).orElse("-");
     }
 
     @Override
