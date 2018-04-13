@@ -6,6 +6,7 @@ import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.util.FileUtils;
+import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -41,20 +42,20 @@ public class MatchController {
 
     @GetMapping("/list")
     public ModelAndView list() {
-        ModelAndView mav = new ModelAndView("pages/match/list");
-        mav.addObject("matches", matchService.loadAllFinishedMatches());
-        return mav;
+        return ModelAndViewBuilder.forPage("match/list")
+            .addAttribute("matches", matchService.findAllPlayedMatchesByActiveBots())
+            .toModelAndView();
     }
 
     @GetMapping("/{matchId}")
     public ModelAndView show(@PathVariable String matchId) {
         return matchService.loadMatch(matchId)
-            .map(match -> {
-                ModelAndView mav = new ModelAndView("pages/match/show");
-                mav.addObject("matchDataUrl", "/match/data/" + matchId);
-                mav.addObject("turnCount", match.getTurnCount());
-                return mav;
-            })
+            .map(match ->
+                ModelAndViewBuilder.forPage("match/show")
+                    .addAttribute("matchDataUrl", "/match/data/" + matchId)
+                    .addAttribute("turnCount", match.getTurnCount())
+                    .toModelAndView()
+            )
             .orElseThrow(NotFoundException::new);
     }
 
@@ -71,8 +72,8 @@ public class MatchController {
         String matchTurnFilePath = createMatchTurnStatesFilePath(matchId);
 
         Optional<InputStream> data = acceptsGzipEncoding
-                ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
-                : serializer.deserializeUncompressedFromFile(matchTurnFilePath);
+            ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
+            : serializer.deserializeUncompressedFromFile(matchTurnFilePath);
 
         // TODO check if it helps to check the file size and set the "Content-Length" header
 

@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.controller.error;
 
+import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +21,11 @@ public class GlobalErrorController implements ErrorController {
 
     @RequestMapping(PATH)
     public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
-        ModelAndView errorPage = new ModelAndView("pages/error");
-        getErrorCode(httpRequest).ifPresent(errorCode -> populateErrorPageModel(errorPage, errorCode));
-        return errorPage;
+        ModelAndViewBuilder mav = ModelAndViewBuilder.forPage("error");
+
+        getErrorCode(httpRequest).ifPresent(errorCode -> populateErrorPageModel(mav, errorCode));
+
+        return mav.toModelAndView();
     }
 
     private Optional<Integer> getErrorCode(HttpServletRequest httpRequest) {
@@ -33,7 +36,7 @@ public class GlobalErrorController implements ErrorController {
         return Optional.ofNullable((Exception) httpRequest.getAttribute("javax.servlet.error.exception"));
     }
 
-    private void populateErrorPageModel(ModelAndView errorPageModel, Integer errorCode) {
+    private void populateErrorPageModel(ModelAndViewBuilder mav, Integer errorCode) {
         String errorMsg;
 
 //        if (getException())
@@ -64,8 +67,7 @@ public class GlobalErrorController implements ErrorController {
             }
         }
 
-        errorPageModel.addObject("errorCode", errorCode);
-        errorPageModel.addObject("errorMsg", errorMsg);
+        mav.addAttribute("errorCode", errorCode).addAttribute("errorMsg", errorMsg);
     }
 
     private boolean isMaxUploadSizeExceededException(Exception exception) {

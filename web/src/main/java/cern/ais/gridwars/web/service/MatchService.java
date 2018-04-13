@@ -14,10 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
 public class MatchService {
+
+    private static final List<Match.Status> PLAYED_MATCH_STATUSES =
+            Arrays.asList(Match.Status.FINISHED, Match.Status.FAILED);
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchRepository matchRepository;
@@ -117,10 +121,14 @@ public class MatchService {
     }
 
     @Transactional
-    public List<Match> loadAllFinishedMatches() {
-        return matchRepository.findAllByStatusInOrderByEndedDesc(
-                Arrays.asList(Match.Status.FINISHED, Match.Status.FAILED)
-        );
+    public List<Match> findAllPlayedMatchesByActiveBots() {
+        return matchRepository.findAllByStatusInOrderByEndedDesc(PLAYED_MATCH_STATUSES).stream()
+            .filter(this::areBothBotsActive)
+            .collect(Collectors.toList());
+    }
+
+    private boolean areBothBotsActive(Match match) {
+        return match.getBot1().isActive() && match.getBot2().isActive();
     }
 
     @Transactional
