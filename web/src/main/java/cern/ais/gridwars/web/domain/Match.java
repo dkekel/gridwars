@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -151,6 +153,10 @@ public class Match {
     public Match setStarted(Instant started) {
         this.started = started;
         return this;
+    }
+
+    public LocalDateTime getStartedDateTime() {
+        return LocalDateTime.ofInstant(started, ZoneId.systemDefault());
     }
 
     public Instant getEnded() {

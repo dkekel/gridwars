@@ -40,6 +40,8 @@ spring:
 spring:
     jpa:
         open-in-view: true # TODO check what the effect on the transactions is during view rendering
+        # Enable for debugging
+        show-sql: false
 
 # ==================================================================================================
 # Spring MVC Configuration

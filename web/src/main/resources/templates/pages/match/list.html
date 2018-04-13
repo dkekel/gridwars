@@ -11,22 +11,24 @@
     <table class="table">
         <thead class="thead-dark">
             <tr>
+                <th scope="col">Status</th>
                 <th scope="col">Winner</th>
                 <th scope="col">Player 1</th>
                 <th scope="col">Player 2</th>
-                <th scope="col">Result</th>
                 <th scope="col">Turns</th>
-                <th scope="col">Duration [ms]</th>
+                <th scope="col">Duration [s]</th>
+                <th scope="col">Played at</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="match : ${matches}">
+                <td ><a th:text="${match.status}" th:href="@{'/match/' + ${match.id}}"></a></td>
                 <td th:text="${match.winnerLabel}"></td>
                 <td th:text="${match.bot1.teamBotLabel}"></td>
                 <td th:text="${match.bot2.teamBotLabel}"></td>
-                <td ><a th:text="${match.status}" th:href="@{'/match/' + ${match.id}}"></a></td>
                 <td th:text="${match.turnCount}"></td>
-                <td th:text="${match.durationMillis}"></td>
+                <td th:text="${#numbers.formatDecimal(match.durationMillis / 1000d, 1, 2)}"></td>
+                <td th:text="${#temporals.format(match.startedDateTime, 'dd-MM-yyyy HH:mm')}"></td>
             </tr>
         </tbody>
     </table>
