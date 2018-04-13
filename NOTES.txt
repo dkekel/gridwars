@@ -46,6 +46,7 @@ Emulator:
 
 UI:
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
+- Add a footer
 
 Misc:
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.

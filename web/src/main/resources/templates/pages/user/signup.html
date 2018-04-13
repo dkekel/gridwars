@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Sign Up - GridWars</title>
+    <title>Sign Up</title>
 </head>
 <body>
 <main layout:fragment="content" class="container">
@@ -45,8 +45,8 @@
     </div>
 
     <script>
-        var password = document.getElementById("password");
-        var passwordMatch = document.getElementById("passwordMatch");
+        const password = document.getElementById("password");
+        const passwordMatch = document.getElementById("passwordMatch");
 
         function validatePassword() {
             if (password.value && (password.value !== passwordMatch.value)) {

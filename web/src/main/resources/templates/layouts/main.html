@@ -4,12 +4,12 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>CERN - GridWars</title>
-
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title layout:title-pattern="$CONTENT_TITLE $LAYOUT_TITLE">- GridWars</title>
 
     <link th:href="@{/static/favicon.ico}" rel="icon" type="image/x-icon"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" type="text/css">

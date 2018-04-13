@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Bot Upload - GridWars</title>
+    <title>Bot Upload</title>
 </head>
 <body>
 <main layout:fragment="content" class="container">
@@ -24,8 +24,8 @@
     </div>
 
     <script>
-        var uploadField = document.getElementById("botJarFile");
-        var maxFileSize = 5 * 1024 * 1024; // 5MB
+        const uploadField = document.getElementById("botJarFile");
+        const maxFileSize = 5 * 1024 * 1024; // 5MB
 
         uploadField.onchange = function() {
             if ((this.files.length > 0) && (this.files[0].size > maxFileSize)){
