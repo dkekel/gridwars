@@ -8,7 +8,8 @@
     <script th:src="@{/static/js/matchviewer.js}"></script>
 
     <style>
-        #gameView {
+        #gameView,
+        #errorLabel {
             text-align: center;
         }
 
@@ -17,23 +18,25 @@
         }
     </style>
 </head>
-<body th:onload="'initws(\'' + ${matchDataUrl} + '\')'">
+<body th:onload="'matchViewer.init(\'' + ${matchDataUrl} + '\')'">
 <main layout:fragment="content" class="container">
-    <div id="gameView">
+    <div id="errorLabel" class="alert alert-danger" role="alert" hidden>ERROR: the match data could not be loaded</div>
+
+    <div id="gameView" hidden>
         <canvas id="gameCanvas" width="600" height="600"></canvas>
 
         <div>
-            <span>Current turn: <span id="currentTurn"></span></span>
+            <span>Turn: <span id="currentTurn"></span> (<span id="speed"></span>x)</span>
         </div>
 
         <div>
-            <button onclick="goToStart();">|&lt;</button>
-            <button onclick="goToPreviousFrame();">&lt;</button>
-            <button onclick="togglePlay();">Play / Pause</button>
-            <button onclick="goToNextFrame();">&gt;</button>
-            <button onclick="goToEnd();">&gt;|</button>
-            <button onclick="decreaseSpeed();">Decrease Speed</button>
-            <button onclick="increaseSpeed();">Increase Speed</button>
+            <button onclick="matchViewer.goToStart();" title="Go to start">|&lt;</button>
+            <button onclick="matchViewer.goToPreviousTurn();" title="Go to previous turn">&lt;</button>
+            <button onclick="matchViewer.togglePlay();" title="Toggle play/pause">Play / Pause</button>
+            <button onclick="matchViewer.goToNextTurn();" title="Go to next turn">&gt;</button>
+            <button onclick="matchViewer.goToEnd();" title="Go to end">&gt;|</button>
+            <button onclick="matchViewer.decreaseSpeed();" title="Decrease speed" class="ml-4">&lt;&lt;</button>
+            <button onclick="matchViewer.increaseSpeed();" title="Increase speed">&gt;&gt;</button>
         </div>
     </div>
 

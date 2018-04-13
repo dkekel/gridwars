@@ -112,8 +112,8 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
-    public Match loadMatch(String matchId) {
-        return matchRepository.findById(matchId).orElse(null);
+    public Optional<Match> loadMatch(String matchId) {
+        return matchRepository.findById(matchId);
     }
 
     @Transactional
