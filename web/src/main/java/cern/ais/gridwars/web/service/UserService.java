@@ -57,8 +57,8 @@ public class UserService implements UserDetailsService {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
-        if (userRepository.existsByTeamname(user.getTeamname())) {
-            throw new UserFieldValueException("teamname", "user.error.exists.teamname");
+        if (userRepository.existsByTeamName(user.getTeamName())) {
+            throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
         return saveNewUser(user);
@@ -78,8 +78,8 @@ public class UserService implements UserDetailsService {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
-        if (userRepository.existsByTeamnameAndIdNot(user.getTeamname(), user.getId())) {
-            throw new UserFieldValueException("teamname", "user.error.exists.teamname");
+        if (userRepository.existsByTeamNameAndIdNot(user.getTeamName(), user.getId())) {
+            throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
         updateExistingUser(user);
@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
             .setPassword(encodePassword(user.getPassword()))
             .setEmail(user.getEmail())
             .setCreated(Instant.now())
-            .setTeamname(user.getTeamname())
+            .setTeamName(user.getTeamName())
             .setAdmin(user.isAdmin())
             .setEnabled(user.isEnabled())
             .setConfirmationId(DomainUtils.generateId())
@@ -105,7 +105,7 @@ public class UserService implements UserDetailsService {
     private void updateExistingUser(final User user) {
        userRepository.findById(user.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(user.getEmail());
-           existingUser.setTeamname(user.getTeamname());
+           existingUser.setTeamName(user.getTeamName());
 
            if (isNotBlank(user.getPassword())) {
                existingUser.setPassword(encodePassword(user.getPassword()));

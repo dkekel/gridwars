@@ -103,7 +103,7 @@ public class Bot {
     }
 
     public String getTeamBotLabel() {
-        return user.getTeamname() + " (" + getShortBotClassName() + ")";
+        return user.getTeamName() + " (" + getShortBotClassName() + ")";
     }
 
     @Override

@@ -43,7 +43,7 @@ public class DevConfiguration {
                 .setUsername("user1")
                 .setPassword("bla1")
                 .setEmail("user1@cern.ch")
-                .setTeamname("Team User1")
+                .setTeamName("Team User1")
                 .setEnabled(true)
         );
 
@@ -52,7 +52,7 @@ public class DevConfiguration {
                 .setUsername("user2")
                 .setPassword("bla2")
                 .setEmail("user2@cern.ch")
-                .setTeamname("Team User2")
+                .setTeamName("Team User2")
                 .setEnabled(true)
         );
 
@@ -61,7 +61,7 @@ public class DevConfiguration {
                 .setUsername("user3")
                 .setPassword("bla3")
                 .setEmail("user3@cern.ch")
-                .setTeamname("Team User3")
+                .setTeamName("Team User3")
                 .setEnabled(true)
         );
 
@@ -70,7 +70,7 @@ public class DevConfiguration {
                 .setUsername("user4")
                 .setPassword("bla4")
                 .setEmail("user4@cern.ch")
-                .setTeamname("Team User4")
+                .setTeamName("Team User4")
                 .setEnabled(true)
         );
 
@@ -79,7 +79,7 @@ public class DevConfiguration {
                 .setUsername("admin")
                 .setPassword("blabla")
                 .setEmail("admin@cern.ch")
-                .setTeamname("Team Admin")
+                .setTeamName("Team Admin")
                 .setAdmin(true)
                 .setEnabled(true)
         );

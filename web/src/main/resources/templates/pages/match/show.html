@@ -18,7 +18,7 @@
         }
     </style>
 </head>
-<body th:onload="'matchViewer.init(\'' + ${matchDataUrl} + '\')'">
+<body th:onload="|matchViewer.init('${matchDataUrl}')|">
 <main layout:fragment="content" class="container">
     <div id="errorLabel" class="alert alert-danger" role="alert" hidden>ERROR: the match data could not be loaded</div>
 

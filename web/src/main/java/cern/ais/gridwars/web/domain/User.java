@@ -49,7 +49,7 @@ public class User implements UserDetails {
     @NotNull
     @NotEmpty
     @Size(min = 4, max = 32)
-    private String teamname;
+    private String teamName;
 
     @Column(nullable = false, unique = true)
     @NotNull
@@ -92,12 +92,12 @@ public class User implements UserDetails {
         return this;
     }
 
-    public String getTeamname() {
-        return teamname;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public User setTeamname(String teamname) {
-        this.teamname = teamname;
+    public User setTeamName(String teamName) {
+        this.teamName = teamName;
         return this;
     }
 

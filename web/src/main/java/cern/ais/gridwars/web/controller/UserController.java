@@ -64,7 +64,7 @@ public class UserController {
     private void preprocessNewUser(User newUser) {
         newUser.setId(null);
         newUser.setUsername(trim(newUser.getUsername()));
-        newUser.setTeamname(trim(newUser.getTeamname()));
+        newUser.setTeamName(trim(newUser.getTeamName()));
         newUser.setEmail(trim(newUser.getEmail()));
         newUser.setAdmin(false);
         newUser.setEnabled(true); // TODO disable by default and send confirmation mail
