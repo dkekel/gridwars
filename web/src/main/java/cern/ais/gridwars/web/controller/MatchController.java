@@ -7,6 +7,7 @@ import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.util.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -26,6 +27,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/match")
 public class MatchController {
+
+    private static final String GZIP = "gzip";
 
     private final MatchTurnStateSerializer serializer = new MatchTurnStateSerializer();
     private final MatchService matchService;
@@ -62,7 +65,7 @@ public class MatchController {
     // turn state bytes, which do not contain any sensitive information whatsoever.
     @GetMapping("/data/{matchId}")
     public void data(@PathVariable String matchId,
-                     @RequestHeader(name = "Accept-Encoding", required = false) String acceptEncoding,
+                     @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding,
                      HttpServletResponse response) throws IOException {
         boolean acceptsGzipEncoding = acceptsGzipEncoding(acceptEncoding);
         String matchTurnFilePath = createMatchTurnStatesFilePath(matchId);
@@ -77,8 +80,11 @@ public class MatchController {
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 
             if (acceptsGzipEncoding) {
-                response.setHeader("Content-Encoding", "gzip");
+                response.setHeader(HttpHeaders.CONTENT_ENCODING, GZIP);
             }
+
+            // The turn data of a match will never change, so it can be cached "forever" by the browser
+            addCacheForeverHeader(response);
 
             IOUtils.copy(data.get(), response.getOutputStream());
         } else {
@@ -87,7 +93,7 @@ public class MatchController {
     }
 
     private boolean acceptsGzipEncoding(String acceptEncoding) {
-        return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains("gzip");
+        return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains(GZIP);
     }
 
     private String createMatchTurnStatesFilePath(String matchId) {
@@ -96,5 +102,9 @@ public class MatchController {
             matchId,
             MatchRuntimeConstants.MATCH_TURNS_PAYLOAD_FILE_NAME
         );
+    }
+
+    private void addCacheForeverHeader(HttpServletResponse response) {
+        response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age=31556926");
     }
 }
