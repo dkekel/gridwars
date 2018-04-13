@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Welcome</title>
+
+    <style>
+        .welcome-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <main layout:fragment="content" class="container welcome-container">
+        <h1>Welcome to GridWars</h1>
+
+        <div th:unless="${user}">
+            <p>Please <a th:href="@{/user/signin}">sign in</a>.</p>
+            <p>No account yet? Then <a th:href="@{/user/signup}">sign up here</a> to get started.</p>
+        </div>
+        <div th:if="${user}">
+            <p th:text="'Hello ' + ${user.teamName} + '!'"></p>
+        </div>
+    </main>
+</body>
+</html>
