@@ -21,7 +21,7 @@ public class GlobalErrorController implements ErrorController {
 
     @RequestMapping(PATH)
     public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
-        ModelAndViewBuilder mav = ModelAndViewBuilder.forPage("error");
+        ModelAndViewBuilder mav = ModelAndViewBuilder.forPage("error/index");
 
         getErrorCode(httpRequest).ifPresent(errorCode -> populateErrorPageModel(mav, errorCode));
 
