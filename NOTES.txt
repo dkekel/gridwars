@@ -3,6 +3,7 @@ TODO:
 User registration:
 - Validate the email address at the domain class level
 - Confirmation link for new user registration
+    - Bypass if an admin created the user
 - Additional information for user registration (ip, hostname, user agent)
 - User edit functionality
 - Add a registration password that will be announced in the presentation and add it to the sign-up form
@@ -32,9 +33,9 @@ Mailing:
 
 API & Impl:
 - Clean up and reformat code
-- Refactor turn thread handling to use CompletableFuture
-    - Have it return the move list and add it to the current move list, this also does not put the collection in
-      an invalid state.
+- Re-implement turn threads using completeable futures to enforce timeout
+- How can I limit the output to sysout/syserr?
+    - Maybe own implementation or wrapper of PrintWriter that counts the characters and stops the output when limit was reached...?
 
 Bots:
 - Clean up rubbish in core/bots and add new example bots
