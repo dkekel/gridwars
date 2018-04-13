@@ -1,126 +1,129 @@
-function initws(matchDataUrl, turnCount) {
-    var frameArray = [];
-    var universeSize = 50;
-    var currentTurn = 0;
-    var currentRenderedFrame = 0;
+function initws(matchDataUrl) {
+    const turnFrameDataArray = [];
+    const universeSize = 50;
+    const bytesPerTurn = universeSize * universeSize * 4;
+    const preCanvas = document.getElementById("preCanvas");
+    const gameCanvas = document.getElementById("gameCanvas");
+    const preCtx = preCanvas.getContext("2d");
+    const gameCtx = gameCanvas.getContext("2d");
+    const currentTurnLabel = document.getElementById("currentTurn");
+    const canvasHeight = gameCanvas.height;
+    const canvasWidth = gameCanvas.width;
+    let totalTurnCount = 0;
+    let currentTurn = 0;
+    let isPlaying = 0;
+    let playInterval;
+    let delay = 50;
+    let speed = 1;
 
-    var isPlaying = 0;
-    var playInterval;
-    var delay = 50;
+    preCanvas.height = universeSize;
+    preCanvas.width = universeSize;
+    gameCtx.scale(canvasWidth / universeSize, canvasHeight / universeSize);
+    gameCtx.imageSmoothingEnabled = false;
+    gameCtx.mozImageSmoothingEnabled = false;
+    gameCtx.webkitImageSmoothingEnabled = false;
 
-    drawFrame = function (frameNumber)
-    {
-        // Canvas
-        var canvasHeight = document.getElementById("gameCanvas").height;
-        var canvasWidth = document.getElementById("gameCanvas").width;
-        var c = document.getElementById("preCanvas");
-        var ctx = c.getContext("2d");
-        var extractedData = frameArray[frameNumber];
-        var imageData = ctx.createImageData(universeSize, universeSize);
-        for (var i = 0; i < extractedData.length; i++)
-        {
-            imageData.data[i] = extractedData[i];
-        }
-        ctx.putImageData(imageData, 0, 0);
+    drawCurrentTurn = function () {
+        const imageData = new ImageData(turnFrameDataArray[currentTurn], universeSize, universeSize);
+        preCtx.putImageData(imageData, 0, 0);
+        gameCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+        gameCtx.drawImage(preCanvas, 0, 0);
 
-        var realCtx = document.getElementById("gameCanvas").getContext("2d");
-
-        realCtx.imageSmoothingEnabled = false;
-        realCtx.mozImageSmoothingEnabled = false;
-        realCtx.webkitImageSmoothingEnabled = false;
-        realCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-        realCtx.drawImage(c, 0, 0);
-
-        currentRenderedFrame = frameNumber;
-        document.getElementById("currentTurn").innerHTML = currentRenderedFrame;
+        currentTurnLabel.innerHTML = '' + (currentTurn + 1) + ' / ' + totalTurnCount + ' (' + speed + 'x)';
     };
 
-    goToStart = function ()
-    {
-        if (isPlaying) togglePlay();
-
-        drawFrame(0);
-    };
-
-    drawNextFrame = function ()
-    {
-        if (currentRenderedFrame >= frameArray.length - 1)
-        {
-            if (isPlaying) togglePlay();
-        }
-        else
-        {
-            drawFrame(currentRenderedFrame + 1);
+    drawNextTurn = function () {
+        if (currentTurn < (totalTurnCount - 1)) {
+            currentTurn++;
+            drawCurrentTurn();
         }
     };
 
-    togglePlay = function ()
-    {
-        if (!isPlaying)
-        {
-            playInterval = setInterval(drawNextFrame, delay);
+    goToStart = function () {
+        stopPlay();
+        currentTurn = 0;
+        drawCurrentTurn();
+    };
+
+    goToEnd = function () {
+        stopPlay();
+        currentTurn = totalTurnCount - 1;
+        drawCurrentTurn();
+    };
+
+    goToPreviousFrame = function () {
+        stopPlay();
+        if (currentTurn > 0) {
+            currentTurn--;
+            drawCurrentTurn();
         }
-        else
-        {
+    };
+
+    goToNextFrame = function () {
+        stopPlay();
+        drawNextTurn();
+    };
+
+    togglePlay = function () {
+        if (!isPlaying) {
+            playInterval = setInterval(drawNextTurn, delay);
+        } else {
             clearInterval(playInterval);
+            playInterval = null;
         }
         isPlaying = !isPlaying;
     };
 
-    increaseSpeed = function ()
-    {
-        delay = Math.round((2 * delay) / 3);
-        if (isPlaying)
-        {
-            togglePlay();
+    startPlay = function () {
+        if (!isPlaying) {
             togglePlay();
         }
     };
 
-    decreaseSpeed = function ()
-    {
-        delay = Math.round(delay * 1.5)
-        if (isPlaying)
-        {
-            togglePlay();
+    stopPlay = function () {
+        if (isPlaying) {
             togglePlay();
         }
     };
 
-    var canvasHeight = document.getElementById("gameCanvas").height;
-    var canvasWidth = document.getElementById("gameCanvas").width;
-    currentTime = new Date();
-    document.getElementById("preCanvas").height = universeSize;
-    document.getElementById("preCanvas").width = universeSize;
-    document.getElementById("gameCanvas").getContext("2d").scale(canvasWidth / universeSize, canvasHeight / universeSize);
-
-    console.log("Loading game");
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', matchDataUrl, true);
-    xhr.responseType = 'arraybuffer';
-
-    xhr.onload = function() {
-        var data = this.response;
-
-        var N = universeSize * universeSize * 4;
-        for (var turn = 0; turn < turnCount; turn++) {
-            frameArray[currentTurn++] = data.slice(N * turn, N * (turn + 1));
-        }
-
-        if (currentTurn >= turnCount)
-        {
-            document.getElementById("gameView").removeAttribute("hidden");
-            drawFrame(0);
-        }
-        // $("#loadedTurns").parent().toggle(false)
+    increaseSpeed = function () {
+        speed = speed * 1.5;
+        delay = Math.round(delay / speed);
+        stopPlay();
+        startPlay();
     };
-    // xhr.addEventListener("progress", function(oEvent) {
-    //     var loaded = parseInt(oEvent.loaded / 1024);
-    //     var total = ${ game.fileSize / 1024 as int };
-    //     var percentage = parseInt(loaded / total * 100);
-    //     $("#loadedTurns").width(percentage + "%");
-    //     $('#loadedData').html(percentage + "% (" + loaded + " / " + total + " KB)");
-    // });
-    xhr.send(null);
+
+    decreaseSpeed = function () {
+        speed = speed / 1.5;
+        delay = Math.round(delay * speed);
+        stopPlay();
+        startPlay();
+    };
+
+    loadData = function (matchDataUrl) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', matchDataUrl, true);
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function () {
+            const data = this.response;
+            const dataByteSize = data.byteLength;
+            console.log('Received data size: ' + dataByteSize);
+
+            totalTurnCount = Math.floor(dataByteSize / bytesPerTurn);
+            console.log('Calculated turn count from data: ' + totalTurnCount);
+
+            for (let turn = 0; turn < totalTurnCount; turn++) {
+                turnFrameDataArray[turn] =
+                    new Uint8ClampedArray(data.slice(bytesPerTurn * turn, bytesPerTurn * (turn + 1)));
+            }
+            console.log('Frame array length: ' + turnFrameDataArray.length);
+
+            goToStart();
+        };
+
+        xhr.send(null);
+    };
+
+    loadData(matchDataUrl);
 }

@@ -6,24 +6,38 @@
 <head>
     <title>Show Match - GridWars</title>
     <script th:src="@{/static/js/matchviewer.js}"></script>
+
+    <style>
+        #gameView {
+            text-align: center;
+        }
+
+        #gameCanvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
-<body th:onload="'initws(\'' + ${matchDataUrl} + '\', \'' + ${turnCount} + '\')'">
+<body th:onload="'initws(\'' + ${matchDataUrl} + '\')'">
 <main layout:fragment="content" class="container">
-    <div id="gameView" hidden>
-        <canvas id="gameCanvas" style="border: 1px solid black;" width="600" height="600"></canvas>
+    <div id="gameView">
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+        <div>
+            <span>Current turn: <span id="currentTurn"></span></span>
+        </div>
 
         <div>
             <button onclick="goToStart();">|&lt;</button>
-            <button onclick="drawFrame(--currentRenderedFrame);">&lt;</button>
-            <button onclick="togglePlay();">Play / pause</button>
-            <button onclick="drawFrame(++currentRenderedFrame);">&gt;</button>
-            <button onclick="decreaseSpeed();">Decrease speed</button>
-            <button onclick="increaseSpeed();">Increase speed</button>
-            Current displayed turn: <span id="currentTurn"></span>
+            <button onclick="goToPreviousFrame();">&lt;</button>
+            <button onclick="togglePlay();">Play / Pause</button>
+            <button onclick="goToNextFrame();">&gt;</button>
+            <button onclick="goToEnd();">&gt;|</button>
+            <button onclick="decreaseSpeed();">Decrease Speed</button>
+            <button onclick="increaseSpeed();">Increase Speed</button>
         </div>
     </div>
 
-    <canvas id="preCanvas" hidden="hidden"></canvas>
+    <canvas id="preCanvas" hidden></canvas>
 </main>
 </body>
 </html>

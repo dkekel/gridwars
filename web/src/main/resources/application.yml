@@ -9,8 +9,7 @@ gridwars:
         number: 1 # TODO give this property a better name, maybe matchCountPerOpponent?
         workerCount: 2
         workerHeapSize: 256m
-        # TODO adjust the value below to a more realistic value
-        executionTimeoutSeconds: 70
+        executionTimeoutSeconds: 70 # TODO adjust the value below to a more realistic value
     mail:
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bcc: 'benjamin.wolff@cern.ch'

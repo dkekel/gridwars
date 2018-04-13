@@ -29,9 +29,12 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav mr-auto">
                 <li th:if="${user}" class="nav-item active">
+                    <a class="nav-link" th:href="@{/match/list}">Matches</a>
+                </li>
+                <li th:if="${user}" class="nav-item active">
                     <a class="nav-link" th:href="@{/bot/upload}">Bot Upload</a>
                 </li>
-                <li th:if="${user != null && user.admin}" class="nav-item dropdown">
+                <li th:if="${user != null && user.admin}" class="nav-item active dropdown">
                     <a class="nav-link dropdown-toggle" href="http://example.com" id="adminDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="adminDropdown">
                         <a class="dropdown-item" th:href="@{/admin/h2}" target="_blank">H2 Console</a>

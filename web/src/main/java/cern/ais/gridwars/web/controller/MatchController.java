@@ -62,8 +62,8 @@ public class MatchController {
     public void data(@PathVariable String matchId,
                      @RequestHeader(name = "Accept-Encoding", required = false) String acceptEncoding,
                      HttpServletResponse response) throws IOException {
-        String matchTurnFilePath = createMatchTurnStatesFilePath(matchId);
         boolean acceptsGzipEncoding = acceptsGzipEncoding(acceptEncoding);
+        String matchTurnFilePath = createMatchTurnStatesFilePath(matchId);
 
         Optional<InputStream> data = acceptsGzipEncoding
                 ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
@@ -73,13 +73,19 @@ public class MatchController {
 
         if (data.isPresent()) {
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
             if (acceptsGzipEncoding) {
                 response.setHeader("Content-Encoding", "gzip");
             }
+
             IOUtils.copy(data.get(), response.getOutputStream());
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    private boolean acceptsGzipEncoding(String acceptEncoding) {
+        return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains("gzip");
     }
 
     private String createMatchTurnStatesFilePath(String matchId) {
@@ -88,9 +94,5 @@ public class MatchController {
             matchId,
             MatchRuntimeConstants.MATCH_TURNS_PAYLOAD_FILE_NAME
         );
-    }
-
-    private boolean acceptsGzipEncoding(String acceptEncoding) {
-        return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains("gzip");
     }
 }
