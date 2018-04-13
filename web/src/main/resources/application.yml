@@ -4,7 +4,7 @@
 gridwars:
     directories:
         # Default value, should be provided upon start by a system property.
-        baseWorkDir: './work'
+        baseWorkDir: 'work'
     matches:
         number: 1 # TODO give this property a better name, maybe matchCountPerOpponent?
         workerCount: 2
@@ -67,9 +67,10 @@ spring:
 spring:
     servlet:
         multipart:
-            max-file-size: 5MB # Maximum file upload size
+            # Maximum file upload size
+            max-file-size: 5MB
             #max-file-size: 3KB
-            #max-request-size: 5MB
+            max-request-size: 8MB
 
 # ==================================================================================================
 # Thymeleaf Configuration
