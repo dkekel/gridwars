@@ -1,0 +1,20 @@
+Q: What programming language can I use?
+A: You need to use Java 8.
+
+Q: Can I used 3rd party Java libs?
+A: Sorry, but no. It's just you, your brain, your team and the standard Java API.
+
+Q: Is there a size limit for the bot jar upload?
+A: Yes, it's 5 minutes. But this is way more than enough when not using 3rd party libs.
+
+Q: Can I use reflections?
+A: No, if you are getting caught trying, you will lose the turn.
+
+Q: Is there a timeout on bot initialisation?
+A: Yes, it's 5 seconds.
+
+Q: Is there a timeout per turn?
+A: Yes, it's 50 milliseconds. If you fail to provide a result within this time, no movement commands will be executed for that turn.
+
+Q: Is there a timout for the whole match?
+A: Yes, it's XX seconds. If the match takes longer, it will be considered as failed and will not be considered for the rank calculation.
