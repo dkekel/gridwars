@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title th:text="'ERROR ' + ${errorCode}"></title>
+    <title th:text="${errorMsg}"></title>
 
     <style>
         .error-container {

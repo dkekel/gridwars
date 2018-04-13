@@ -43,7 +43,7 @@ public class GlobalErrorController implements ErrorController {
 
         switch (errorCode) {
             case 400: {
-                errorMsg = "Bad Request";
+                errorMsg = "Invalid Request";
                 break;
             }
             case 401: {
@@ -51,11 +51,11 @@ public class GlobalErrorController implements ErrorController {
                 break;
             }
             case 403: {
-                errorMsg = "Forbidden";
+                errorMsg = "Access Denied";
                 break;
             }
             case 404: {
-                errorMsg = "Resource Not Found";
+                errorMsg = "Page Not Found";
                 break;
             }
             case 500: {

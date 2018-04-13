@@ -140,7 +140,6 @@ class MatchExecutor {
                 }
             } else {
                 LOG.debug("...match process timed out and will be killed");
-                // TODO make sure the process is really really killed... is it necessary??
                 matchProcess.destroyForcibly();
                 return createTimeoutMatchResult();
             }

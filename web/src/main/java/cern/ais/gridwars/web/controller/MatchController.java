@@ -75,8 +75,6 @@ public class MatchController {
             ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
             : serializer.deserializeUncompressedFromFile(matchTurnFilePath);
 
-        // TODO check if it helps to check the file size and set the "Content-Length" header
-
         if (data.isPresent()) {
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 
