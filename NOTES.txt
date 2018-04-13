@@ -13,12 +13,16 @@ Bot upload:
 - Don't show a 500 error page when something goes south, but rather a error message in the upload form
 - Create a hash fingerprint of the uploaded file and store it, just to see who uses the same jar file...
 
+Error handling:
+- Do not render error html pages on ajax request errors in controller methods
+
 Match runtime process:
 - How to disable reflection?
     - Can be disabled using a SecurityManager and catching the SecurityException
 
 Web access log:
 - Simple web access log
+    - Could simply use the trace actuator?
 - Tag requests with unique id and show this id in log output to find the matching requests
 
 Mailing:
@@ -28,6 +32,9 @@ Mailing:
 
 API & Impl:
 - Clean up and reformat code
+- Refactor turn thread handling to use CompletableFuture
+    - Have it return the move list and add it to the current move list, this also does not put the collection in
+      an invalid state.
 
 Bots:
 - Clean up rubbish in core/bots and add new example bots
@@ -46,7 +53,7 @@ Misc:
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 
 - Implement functionality to block bot upload, user registration, and to stop/start match processing
-    - Could be simple admin controller actions
+    - Could be simple admin controller actions that modify the gridwars properties (or actuator?)
 
 - Have logs also printed to files under "work/logs"
     - dated and rolling logs?
