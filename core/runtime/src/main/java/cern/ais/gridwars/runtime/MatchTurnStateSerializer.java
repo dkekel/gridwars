@@ -2,8 +2,11 @@ package cern.ais.gridwars.runtime;
 
 import cern.ais.gridwars.GameConstants;
 
-import javax.swing.text.html.Option;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
@@ -50,8 +53,7 @@ public class MatchTurnStateSerializer {
             return Optional.empty();
         }
 
-        try {
-            FileInputStream fis = new FileInputStream(file);
+        try (FileInputStream fis = new FileInputStream(file)) {
             return uncompress
                 ? Optional.of(new GZIPInputStream(fis, GZIP_STREAM_BUFFER_SIZE))
                 : Optional.of(fis);
