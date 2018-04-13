@@ -20,6 +20,8 @@ gridwars:
 ---
 spring:
     profiles:
+        # Default profile that will be active. Must be overridden by a start parameter when running
+        # in production.
         active: dev
 
 # ==================================================================================================
@@ -37,7 +39,6 @@ spring:
 ---
 spring:
     jpa:
-        # Disable OSIV, we rely on the transactional annotations for transactions management.
         open-in-view: true # TODO check what the effect on the transactions is during view rendering
 
 # ==================================================================================================
@@ -57,7 +58,7 @@ spring:
         static-locations: classpath:/static/
         cache:
             cachecontrol:
-                max-age: 4h
+                max-age: 1d
 
 # ==================================================================================================
 # Spring Servlet Configuration

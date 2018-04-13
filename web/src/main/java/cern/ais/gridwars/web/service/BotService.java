@@ -63,7 +63,7 @@ public class BotService {
             String botClassName = validateBotJarFileAndExtractBotClassName(storedBotJarFile);
             return createNewBotRecord(storedBotJarFile.getName(), botClassName, user, uploadTime);
         } catch (Exception e) {
-            LOG.error("Failed to validate and persist bot uploaded by user \"{}\": {}", user.getUsername(),
+            LOG.error("Failed to validate and persist bot uploaded by user '{}': {}", user.getUsername(),
                 e.getMessage(), e);
             FileUtils.deleteFile(storedBotJarFile);
             throw e;
@@ -145,11 +145,11 @@ public class BotService {
         }
 
         if (!PlayerBot.class.isAssignableFrom(botClass)) {
-            throw new BotException("Bot class '" + botClass.getName() + "' does not implement required interface: " + PlayerBot.class.getName());
+            throw new BotException("Bot class '" + botClass.getName() + "' does not implement the required interface: " + PlayerBot.class.getName());
         }
 
         if (Stream.of(botClass.getConstructors()).noneMatch(constructor -> constructor.getParameterCount() == 0)) {
-            throw new BotException("Bot class '" + botClass.getName() + "' does not define a parameterless default constructor");
+            throw new BotException("Bot class '" + botClass.getName() + "' does not define a parameter-less default constructor");
         }
     }
 

@@ -2,15 +2,16 @@ package cern.ais.gridwars.web.controller;
 
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
+import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.Objects;
@@ -29,20 +30,20 @@ public class UserController {
 
     // IMPORTANT: Only map GET method here, not POST, to let the login filter to its work
     @GetMapping("/signin")
-    public String showSignin() {
-        return "pages/user/signin";
+    public ModelAndView showSignin() {
+        return ModelAndViewBuilder.forPage("/user/signin").toModelAndView();
     }
 
     @GetMapping("/signup")
-    public String showSignup(Model model) {
-        User newUser = new User();
-        model.addAttribute("newUser", newUser);
-        return "pages/user/signup";
+    public ModelAndView showSignup() {
+        return ModelAndViewBuilder.forPage("/user/signup")
+            .addAttribute("newUser", new User())
+            .toModelAndView();
     }
 
     @PostMapping("/signup")
-    public String doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result, Errors errors,
-                           Model model) {
+    public ModelAndView doSignup(@ModelAttribute("newUser") @Valid User newUser,
+                                 BindingResult result, Errors errors) {
         if (!errors.hasErrors()) {
             preprocessNewUser(newUser);
 
@@ -54,10 +55,11 @@ public class UserController {
         }
 
         if (errors.hasErrors()) {
-            model.addAttribute("newUser", newUser);
-            return "pages/user/signup";
+            return ModelAndViewBuilder.forPage("/user/signup")
+                .addAttribute("newUser", newUser)
+                .toModelAndView();
         } else {
-            return "redirect:/user/signin?created=" + newUser.getUsername();
+            return ModelAndViewBuilder.forRedirect("/user/signin?created=" + newUser.getUsername()).toModelAndView();
         }
     }
 

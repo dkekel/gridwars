@@ -11,6 +11,10 @@ public class ModelAndViewBuilder {
         return forViewName("pages/" + pageName);
     }
 
+    public static ModelAndViewBuilder forRedirect(String targetUrl) {
+        return forViewName("redirect:" + targetUrl);
+    }
+
     public static ModelAndViewBuilder forViewName(String viewName) {
         return new ModelAndViewBuilder().setViewName(viewName);
     }

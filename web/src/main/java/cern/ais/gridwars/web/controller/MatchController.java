@@ -65,9 +65,9 @@ public class MatchController {
     // Normally, we don't need any security context in this method, as we only send the
     // turn state bytes, which do not contain any sensitive information whatsoever.
     @GetMapping("/data/{matchId}")
-    public void data(@PathVariable String matchId,
-                     @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding,
-                     HttpServletResponse response) throws IOException {
+    public void matchData(@PathVariable String matchId,
+                          @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding,
+                          HttpServletResponse response) throws IOException {
         boolean acceptsGzipEncoding = acceptsGzipEncoding(acceptEncoding);
         String matchTurnFilePath = createMatchTurnStatesFilePath(matchId);
 
@@ -89,7 +89,7 @@ public class MatchController {
 
             IOUtils.copy(data.get(), response.getOutputStream());
         } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -97,6 +97,7 @@ public class MatchController {
         return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains(GZIP);
     }
 
+    // TODO the method below rather belongs to a service or utility class, the controller shouldn't know the details about the file structure
     private String createMatchTurnStatesFilePath(String matchId) {
         return FileUtils.joinFilePathsToSinglePath(
             gridWarsProperties.getDirectories().getMatchesDir(),
