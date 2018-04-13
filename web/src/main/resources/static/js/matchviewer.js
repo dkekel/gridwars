@@ -1,12 +1,12 @@
 "use strict";
 
 window.matchViewer = (function() {
-    const turnDataArray = [];
     const universeSize = 50;
     const bytesPerTurn = universeSize * universeSize * 4;
     const baseDelayMillis = 50;
     const defaultSpeedStepIndex = 2;
     const speedSteps = [0.33, 0.66, 1, 2, 3, 4, 8, 16];
+    const turnDataArray = [];
 
     let totalTurnCount = 0;
     let currentTurn = 0;
@@ -56,16 +56,14 @@ window.matchViewer = (function() {
 
         xhr.onload = function () {
             if (this.status !== 200) {
+                console.log("Loading data failed with status: " + this.status);
                 showLoadingError();
                 return;
             }
 
             const data = this.response;
             const dataByteSize = data.byteLength;
-            console.log('Received data size: ' + dataByteSize);
-
             totalTurnCount = Math.floor(dataByteSize / bytesPerTurn);
-            console.log('Turn count: ' + totalTurnCount);
 
             for (let turn = 0; turn < totalTurnCount; turn++) {
                 turnDataArray[turn] = new Uint8ClampedArray(data.slice(bytesPerTurn * turn, bytesPerTurn * (turn + 1)));
@@ -76,6 +74,7 @@ window.matchViewer = (function() {
         };
 
         xhr.onerror = function() {
+            console.log("Loading data failed with status: " + this.status);
             showLoadingError();
         };
 
@@ -92,7 +91,7 @@ window.matchViewer = (function() {
     }
 
     function loadLastSpeedStep() {
-        return isLocalStorageAvailable()
+        return (isLocalStorageAvailable() && (localStorage.getItem("gwLastSpeedStep") != null))
             ? parseInt(localStorage.getItem("gwLastSpeedStep"))
             : undefined;
     }
