@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.BotService;
 import cern.ais.gridwars.web.service.BotUploadService;
@@ -44,8 +45,8 @@ public class BotController {
                 botJarFile.getSize(), user.getUsername());
 
         try {
-            botUploadService.uploadNewBot(botJarFile, user, Instant.now());
-            redirectAttributes.addFlashAttribute("success", true);
+            Bot newBot = botUploadService.uploadNewBot(botJarFile, user, Instant.now());
+            redirectAttributes.addFlashAttribute("success", newBot.getShortBotClassName());
         } catch (BotService.BotException bue) {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());
         }

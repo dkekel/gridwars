@@ -11,8 +11,8 @@
     <div class="upload-form">
         <h2 th:text="#{page.upload.title}"></h2>
 
-        <div th:if="${error != null}" th:text="'ERROR: ' + ${error}" class="alert alert-danger" role="alert"></div>
-        <div th:if="${success}" th:text="#{page.upload.success}" class="alert alert-success" role="alert"></div>
+        <div th:if="${error}" th:text="#{page.upload.error(${error})}" class="alert alert-danger" role="alert"></div>
+        <div th:if="${success}" th:text="#{page.upload.success(${success})}" class="alert alert-success" role="alert"></div>
 
         <form th:action="@{/bot/upload}" method="post" enctype="multipart/form-data">
             <div class="form-group">

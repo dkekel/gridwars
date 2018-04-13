@@ -28,15 +28,18 @@ public class BotUploadService {
     }
 
     @Transactional
-    public void uploadNewBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
+    public Bot uploadNewBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
         List<Bot> oldBots = botService.getActiveBotsOfUser(user);
         Bot newBot = botService.validateAndCreateNewUploadedBot(uploadedBotJarFile, user, uploadTime);
+
         inactivateOldBots(oldBots);
         matchService.generateMatches(newBot);
 
         // TODO Do the following outside of the transaction, maybe in the controller, or in a transaction commit callback?
         // Otherwise the workers may wake up before the transaction is committed and the changes are visible in the db.
         matchWorkerService.wakeUpAllMatchWorkers();
+
+        return newBot;
     }
 
     private void inactivateOldBots(List<Bot> oldBots) {
