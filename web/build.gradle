@@ -40,8 +40,8 @@ bootRun {
 
     // Set up the work folders. When running from a runnable jar, these system properties need to be
     // provided by jvm start parameters.
-    systemProperties["gridwars.directories.baseWorkDir"] = project.file(workDirName).absolutePath
-    systemProperties["server.tomcat.basedir"] = project.file("${workDirName}/server").absolutePath
+    systemProperties['gridwars.directories.baseWorkDir'] = project.file(workDirName).absolutePath
+    systemProperties['server.tomcat.basedir'] = project.file("${workDirName}/server").absolutePath
 }
 
 dependencies {
@@ -58,7 +58,7 @@ dependencies {
 
 	compile('org.springframework.boot:spring-boot-devtools')
 
-    runtime("com.h2database:h2")
+    runtime('com.h2database:h2')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
@@ -73,6 +73,10 @@ task setUpRuntimeLibWorkDir(type: Copy, dependsOn: classes) {
 }
 bootRun.dependsOn(setUpRuntimeLibWorkDir)
 
-// TODO create a task to clear the subfolders of the dev work folder
+task cleanWorkDir(type: Delete) {
+    delete file("${workDirName}/matches").listFiles()
+}
+bootRun.dependsOn(cleanWorkDir)
+
 // TODO create a task to set up an external work dir folder to allow running the app as a runnable jar
 
