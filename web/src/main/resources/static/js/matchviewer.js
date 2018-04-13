@@ -5,12 +5,13 @@ window.matchViewer = (function() {
     const universeSize = 50;
     const bytesPerTurn = universeSize * universeSize * 4;
     const baseDelayMillis = 50;
+    const defaultSpeedStepIndex = 2;
     const speedSteps = [0.33, 0.66, 1, 2, 3, 4, 8, 16];
 
     let totalTurnCount = 0;
     let currentTurn = 0;
     let isPlaying = 0;
-    let speedStepIndex = 2;
+    let speedStepIndex = defaultSpeedStepIndex;
     let playIntervalCallback;
     let errorLabel;
     let gameView;
@@ -42,6 +43,7 @@ window.matchViewer = (function() {
         gameCtx.mozImageSmoothingEnabled = false;
         gameCtx.webkitImageSmoothingEnabled = false;
 
+        initSavedSpeedStep();
         updateSpeedLabel();
 
         loadData(matchDataUrl);
@@ -78,6 +80,31 @@ window.matchViewer = (function() {
         };
 
         xhr.send();
+    }
+
+    function initSavedSpeedStep() {
+        let storedSpeedStep = loadLastSpeedStep();
+        if (storedSpeedStep !== undefined) {
+            speedStepIndex = Math.max(0, Math.min(speedSteps.length - 1, storedSpeedStep));
+        } else {
+            speedStepIndex = defaultSpeedStepIndex;
+        }
+    }
+
+    function loadLastSpeedStep() {
+        return isLocalStorageAvailable()
+            ? parseInt(localStorage.getItem("gwLastSpeedStep"))
+            : undefined;
+    }
+
+    function saveSelectedSpeedStep() {
+        if (isLocalStorageAvailable()) {
+            localStorage.setItem("gwLastSpeedStep", speedStepIndex.toString());
+        }
+    }
+
+    function isLocalStorageAvailable() {
+        return (typeof(Storage) !== "undefined") && window.localStorage;
     }
 
     function showLoadingError() {
@@ -147,7 +174,6 @@ window.matchViewer = (function() {
             isPlaying = false;
             clearInterval(playIntervalCallback);
             playIntervalCallback = null;
-            console.log("Stopped");
         }
     }
 
@@ -166,6 +192,7 @@ window.matchViewer = (function() {
 
     function increaseSpeed() {
         speedStepIndex = Math.min(speedSteps.length - 1, speedStepIndex  + 1);
+        saveSelectedSpeedStep();
         updateSpeedLabel();
 
         if (isPlaying) {
@@ -175,6 +202,7 @@ window.matchViewer = (function() {
 
     function decreaseSpeed() {
         speedStepIndex = Math.max(0, speedStepIndex  - 1);
+        saveSelectedSpeedStep();
         updateSpeedLabel();
 
         if (isPlaying) {
