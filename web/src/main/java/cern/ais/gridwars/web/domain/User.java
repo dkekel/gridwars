@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private String username;
 
     @Column(nullable = false)
-    @Size(min = 6, max = 512) // This field stores a hash, so make it big enough!
+    @Size(min = 6, max = 255) // This field stores a hash, so make it big enough!
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -62,7 +62,7 @@ public class User implements UserDetails {
     private Instant created;
 
     @Column(unique = true)
-    @Size(max = 256)
+    @Size(max = 255)
     private String confirmationId;
 
     private Instant confirmed;

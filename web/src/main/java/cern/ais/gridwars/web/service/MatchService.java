@@ -122,7 +122,7 @@ public class MatchService {
 
     @Transactional
     public List<Match> findAllPlayedMatchesByActiveBots() {
-        return matchRepository.findAllByStatusInOrderByEndedDesc(PLAYED_MATCH_STATUSES).stream()
+        return matchRepository.findAllByStatusInOrderByStartedDesc(PLAYED_MATCH_STATUSES).stream()
             .filter(this::areBothBotsActive)
             .collect(Collectors.toList());
     }

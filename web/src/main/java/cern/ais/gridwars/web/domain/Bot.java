@@ -16,13 +16,18 @@ public class Bot {
     private String id;
 
     @Column(nullable = false)
-    @Size(max = 256) // Contains a UUID, so make it big enough!
+    @Size(max = 255)
     private String jarFileName;
 
-    // TODO the bot class name probably needs to be unique (for different users), otherwise they can't be loaded
-    // in the same JVM
     @Column(nullable = false)
-    @Size(max = 64)
+    private Long jarFileSize;
+
+    @Column(nullable = false)
+    @Size(max = 255)
+    private String jarFileHash;
+
+    @Column(nullable = false)
+    @Size(max = 63)
     private String botClassName;
 
     @Column(nullable = false)
@@ -49,6 +54,24 @@ public class Bot {
 
     public Bot setJarFileName(String jarFileName) {
         this.jarFileName = jarFileName;
+        return this;
+    }
+
+    public Long getJarFileSize() {
+        return jarFileSize;
+    }
+
+    public Bot setJarFileSize(Long jarFileSize) {
+        this.jarFileSize = jarFileSize;
+        return this;
+    }
+
+    public String getJarFileHash() {
+        return jarFileHash;
+    }
+
+    public Bot setJarFileHash(String jarFileHash) {
+        this.jarFileHash = jarFileHash;
         return this;
     }
 

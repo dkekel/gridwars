@@ -36,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label th:text="#{page.signup.teamName}" for="teamName"></label>
-                <input th:field="*{teamName}" id="teamName" class="form-control" type="text" th:placeholder="#{page.signup.teamName}" minlength="4" maxlength="32" required/>
+                <input th:field="*{teamName}" id="teamName" class="form-control" type="text" th:placeholder="#{page.signup.teamName}" minlength="4" maxlength="24" required/>
                 <small th:text="#{page.signup.teamName.help}" class="form-text text-muted"></small>
                 <p th:each="error : ${#fields.errors('teamName')}" th:text="${error}" class="text-danger"></p>
             </div>

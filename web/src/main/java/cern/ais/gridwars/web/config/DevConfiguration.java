@@ -3,11 +3,13 @@ package cern.ais.gridwars.web.config;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.*;
+import cern.ais.gridwars.web.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.time.Instant;
 
 
@@ -32,6 +34,9 @@ public class DevConfiguration {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private GridWarsProperties gridWarsProperties;
 
     @PostConstruct
     public void initTestData() {
@@ -87,15 +92,15 @@ public class DevConfiguration {
         // =====================================================================
         // Bots and Matches
         // =====================================================================
-        Bot bot1 = botService.createNewBotRecord("jaegerbot1.jar", "cern.ais.gridwars.JaegerBot", user1, Instant.now());
+        Bot bot1 = botService.createNewBotRecord(getBotFile("jaegerbot1.jar"), "cern.ais.gridwars.JaegerBot", user1, Instant.now());
 
-        Bot bot2 = botService.createNewBotRecord("jaegerbot2.jar", "cern.ais.gridwars.JaegerBot", user2, Instant.now());
+        Bot bot2 = botService.createNewBotRecord(getBotFile("jaegerbot2.jar"), "cern.ais.gridwars.JaegerBot", user2, Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord("gintonicbot.jar", "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
+        Bot bot3 = botService.createNewBotRecord(getBotFile("gintonicbot.jar"), "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
         matchService.generateMatches(bot3);
 
-        Bot bot4 = botService.createNewBotRecord("brugalcolabot.jar", "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
+        Bot bot4 = botService.createNewBotRecord(getBotFile("brugalcolabot.jar"), "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
         matchService.generateMatches(bot4);
 
         matchWorkerService.wakeUpAllMatchWorkers();
@@ -105,5 +110,9 @@ public class DevConfiguration {
 //            .setSubject("Hello from GridWars")
 //            .setText("Mail sending is working!")
 //        );
+    }
+
+    private File getBotFile(String botJarFileName) {
+        return new File(FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getBotJarDir(), botJarFileName));
     }
 }

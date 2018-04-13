@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,6 +20,8 @@ import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +64,7 @@ public class BotService {
         try {
             storedBotJarFile = storeUploadedBotJarFile(uploadedBotJarFile, user, uploadTime);
             String botClassName = validateBotJarFileAndExtractBotClassName(storedBotJarFile);
-            return createNewBotRecord(storedBotJarFile.getName(), botClassName, user, uploadTime);
+            return createNewBotRecord(storedBotJarFile, botClassName, user, uploadTime);
         } catch (Exception e) {
             LOG.error("Failed to validate and persist bot uploaded by user '{}': {}", user.getUsername(),
                 e.getMessage(), e);
@@ -154,17 +157,30 @@ public class BotService {
     }
 
     @Transactional
-    public Bot createNewBotRecord(String jarFileName, String botClassName, User user, Instant uploadTime) {
+    public Bot createNewBotRecord(File jarFile, String botClassName, User user, Instant uploadTime) {
         Bot newBot = new Bot()
             .setId(DomainUtils.generateId())
             .setUser(user)
-            .setJarFileName(jarFileName)
+            .setJarFileName(jarFile.getName())
+            .setJarFileHash(getFileContentHash(jarFile))
+            .setJarFileSize(jarFile.length())
             .setBotClassName(botClassName)
             .setUploaded(uploadTime)
             .setActive(true);
 
         botRepository.saveAndFlush(newBot);
         return newBot;
+    }
+
+    private String getFileContentHash(File file) {
+        try {
+            return Base64Utils.encodeToUrlSafeString(
+                MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(file.toPath()))
+            );
+        } catch (Exception e) {
+            LOG.warn("Failed to create SHA hash of file: " + file.getAbsolutePath(), e);
+            return "<error>";
+        }
     }
 
     @Transactional
