@@ -26,7 +26,7 @@
         <canvas id="gameCanvas" width="600" height="600"></canvas>
 
         <div>
-            <span>Turn: <span id="currentTurn"></span> (<span id="speed"></span>x)</span>
+            <span>Turn: <span id="currentTurn"></span></span><span class="ml-3">Speed: <span id="speed"></span>x</span>
         </div>
 
         <div>
@@ -35,7 +35,7 @@
             <button onclick="matchViewer.togglePlay();" title="Toggle play/pause">Play / Pause</button>
             <button onclick="matchViewer.goToNextTurn();" title="Go to next turn">&gt;</button>
             <button onclick="matchViewer.goToEnd();" title="Go to end">&gt;|</button>
-            <button onclick="matchViewer.decreaseSpeed();" title="Decrease speed" class="ml-4">&lt;&lt;</button>
+            <button onclick="matchViewer.decreaseSpeed();" title="Decrease speed" class="ml-3">&lt;&lt;</button>
             <button onclick="matchViewer.increaseSpeed();" title="Increase speed">&gt;&gt;</button>
         </div>
     </div>
