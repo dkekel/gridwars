@@ -152,7 +152,7 @@ class MatchExecutor {
     private List<String> createJvmProcessArguments(Match match) {
         List<String> args = new LinkedList<>();
         args.add(createJavaExecutablePath());
-        args.addAll(createJvmMemoryAndGcArguments());
+        args.addAll(createJvmMemoryArguments());
         args.addAll(createMatchRuntimeClassPathArguments());
         args.addAll(createSysPropArguments(match));
         args.add(MatchRuntimeConstants.MATCH_RUNTIME_MAIN_CLASS_NAME);
@@ -166,14 +166,9 @@ class MatchExecutor {
         return javaExe.exists() ? javaExe.getAbsolutePath() : javaBin.getAbsolutePath();
     }
 
-    private List<String> createJvmMemoryAndGcArguments() {
+    private List<String> createJvmMemoryArguments() {
         String workerHeapSize = gridWarsProperties.getMatches().getWorkerHeapSize();
-
-        return Arrays.asList(
-            "-Xms" + workerHeapSize,
-            "-Xmx" + workerHeapSize
-            // TODO add some more GC optimisation flags
-        );
+        return Arrays.asList("-Xms" + workerHeapSize, "-Xmx" + workerHeapSize);
     }
 
     private List<String> createMatchRuntimeClassPathArguments() {

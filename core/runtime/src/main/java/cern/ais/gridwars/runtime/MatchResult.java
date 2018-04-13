@@ -1,6 +1,5 @@
 package cern.ais.gridwars.runtime;
 
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;

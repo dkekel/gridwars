@@ -40,8 +40,13 @@ public class MatchController {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
+    @GetMapping("/scores")
+    public ModelAndView showScoreboard() {
+        return ModelAndViewBuilder.forPage("match/scores").toModelAndView();
+    }
+
     @GetMapping("/list")
-    public ModelAndView list() {
+    public ModelAndView listMatches() {
         return ModelAndViewBuilder.forPage("match/list")
             .addAttribute("matches", matchService.findAllPlayedMatchesByActiveBots())
             .toModelAndView();

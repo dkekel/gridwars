@@ -34,6 +34,7 @@ public class MatchRuntime {
     // TODO determine adequate match timeout
     // TODO should I make this configurable via sys prop??
     private static final long MATCH_TIME_OUT_MILLIS = 60 * 1000; // 60 seconds
+    private static final long MEGA_BYTE_FACTOR = 1024 * 1024;
 
     private final BotClassLoader botClassLoader = new BotClassLoader();
     private final MatchTurnStateSerializer matchTurnStateSerializer = new MatchTurnStateSerializer();
@@ -72,6 +73,13 @@ public class MatchRuntime {
         info("=====================================================================================");
     }
 
+    private void logMemoryInfo() {
+        Runtime runtime = Runtime.getRuntime();
+        final long usedMemoryMb = (runtime.totalMemory() - runtime.freeMemory()) / MEGA_BYTE_FACTOR;
+        final long maxMemoryMb = runtime.maxMemory() / MEGA_BYTE_FACTOR;
+        info("Memory usage [MB}: " + usedMemoryMb + " / " + maxMemoryMb);
+    }
+
     private String retrieveMandatorySysProp(String sysPropKey) {
         String value = System.getProperty(sysPropKey);
 
@@ -85,6 +93,7 @@ public class MatchRuntime {
     private void executeMatch() {
         try {
             info("Start match execution ...");
+            logMemoryInfo();
 
             try {
                 loadBotsAndPlayMatch();
@@ -96,6 +105,7 @@ public class MatchRuntime {
             }
 
             persistMatchResult();
+            logMemoryInfo();
             info("... finished match execution");
         } finally {
             cleanUp();
