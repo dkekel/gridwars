@@ -39,7 +39,7 @@ class MatchExecutor {
            return doExecuteMatch(match);
         } catch (Exception e) {
             LOG.error("Execution of match failed before process could be started: {}", match.getId(), e);
-            return markMatchAsFailed(match, "Execution of match failed before process could be started");
+            return markMatchAsFailed(match, "Execution of match failed before process could be started: " + e.getMessage());
         } finally {
             cleanUp();
         }

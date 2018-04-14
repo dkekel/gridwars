@@ -107,18 +107,17 @@ public class MatchWorker implements Runnable {
     }
 
     private void executeMatch(Match match) {
+        logInfo("start executing pending match: {} ...", match.getId());
+        Match executedMatch = matchExecutor.executeMatch(match);
+        logInfo("... finished executing pending match in {} ms: {}", executedMatch.getDurationMillis(), executedMatch.getId());
+
         try {
-            logInfo("start executing pending match: {} ...", match.getId());
-
-            Match executedMatch = matchExecutor.executeMatch(match);
             matchService.updateMatch(executedMatch);
-
-            logInfo("... finished executing pending match in {} ms: {}", executedMatch.getDurationMillis(),
-                executedMatch.getId());
         } catch (Exception e) {
-            LOG.error("Execution of match {} failed: {}", match.getId(), e.getMessage(), e);
-
-            // TODO populate and persist failed match...
+            LOG.error("Failed to persist executed match {]: ", match.getId(), e.getMessage(), e);
+            // No uncaught execution should escape this method here, as it would otherwise cause the termination
+            // of the worker. Therefore, we just log a warning here. If we can't update the match it means there is
+            // an issue with the database that we can't do much about here at the moment.
         }
     }
 
