@@ -191,11 +191,11 @@ public class BotService {
 
     public static class BotException extends RuntimeException {
 
-        public BotException(String message) {
+        BotException(String message) {
             super(message);
         }
 
-        public BotException(String message, Throwable cause) {
+        BotException(String message, Throwable cause) {
             super(message, cause);
         }
     }

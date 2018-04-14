@@ -30,7 +30,7 @@ public class JarStorageService {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
-    public File storeUploadedJarFile(MultipartFile uploadedJarFile, String userId, Instant uploadTime) {
+    File storeUploadedJarFile(MultipartFile uploadedJarFile, String userId, Instant uploadTime) {
         File storedJarFile = createNewJarFile(userId, uploadTime);
         LOG.info("Storing uploaded bot jar file: {}", storedJarFile.getAbsolutePath());
 

@@ -15,6 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MatchWorker implements Runnable {
 
+    public enum Status { IDLE, RUNNING, STOPPED }
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final Lock lock = new ReentrantLock();
     private final Condition newMatchesAvailableCondition = lock.newCondition();
@@ -26,7 +28,25 @@ public class MatchWorker implements Runnable {
     public MatchWorker(MatchService matchService, int workerNumber, GridWarsProperties gridWarsProperties) {
         this.matchService = Objects.requireNonNull(matchService);
         this.workerNumber = workerNumber;
-        this.matchExecutor = new MatchExecutor(gridWarsProperties);
+        this.matchExecutor = new MatchExecutor(Objects.requireNonNull(gridWarsProperties));
+    }
+
+    public Status getStatus() {
+        if (!running) {
+            return Status.STOPPED;
+        } else if (lock.tryLock()) {
+            try {
+                return Status.IDLE;
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            return Status.RUNNING;
+        }
+    }
+
+    public int getWorkerNumber() {
+        return workerNumber;
     }
 
     @Override
@@ -96,8 +116,9 @@ public class MatchWorker implements Runnable {
             logInfo("... finished executing pending match in {} ms: {}", executedMatch.getDurationMillis(),
                 executedMatch.getId());
         } catch (Exception e) {
-            // TODO if the execution fails, update the match also to have failed...?
             LOG.error("Execution of match {} failed: {}", match.getId(), e.getMessage(), e);
+
+            // TODO populate and persist failed match...
         }
     }
 
@@ -112,7 +133,7 @@ public class MatchWorker implements Runnable {
         }
     }
 
-    public void shutdown() {
+    public void stop() {
         if (running) {
             running = false;
             wakeUp();

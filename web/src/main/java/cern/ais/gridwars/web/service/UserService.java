@@ -48,24 +48,24 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User create(final User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
+    public User create(User newUser) {
+        if (userRepository.existsByUsername(newUser.getUsername())) {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(newUser.getEmail())) {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
-        if (userRepository.existsByTeamName(user.getTeamName())) {
+        if (userRepository.existsByTeamName(newUser.getTeamName())) {
             throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
-        return saveNewUser(user);
+        return saveNewUser(newUser);
     }
 
     @Transactional
-    public void update(final User user) {
+    public void update(User user) {
         if (!userRepository.existsById(user.getId())) {
             throw new RuntimeException("User does not exist: " + user.getId() + " (" + user.getUsername() + ")");
         }
@@ -85,7 +85,7 @@ public class UserService implements UserDetailsService {
         updateExistingUser(user);
     }
 
-    private User saveNewUser(final User user) {
+    private User saveNewUser(User user) {
         User newUser = new User()
             .setId(DomainUtils.generateId())
             .setUsername(user.getUsername())
@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
-    private void updateExistingUser(final User user) {
+    private void updateExistingUser(User user) {
        userRepository.findById(user.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(user.getEmail());
            existingUser.setTeamName(user.getTeamName());
@@ -115,11 +115,11 @@ public class UserService implements UserDetailsService {
        });
     }
 
-    private String encodePassword(final String password) {
+    private String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
 
-    private boolean isNotBlank(final String value) {
+    private boolean isNotBlank(String value) {
         return (value != null) && !value.isEmpty();
     }
 
@@ -128,7 +128,7 @@ public class UserService implements UserDetailsService {
         private final String fieldName;
         private final String errorMessageCode;
 
-        public UserFieldValueException(final String fieldName, final String errorMessageCode) {
+        UserFieldValueException(String fieldName, String errorMessageCode) {
             this.fieldName = fieldName;
             this.errorMessageCode = errorMessageCode;
         }

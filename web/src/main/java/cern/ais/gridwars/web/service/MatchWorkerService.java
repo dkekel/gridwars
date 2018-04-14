@@ -13,6 +13,7 @@ import javax.annotation.PreDestroy;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,23 +33,40 @@ public class MatchWorkerService {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
+    public void startAllMatchWorkers() {
+        LOG.debug("Starting all workers that are not running ...");
+
+        matchWorkers.forEach(worker -> {
+            if (MatchWorker.Status.STOPPED == worker.getStatus()) {
+                taskExecutor.execute(worker);
+                LOG.debug("... started worker {}", worker.getWorkerNumber());
+            }
+        });
+    }
+
+    public void stopAllMatchWorkers() {
+        matchWorkers.forEach(MatchWorker::stop);
+        LOG.debug("Sent STOP signal to all workers");
+    }
+
     public void wakeUpAllMatchWorkers() {
         matchWorkers.forEach(MatchWorker::wakeUp);
+        LOG.debug("Woke up all workers");
+    }
+
+    public List<MatchWorkerStatus> getMatchWorkerStatuses() {
+        return matchWorkers.stream().map(MatchWorkerStatus::fromMatchWorker).collect(Collectors.toList());
     }
 
     @PostConstruct
     protected void init() {
         createMatchWorkers();
         startAllMatchWorkers();
-
-        LOG.debug("MatchExecutionService initialised, worker count: {}",
-            gridWarsProperties.getMatches().getWorkerCount());
+        LOG.debug("MatchExecutionService initialised, worker count: {}",  matchWorkers.size());
     }
 
     private void createMatchWorkers() {
-        int workerCount = gridWarsProperties.getMatches().getWorkerCount();
-
-        for (int i = 0; i < workerCount; i++) {
+        for (int i = 0; i < gridWarsProperties.getMatches().getWorkerCount(); i++) {
             createMatchWorker(i + 1);
         }
     }
@@ -58,18 +76,28 @@ public class MatchWorkerService {
         matchWorkers.add(matchWorker);
     }
 
-    private void startAllMatchWorkers() {
-        matchWorkers.forEach(taskExecutor::execute);
-    }
-
     @PreDestroy
     protected void destroy() {
-        shutdownAllMatchWorkers();
+        stopAllMatchWorkers();
+        disposeAllMatchWorkers();
         LOG.debug("MatchExecutionService destroyed");
     }
 
-    private void shutdownAllMatchWorkers() {
-        matchWorkers.forEach(MatchWorker::shutdown);
+    private void disposeAllMatchWorkers() {
         matchWorkers.clear();
+    }
+
+    public static final class MatchWorkerStatus {
+        public final int number;
+        public final MatchWorker.Status status;
+
+        private static MatchWorkerStatus fromMatchWorker(MatchWorker matchWorker) {
+            return new MatchWorkerStatus(matchWorker.getWorkerNumber(), matchWorker.getStatus());
+        }
+
+        private MatchWorkerStatus(int number, MatchWorker.Status status) {
+            this.number = number;
+            this.status = status;
+        }
     }
 }
