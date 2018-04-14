@@ -9,13 +9,12 @@ import java.util.Optional;
 
 
 /**
- * Provides the current user as context variable to all controller methods,
- * which usually serve Thymeleaf templates.
+ * Provides the current user as context variable to all controller methods, which usually serve Thymeleaf templates.
  */
 @ControllerAdvice("cern.ais.gridwars.web.controller")
 public class UserControllerAdvice {
 
-    @ModelAttribute("user")
+    @ModelAttribute("currentUser")
     public User getCurrentUser(Authentication authentication) {
         return Optional.ofNullable(authentication)
                 .map(Authentication::getPrincipal)

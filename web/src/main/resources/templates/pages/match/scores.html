@@ -5,22 +5,46 @@
       layout:decorate="~{layouts/main}">
 <head>
     <title>Scoreboard</title>
+
+    <style>
+        .score-table > tbody > tr:nth-child(1) {
+            background-color: goldenrod;
+        }
+
+        .score-table > tbody > tr:nth-child(2) {
+            background-color: silver;
+        }
+
+        .score-table > tbody > tr:nth-child(3) {
+            background-color: sandybrown;
+        }
+    </style>
 </head>
 <body>
-<main layout:fragment="content" class="container">
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">Team</th>
-                <th scope="col">Wins</th>
-                <th scope="col">Draws</th>
-                <th scope="col">Losses</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-</main>
+    <main layout:fragment="content" class="container">
+        <h1 class="text-center">Scoreboard</h1>
+        <table class="table score-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-center">Rank</th>
+                    <th scope="col">Team</th>
+                    <th scope="col" class="text-center">Wins</th>
+                    <th scope="col" class="text-center">Draws</th>
+                    <th scope="col" class="text-center">Losses</th>
+                    <th scope="col" class="text-center">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ranking,iter : ${rankings}">
+                    <th th:text="${iter.index} + 1" scope="row" class="text-center"></th>
+                    <td th:text="${ranking.user.teamName}"></td>
+                    <td th:text="${ranking.wins}" class="text-center"></td>
+                    <td th:text="${ranking.draws}" class="text-center"></td>
+                    <td th:text="${ranking.losses}" class="text-center"></td>
+                    <td th:text="${ranking.total}" class="text-center"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
 </body>
 </html>

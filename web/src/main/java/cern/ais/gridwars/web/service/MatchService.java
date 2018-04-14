@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class MatchService {
 
-    private static final List<Match.Status> PLAYED_MATCH_STATUSES =
-            Arrays.asList(Match.Status.FINISHED, Match.Status.FAILED);
+    private static final List<Match.Status> STARTED_MATCH_STATUSES = Arrays.asList(Match.Status.FINISHED, Match.Status.FAILED);
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchRepository matchRepository;
@@ -66,7 +65,7 @@ public class MatchService {
 
     @Transactional
     public void cancelPendingMatches(Bot bot) {
-        matchRepository.findMatchesByBot1OrBot2(bot, bot).stream()
+        matchRepository.findAllByBot1OrBot2(bot, bot).stream()
             .filter(this::isPending)
             .forEach(this::cancelMatch);
 
@@ -122,9 +121,16 @@ public class MatchService {
         return matchRepository.findById(matchId);
     }
 
-    @Transactional
-    public List<Match> findAllPlayedMatchesByActiveBots() {
-        return matchRepository.findAllByStatusInOrderByStartedDesc(PLAYED_MATCH_STATUSES).stream()
+    @Transactional(readOnly = true)
+    public List<Match> findAllStartedMatchesForActiveBots() {
+        return matchRepository.findAllByStatusIn(STARTED_MATCH_STATUSES).stream()
+            .filter(this::areBothBotsActive)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Match> findAllFinishedMatchesForActiveBots() {
+        return matchRepository.findAllByStatusIn(Collections.singletonList(Match.Status.FINISHED)).stream()
             .filter(this::areBothBotsActive)
             .collect(Collectors.toList());
     }

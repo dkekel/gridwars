@@ -21,7 +21,10 @@
 <body>
     <!-- TODO improve navbar layout: https://getbootstrap.com/docs/4.0/components/navbar/#color-schemes -->
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" th:href="@{/}">CERN GridWars</a>
+        <a class="navbar-brand" th:href="@{/}">
+            <img th:src="@{/static/img/cern_logo.png}" width="30" height="30" alt="">
+            <span class="align-baseline">CERN GridWars</span>
+        </a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -29,13 +32,16 @@
 
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav mr-auto">
-                <li th:if="${user}" class="nav-item active">
+                <li th:if="${currentUser}" class="nav-item">
+                    <a class="nav-link" th:href="@{/match/scores}">Scoreboard</a>
+                </li>
+                <li th:if="${currentUser}" class="nav-item">
                     <a class="nav-link" th:href="@{/match/list}">Matches</a>
                 </li>
-                <li th:if="${user}" class="nav-item active">
+                <li th:if="${currentUser}" class="nav-item">
                     <a class="nav-link" th:href="@{/bot/upload}">Bot Upload</a>
                 </li>
-                <li th:if="${user != null && user.admin}" class="nav-item active dropdown">
+                <li th:if="${currentUser != null && currentUser.admin}" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="http://example.com" id="adminDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="adminDropdown">
                         <a class="dropdown-item" th:href="@{/admin/h2}" target="_blank">H2 Console</a>
@@ -43,14 +49,14 @@
                 </li>
             </ul>
 
-            <div th:unless="${user}">
+            <div th:unless="${currentUser}">
                 <a th:href="@{/user/signin}" th:text="#{layout.main.signin}" target="_self" class="navbar-text"></a>
                 <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" target="_self" class="navbar-text ml-3"></a>
             </div>
 
-            <form th:if="${user}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0">
+            <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0">
                 <a href="#" class="navbar-text">
-                    <span th:text="${user.username}"></span><span th:if="${user.admin}" class="ml-1">(admin)</span>
+                    <span th:text="${currentUser.username}"></span><span th:if="${currentUser.admin}" class="ml-1">(admin)</span>
                 </a>
                 <a href="javascript:{}" th:text="#{layout.main.signout}" onclick="document.getElementById('signOutForm').submit();" class="navbar-text ml-3"></a>
             </form>

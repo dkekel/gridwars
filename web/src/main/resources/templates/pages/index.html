@@ -17,12 +17,12 @@
     <main layout:fragment="content" class="container welcome-container">
         <h1>Welcome to GridWars</h1>
 
-        <div th:unless="${user}">
+        <div th:unless="${currentUser}">
             <p>Please <a th:href="@{/user/signin}">sign in</a></p>
             <p>No account yet? Then <a th:href="@{/user/signup}">sign up here</a> to get started.</p>
         </div>
-        <div th:if="${user}">
-            <p th:text="'Hello ' + ${user.teamName} + '!'"></p>
+        <div th:if="${currentUser}">
+            <p th:text="'Hello ' + ${currentUser.teamName} + '!'"></p>
         </div>
     </main>
 </body>

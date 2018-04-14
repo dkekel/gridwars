@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, String> {
 
-    List<Match> findMatchesByBot1OrBot2(Bot bot1, Bot bot2);
-    List<Match> findAllByStatusInOrderByStartedDesc(List<Match.Status> matchStates);
+    List<Match> findAllByBot1OrBot2(Bot bot1, Bot bot2);
+    List<Match> findAllByStatusIn(List<Match.Status> matchStates);
     Optional<Match> findFirstByStatusOrderByPendingSinceAsc(Match.Status status);
 }

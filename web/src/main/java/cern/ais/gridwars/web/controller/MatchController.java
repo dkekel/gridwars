@@ -8,6 +8,7 @@ import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.MatchFileService;
 import cern.ais.gridwars.web.service.MatchService;
+import cern.ais.gridwars.web.service.RankingService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,23 +44,31 @@ public class MatchController {
 
     private final MatchTurnDataSerializer serializer = new MatchTurnDataSerializer();
     private final MatchService matchService;
+    private final RankingService rankingService;
     private final MatchFileService matchFileService;
 
     @Autowired
-    public MatchController(MatchService matchService, MatchFileService matchFileService) {
+    public MatchController(MatchService matchService, RankingService rankingService, MatchFileService matchFileService) {
         this.matchService = Objects.requireNonNull(matchService);
-        this.matchFileService = matchFileService;
+        this.rankingService = Objects.requireNonNull(rankingService);
+        this.matchFileService = Objects.requireNonNull(matchFileService);
     }
 
     @GetMapping("/scores")
     public ModelAndView showScoreboard() {
-        return ModelAndViewBuilder.forPage("match/scores").toModelAndView();
+        return ModelAndViewBuilder.forPage("match/scores")
+            .addAttribute("rankings", rankingService.generateRankings())
+            .toModelAndView();
     }
 
     @GetMapping("/list")
-    public ModelAndView listMatches() {
+    public ModelAndView listStartedMatches() {
+        List<Match> matches = matchService.findAllFinishedMatchesForActiveBots().stream()
+            .sorted(Comparator.comparing(Match::getStarted).reversed())
+            .collect(Collectors.toList());
+
         return ModelAndViewBuilder.forPage("match/list")
-            .addAttribute("matches", matchService.findAllPlayedMatchesByActiveBots())
+            .addAttribute("matches", matches)
             .toModelAndView();
     }
 
@@ -97,6 +107,7 @@ public class MatchController {
     private String createLinkForMatchFile(String matchId, MatchFile matchFile) {
         String linkBase = "/match/" + matchId + "/";
 
+        // TODO refactor this here below, as there is repitition further down in the controller that is error prone
         switch (matchFile) {
             case STDOUT:  return linkBase + "stdout";
             case STDERR: return linkBase + "stderr";
