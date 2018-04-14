@@ -8,22 +8,19 @@ import cern.ais.gridwars.universe.Universe;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
 
+
 public class Visualizer {
+    private static final int[] SPEEDS = new int[] { 10, 20, 40, 80, 160, 320, 500, 1000 };
+
 	private JFrame frame;
-	private boolean m_Running = !false;
-	private Label m_StatusLabel;
-	private int[] speeds = new int[] { 10, 20, 40, 80, 160, 320, 500 };
-	private int m_TimerSpeedId = 3;
+	private boolean running = true;
+	private int timerSpeedIndex = 3;
 	private Game game;
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -36,45 +33,47 @@ public class Visualizer {
     }
 
 	private void createGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
-		game = new Game(Arrays.asList(new Player(0, bot1, new File("player1.log"), 0), new Player(1, bot2, new File("player2.log"), 1)), new Game.TurnCallback() {
-			@Override public void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus) {
-				frame.setTitle("Turn " + turn);
-				frame.repaint();
-			}
-		}, true);
+        List<Player> players = Arrays.asList(
+            new Player(0, bot1, new File("bot1.log"), 0),
+            new Player(1, bot2, new File("bot2.log"), 1)
+        );
+
+		game = new Game(players, (player, turn, movementCommands, binaryGameStatus) -> {
+            frame.setTitle("Turn " + turn);
+            frame.repaint();
+        }, true);
 
 		game.startUp();
 	}
 
-	private void createAndShowGUI() throws FileNotFoundException
-	{
+	private void createAndShowGUI() {
 		frame = new JFrame("GridWars Emulator");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JPanel drawPanel = new JPanel(new BorderLayout()) {
-			@Override public void paint(Graphics graphics) {
+			@Override
+            public void paint(Graphics graphics) {
 				Universe universe = game.getUniverse();
-				for (int my = 0; my < GameConstants.UNIVERSE_SIZE; my++)
-					for (int mx = 0; mx < GameConstants.UNIVERSE_SIZE; mx++)
-					{
-						Cell cell = universe.getCell(mx, my);
-						long population = cell.getPopulation();
-						if (population == 0)
-							continue;
+				for (int my = 0; my < GameConstants.UNIVERSE_SIZE; my++) {
+                    for (int mx = 0; mx < GameConstants.UNIVERSE_SIZE; mx++) {
+                        Cell cell = universe.getCell(mx, my);
+                        long population = cell.getPopulation();
+                        if (population == 0) {
+                            continue;
+                        }
 
-						Color color = cell.getOwner().colorIndex == 0 ? Color.red : Color.blue;
-						int alpha = (int)(Math.abs(population) / (double)GameConstants.MAXIMUM_POPULATION * 255);
-						color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                        int alpha = (int) (Math.abs(population) / (double) GameConstants.MAXIMUM_POPULATION * 255);
+                        Color color = cell.getOwner().colorIndex == 0 ? Color.blue : Color.red;
+                        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
-						graphics.setColor(color);
-						graphics.fillRect(mx * 10, 50 + my * 10, 10, 10);
-					}
+                        graphics.setColor(color);
+                        graphics.fillRect(mx * 10, 50 + my * 10, 10, 10);
+                    }
+                }
 			}
 		};
 
-		m_StatusLabel = new Label("IDLE");
-		mainPanel.add(m_StatusLabel, BorderLayout.NORTH);
 		mainPanel.add(drawPanel, BorderLayout.CENTER);
 
 		JPanel controlPanel = new JPanel(new BorderLayout());
@@ -82,11 +81,7 @@ public class Visualizer {
 
 		final JToggleButton pauseButton = new JToggleButton("Pause");
 		pauseButton.setSelected(false);
-		pauseButton.addItemListener(new ItemListener() {
-			@Override public void itemStateChanged(ItemEvent itemEvent) {
-				m_Running = itemEvent.getStateChange() != ItemEvent.SELECTED;
-			}
-		});
+		pauseButton.addItemListener(itemEvent -> running = itemEvent.getStateChange() != ItemEvent.SELECTED);
 
 		controlPanel.add(pauseButton);
 		controlPanel.add(createSpeedControlButton("+"), BorderLayout.EAST);
@@ -99,31 +94,34 @@ public class Visualizer {
 		frame.setVisible(true);
 
 		final int[] delta = { 0 };
-		new Timer(10, new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-				if (!m_Running) return;
+		new Timer(10, e -> {
+            if (!running) {
+                return;
+            }
 
-				if (delta[0] < speeds[m_TimerSpeedId]) {
-					delta[0] += 10;
-					return;
-				}
-				delta[0] = 0;
+            if (delta[0] < SPEEDS[timerSpeedIndex]) {
+                delta[0] += 10;
+                return;
+            }
+            delta[0] = 0;
 
-				if (!game.done()) game.nextTurn();
-			}
-		}).start();
+            if (!game.done()) {
+                game.nextTurn();
+            }
+        }).start();
 	}
 
 	private Component createSpeedControlButton(final String caption) {
 		JButton control = new JButton(caption);
-		control.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-				if (caption.equals("-") && m_TimerSpeedId < speeds.length - 2)
-					m_TimerSpeedId += 1;
-				if (caption.equals("+") && m_TimerSpeedId > 0)
-					m_TimerSpeedId -= 1;
-			}
-		});
+		control.addActionListener(e -> {
+            if (caption.equals("-") && timerSpeedIndex < SPEEDS.length - 2) {
+                timerSpeedIndex += 1;
+            }
+
+            if (caption.equals("+") && timerSpeedIndex > 0) {
+                timerSpeedIndex -= 1;
+            }
+        });
 		return control;
 	}
 }
