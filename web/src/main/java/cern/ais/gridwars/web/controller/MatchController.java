@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/match")
 public class MatchController {
 
+    // TODO create URL suffix <-> match file mapping store to avoid sync errors...
+
     private static final CacheControl FOREVER_CACHE_CONTROL = CacheControl.maxAge(31556926, TimeUnit.SECONDS).cachePublic();
     private static final String GZIP = "gzip";
 
@@ -107,7 +109,6 @@ public class MatchController {
     private String createLinkForMatchFile(String matchId, MatchFile matchFile) {
         String linkBase = "/match/" + matchId + "/";
 
-        // TODO refactor this here below, as there is repitition further down in the controller that is error prone
         switch (matchFile) {
             case STDOUT:  return linkBase + "stdout";
             case STDERR: return linkBase + "stderr";
@@ -117,11 +118,6 @@ public class MatchController {
         }
     }
 
-    // IMPORTANT: This controller mapping is usually excluded from the Spring security
-    // filter chain because we need to set our custom response headers (e.g. compression).
-    // As a result, there won't be any user security context available in this method!
-    // Normally, we don't need any security context in this method, as we only send the
-    // turn state bytes, which do not contain any sensitive information whatsoever.
     @GetMapping("/{matchId}/data")
     public ResponseEntity<byte[]> matchData(@PathVariable String matchId,
                           @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding) {

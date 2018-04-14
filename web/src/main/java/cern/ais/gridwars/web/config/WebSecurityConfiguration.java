@@ -34,21 +34,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/user/signout").logoutSuccessUrl("/").permitAll();
         // @formatter:on
 
-        // Allow using iFrames from the same origin to support H2 console
+        // Allow using iFrames from the same origin for the H2 console to work
         http.headers().frameOptions().sameOrigin();
 
-        // CSRF protection needs to be disabled for the H2 console
+        // CSRF protection needs to be disabled for the H2 console to work
         http.csrf().ignoringAntMatchers("/admin/h2/**");
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         // Disable security chain for static resources
-        web.ignoring().antMatchers(
-            "/static/**",
-            "**/favicon.ico",
-            "/match/**/data" // there is nothing secret in the match turn data
-        );
+        web.ignoring().antMatchers("/static/**", "**/favicon.ico");
     }
 
     @Override
