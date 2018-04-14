@@ -11,8 +11,10 @@ import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -154,30 +156,25 @@ public class MatchController {
         response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age=31556926");
     }
 
-    // TODO ensure that full caching for the methods below is enabled
-
-    @GetMapping("/{matchId}/stdout")
-    @ResponseBody
-    public String matchStdOut(@PathVariable String matchId, @AuthenticationPrincipal User user) {
-        return getMatchFileTextContent(matchId, user, MatchFile.STDOUT);
+    @GetMapping("/{matchId}/{matchFileName}")
+    public ResponseEntity<String> matchStdOut(@PathVariable String matchId, @PathVariable String matchFileName,
+                                              @AuthenticationPrincipal User user) {
+        MatchFile matchFile = getMatchFileByName(matchFileName.trim());
+        return ResponseEntity.ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            // The match file content will never change, so it can be cached "forever" by the browser
+            .cacheControl(CacheControl.maxAge(31556926, TimeUnit.SECONDS))
+            .body(getMatchFileTextContent(matchId, user, matchFile));
     }
 
-    @GetMapping("/{matchId}/stderr")
-    @ResponseBody
-    public String matchStdErr(@PathVariable String matchId, @AuthenticationPrincipal User user) {
-        return getMatchFileTextContent(matchId, user, MatchFile.STDERR);
-    }
-
-    @GetMapping("/{matchId}/bot_1_output")
-    @ResponseBody
-    public String matchBot1Output(@PathVariable String matchId, @AuthenticationPrincipal User user) {
-        return getMatchFileTextContent(matchId, user, MatchFile.BOT_1_OUTPUT);
-    }
-
-    @GetMapping("/{matchId}/bot_2_output")
-    @ResponseBody
-    public String matchBot2Output(@PathVariable String matchId, @AuthenticationPrincipal User user) {
-        return getMatchFileTextContent(matchId, user, MatchFile.BOT_2_OUTPUT);
+    private MatchFile getMatchFileByName(String matchFileName) {
+        switch (matchFileName) {
+            case "stdout": return MatchFile.STDOUT;
+            case "stderr": return MatchFile.STDERR;
+            case "bot_1_output": return MatchFile.BOT_1_OUTPUT;
+            case "bot_2_output": return MatchFile.BOT_2_OUTPUT;
+            default: throw new NotFoundException();
+        }
     }
 
     private String getMatchFileTextContent(String matchId, User user, MatchFile matchFile) {
