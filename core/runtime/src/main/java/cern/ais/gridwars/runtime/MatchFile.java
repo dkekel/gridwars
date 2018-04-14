@@ -5,11 +5,11 @@ import java.nio.file.Paths;
 
 public enum MatchFile {
 
-    STDOUT("stdout.txt"),
-    STDERR("stderr.txt"),
+    STDOUT("stdout.log"),
+    STDERR("stderr.log"),
     RESULT("result.properties"),
-    BOT_1_OUTPUT("bot_1_output.txt"),
-    BOT_2_OUTPUT("bot_2_output.txt"),
+    BOT_1_OUTPUT("bot1.log"),
+    BOT_2_OUTPUT("bot2.log"),
     TURN_DATA("turns.gz");
 
     final String fileName;

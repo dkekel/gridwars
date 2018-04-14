@@ -15,12 +15,7 @@ import java.util.stream.Stream;
  */
 public class MatchResult {
 
-    public enum Outcome {
-        BOT_1_WON,
-        BOT_2_WON,
-        DRAW,
-        ERROR
-    }
+    public enum Outcome { BOT_1_WON, BOT_2_WON, DRAW, ERROR }
 
     private static final String OUTCOME_KEY = "outcome";
     private static final String TURNS_KEY = "turns";

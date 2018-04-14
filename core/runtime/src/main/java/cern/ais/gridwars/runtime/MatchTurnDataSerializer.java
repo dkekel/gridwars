@@ -31,7 +31,7 @@ public class MatchTurnDataSerializer {
 
             return totalBytesWritten;
         } catch (Exception e) {
-           throw new MatchTurnStateSerializerException("Failed to serialize turn states to file: " + filePath, e);
+           throw new MatchTurnStateSerializerException("Failed to serialize turn data to file: " + filePath, e);
         }
     }
 
@@ -49,7 +49,7 @@ public class MatchTurnDataSerializer {
 
     private Optional<InputStream> deserializeFromFile(String filePath, boolean uncompress) {
         File file = new File(filePath);
-        if (!file.exists() || !file.canRead()) {
+        if (!file.exists() || !file.canRead() || (file.length() == 0)) {
             return Optional.empty();
         }
 
