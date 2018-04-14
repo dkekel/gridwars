@@ -12,18 +12,18 @@
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col" class="text-center" th:text="#{page.matches.status}"></th>
-                    <th scope="col" th:text="#{page.matches.player1}"></th>
-                    <th scope="col" th:text="#{page.matches.player2}"></th>
-                    <th scope="col" th:text="#{page.matches.winner}"></th>
-                    <th scope="col" th:text="#{page.matches.turns}"></th>
+                    <th scope="col"></th>
+                    <th scope="col" class="text-center" th:text="#{page.matches.player1}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.matches.player2}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.matches.winner}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.matches.turns}"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.duration}"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.playedAt}"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="match : ${matches}">
-                    <td class="text-center"><a th:text="${match.status}" th:href="@{'/match/' + ${match.id}}"></a></td>
+                    <td class="text-center"><a th:text="#{page.matches.show}" th:href="@{'/match/' + ${match.id}}"></a></td>
                     <td th:text="${match.bot1.teamBotLabel}"></td>
                     <td th:text="${match.bot2.teamBotLabel}"></td>
                     <td th:text="${match.winnerLabel}"></td>

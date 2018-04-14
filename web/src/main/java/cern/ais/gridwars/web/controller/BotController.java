@@ -46,7 +46,7 @@ public class BotController {
 
         try {
             Bot newBot = botUploadService.uploadNewBot(botJarFile, user, Instant.now());
-            redirectAttributes.addFlashAttribute("success", newBot.getShortBotClassName());
+            redirectAttributes.addFlashAttribute("success", newBot.getName());
         } catch (BotService.BotException bue) {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());
         }

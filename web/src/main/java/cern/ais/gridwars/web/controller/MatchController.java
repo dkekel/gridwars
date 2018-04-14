@@ -89,6 +89,7 @@ public class MatchController {
         return matchService.loadMatch(matchId)
             .map(match ->
                 ModelAndViewBuilder.forPage("match/show")
+                    .addAttribute("match", match)
                     .addAttribute("matchDataUrl", "/match/" + matchId + "/data")
                     .addAttribute("availableFiles", getAvailableMatchFiles(match, user))
                     .toModelAndView()

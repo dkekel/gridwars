@@ -203,6 +203,14 @@ public class Match {
         }
     }
 
+    public boolean isBot1Winner() {
+        return (Status.FINISHED == status) && (Outcome.WIN == outcome);
+    }
+
+    public boolean isBot2Winner() {
+        return (Status.FINISHED == status) && (Outcome.LOSS == outcome);
+    }
+
     public String getWinnerLabel() {
         return getWinner().map(Bot::getTeamBotLabel).orElse("-");
     }

@@ -116,7 +116,7 @@ public class Bot {
     }
 
 
-    public String getShortBotClassName() {
+    public String getName() {
         if ((botClassName != null) && !botClassName.isEmpty()) {
             String[] classNameParts = botClassName.split("\\.");
             return classNameParts[classNameParts.length - 1];
@@ -126,7 +126,7 @@ public class Bot {
     }
 
     public String getTeamBotLabel() {
-        return user.getTeamName() + " (" + getShortBotClassName() + ")";
+        return user.getTeamName() + " (" + getName() + ")";
     }
 
     @Override
