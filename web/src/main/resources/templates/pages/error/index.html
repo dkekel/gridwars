@@ -5,17 +5,11 @@
       layout:decorate="~{layouts/main}">
 <head>
     <title th:text="${errorMsg}"></title>
-
-    <style>
-        .error-container {
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
-    <main layout:fragment="content" class="container error-container">
-        <h1 th:text="'ERROR ' + ${errorCode}"></h1>
-        <p th:text="${errorMsg}" class="alert alert-danger"><</p>
+    <main layout:fragment="content" class="container text-center">
+        <h1 th:text="#{page.error.errorCode(${errorCode})}"></h1>
+        <p th:text="${errorMsg}" class="alert alert-danger"></p>
     </main>
 </body>
 </html>

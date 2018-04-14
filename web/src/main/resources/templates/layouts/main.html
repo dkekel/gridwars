@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title layout:title-pattern="$CONTENT_TITLE $LAYOUT_TITLE">- GridWars</title>
+    <title layout:title-pattern="$CONTENT_TITLE $LAYOUT_TITLE" th:text="#{layout.main.titleSuffix}"></title>
 
     <link th:href="@{/static/favicon.ico}" rel="icon" type="image/x-icon"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
@@ -23,40 +23,43 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" th:href="@{/}">
             <img th:src="@{/static/img/cern_logo.png}" width="30" height="30" alt="">
-            <span class="align-baseline">CERN GridWars</span>
+            <span th:text="#{layout.main.brandLabel}" class="align-baseline"></span>
         </a>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav mr-auto">
-                <li th:if="${currentUser}" class="nav-item">
-                    <a class="nav-link" th:href="@{/match/scores}">Scoreboard</a>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul th:if="${currentUser}" class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:text="#{layout.main.gettingStarted}"></a>
                 </li>
-                <li th:if="${currentUser}" class="nav-item">
-                    <a class="nav-link" th:href="@{/match/list}">Matches</a>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/match/scores}" th:text="#{layout.main.scores}"></a>
                 </li>
-                <li th:if="${currentUser}" class="nav-item">
-                    <a class="nav-link" th:href="@{/bot/upload}">Bot Upload</a>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/match/list}" th:text="#{layout.main.matches}"></a>
                 </li>
-                <li th:if="${currentUser != null && currentUser.admin}" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="http://example.com" id="adminDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
-                    <div class="dropdown-menu" aria-labelledby="adminDropdown">
-                        <a class="dropdown-item" th:href="@{/admin/h2}" target="_blank">H2 Console</a>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/bot/upload}" th:text="#{layout.main.bot}"></a>
+                </li>
+                <li th:if="${currentUser.admin}" class="nav-item dropdown">
+                    <a id="adminDropdown" th:text="#{layout.main.admin}" class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"></a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/admin/h2}" th:text="#{layout.main.admin.h2}" target="_blank"></a>
                     </div>
                 </li>
             </ul>
 
-            <div th:unless="${currentUser}">
+            <div th:unless="${currentUser}" class="ml-auto">
                 <a th:href="@{/user/signin}" th:text="#{layout.main.signin}" target="_self" class="navbar-text"></a>
                 <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" target="_self" class="navbar-text ml-3"></a>
             </div>
 
-            <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0">
+            <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0 ml-auto">
                 <a href="#" class="navbar-text">
-                    <span th:text="${currentUser.username}"></span><span th:if="${currentUser.admin}" class="ml-1">(admin)</span>
+                    <span th:text="${currentUser.username}"></span><span th:if="${currentUser.admin}" th:text="#{layout.main.userAdminSuffix}" class="ml-1"></span>
                 </a>
                 <a href="javascript:{}" th:text="#{layout.main.signout}" onclick="document.getElementById('signOutForm').submit();" class="navbar-text ml-3"></a>
             </form>
