@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.config;
 
+import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http.authorizeRequests()
-            .antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/admin/**").hasRole(User.ADMIN)
             .antMatchers("/bot/**").fullyAuthenticated()
             .antMatchers("/match/**").fullyAuthenticated()
             .antMatchers("/**").permitAll()

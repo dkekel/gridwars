@@ -69,7 +69,6 @@ public class UserController {
         newUser.setTeamName(trim(newUser.getTeamName()));
         newUser.setEmail(trim(newUser.getEmail()));
         newUser.setAdmin(false);
-        newUser.setEnabled(true); // TODO disable by default and send confirmation mail
     }
 
     private String trim(String value) {

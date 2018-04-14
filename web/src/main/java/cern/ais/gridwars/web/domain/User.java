@@ -23,8 +23,10 @@ import java.util.Objects;
 @Entity
 public class User implements UserDetails {
 
-    public static final String ROLE_USER = "ROLE_USER";
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String USER = "USER";
+    public static final String ADMIN = "ADMIN";
+    public static final String ROLE_USER = "ROLE_" + USER;
+    public static final String ROLE_ADMIN = "ROLE_" + ADMIN;
     public static final GrantedAuthority ROLE_USER_AUTHORITY = new SimpleGrantedAuthority(ROLE_USER);
     public static final GrantedAuthority ROLE_ADMIN_AUTHORITY = new SimpleGrantedAuthority(ROLE_ADMIN);
 
@@ -199,7 +201,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return enabled && (confirmed != null);
     }
 
     @Override

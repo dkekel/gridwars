@@ -94,9 +94,9 @@ public class UserService implements UserDetailsService {
             .setCreated(Instant.now())
             .setTeamName(user.getTeamName())
             .setAdmin(user.isAdmin())
-            .setEnabled(user.isEnabled())
+            .setEnabled(true) // TODO disable by default and send confirmation mail
             .setConfirmationId(DomainUtils.generateId())
-            .setConfirmed(null);
+            .setConfirmed(Instant.now()); // TODO should be set to null (if current user is not an admin) and must be confirmed by the user...
 
         userRepository.saveAndFlush(newUser);
         return newUser;
