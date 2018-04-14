@@ -9,7 +9,6 @@ import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.MatchFileService;
 import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -38,16 +37,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/match")
 public class MatchController {
 
-    public static class MatchFileInfo {
-        public final String name;
-        public final String link;
-
-        public MatchFileInfo(String name, String link) {
-            this.name = name;
-            this.link = link;
-        }
-    }
-
+    private static final CacheControl FOREVER_CACHE_CONTROL = CacheControl.maxAge(31556926, TimeUnit.SECONDS).cachePublic();
     private static final String GZIP = "gzip";
 
     private final MatchTurnDataSerializer serializer = new MatchTurnDataSerializer();
@@ -122,38 +112,46 @@ public class MatchController {
     // Normally, we don't need any security context in this method, as we only send the
     // turn state bytes, which do not contain any sensitive information whatsoever.
     @GetMapping("/{matchId}/data")
-    public void matchData(@PathVariable String matchId,
-                          @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding,
-                          HttpServletResponse response) throws IOException {
-        boolean acceptsGzipEncoding = acceptsGzipEncoding(acceptEncoding);
-        String matchTurnFilePath = matchFileService.createMatchTurnDataFilePath(matchId);
+    public ResponseEntity<byte[]> matchData(@PathVariable String matchId,
+                          @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding) {
+        boolean acceptsGzipCompression = acceptsGzipEncoding(acceptEncoding);
 
-        Optional<InputStream> data = acceptsGzipEncoding
-            ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
-            : serializer.deserializeUncompressedFromFile(matchTurnFilePath);
-
-        if (data.isPresent()) {
-            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
-            if (acceptsGzipEncoding) {
-                response.setHeader(HttpHeaders.CONTENT_ENCODING, GZIP);
-            }
-
-            // The turn data of a match will never change, so it can be cached "forever" by the browser
-            addCacheForeverHeader(response);
-
-            IOUtils.copy(data.get(), response.getOutputStream());
-        } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
+        return getDeserializedMatchData(matchId, acceptsGzipCompression)
+            .map(dataStream -> createMatchDataResponse(dataStream, acceptsGzipCompression))
+            .orElseGet(this::createNotFoundMatchDataResponse);
     }
 
     private boolean acceptsGzipEncoding(String acceptEncoding) {
         return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains(GZIP);
     }
 
-    private void addCacheForeverHeader(HttpServletResponse response) {
-        response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age=31556926");
+    private Optional<InputStream> getDeserializedMatchData(String matchId, boolean acceptsGzipCompression) {
+        String matchTurnFilePath = matchFileService.createMatchTurnDataFilePath(matchId);
+
+        return acceptsGzipCompression
+            ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
+            : serializer.deserializeUncompressedFromFile(matchTurnFilePath);
+    }
+
+    private ResponseEntity<byte[]> createMatchDataResponse(InputStream data, boolean acceptsGzipCompression) {
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            // The turn data of a match will never change, so it can be cached "forever" by the browser.
+            .cacheControl(FOREVER_CACHE_CONTROL);
+
+        if (acceptsGzipCompression) {
+            builder.header(HttpHeaders.CONTENT_ENCODING, GZIP);
+        }
+
+        try (InputStream dataStream = data) { // Ensures that the stream will be closed afterwards!
+            return builder.body(StreamUtils.copyToByteArray(dataStream));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ResponseEntity<byte[]> createNotFoundMatchDataResponse() {
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{matchId}/{matchFileName}")
@@ -162,8 +160,8 @@ public class MatchController {
         MatchFile matchFile = getMatchFileByName(matchFileName.trim());
         return ResponseEntity.ok()
             .contentType(MediaType.TEXT_PLAIN)
-            // The match file content will never change, so it can be cached "forever" by the browser
-            .cacheControl(CacheControl.maxAge(31556926, TimeUnit.SECONDS))
+            // The match file content will never change, so it can be cached "forever" by the browser.
+            .cacheControl(FOREVER_CACHE_CONTROL)
             .body(getMatchFileTextContent(matchId, user, matchFile));
     }
 
@@ -189,5 +187,15 @@ public class MatchController {
             throw new AccessDeniedException();
         }
         return match;
+    }
+
+    public static class MatchFileInfo {
+        public final String name;
+        public final String link;
+
+        MatchFileInfo(String name, String link) {
+            this.name = name;
+            this.link = link;
+        }
     }
 }
