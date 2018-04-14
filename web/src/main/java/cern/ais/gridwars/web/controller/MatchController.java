@@ -100,8 +100,8 @@ public class MatchController {
         switch (matchFile) {
             case STDOUT:  return linkBase + "stdout";
             case STDERR: return linkBase + "stderr";
-            case BOT_1_OUTPUT: return linkBase + "bot_1_output";
-            case BOT_2_OUTPUT: return linkBase + "bot_2_output";
+            case BOT_1_OUTPUT: return linkBase + "bot1";
+            case BOT_2_OUTPUT: return linkBase + "bot2";
             default: return ""; // Should not happen
         }
     }
@@ -169,8 +169,8 @@ public class MatchController {
         switch (matchFileName) {
             case "stdout": return MatchFile.STDOUT;
             case "stderr": return MatchFile.STDERR;
-            case "bot_1_output": return MatchFile.BOT_1_OUTPUT;
-            case "bot_2_output": return MatchFile.BOT_2_OUTPUT;
+            case "bot1": return MatchFile.BOT_1_OUTPUT;
+            case "bot2": return MatchFile.BOT_2_OUTPUT;
             default: throw new NotFoundException();
         }
     }
