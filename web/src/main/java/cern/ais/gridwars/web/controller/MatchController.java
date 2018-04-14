@@ -27,8 +27,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -39,8 +42,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/match")
 public class MatchController {
 
-    // TODO create URL suffix <-> match file mapping store to avoid sync errors...
-
+    private static final Map<MatchFile, String> MATCH_FILE_URL_SUFFIX_MAPPING =
+        Collections.unmodifiableMap(new HashMap<MatchFile, String>() {
+            {
+                put(MatchFile.STDOUT, "stdout");
+                put(MatchFile.STDERR, "stderr");
+                put(MatchFile.BOT_1_OUTPUT, "bot1");
+                put(MatchFile.BOT_2_OUTPUT, "bot2");
+            }
+        });
     private static final CacheControl FOREVER_CACHE_CONTROL = CacheControl.maxAge(31556926, TimeUnit.SECONDS).cachePublic();
     private static final String GZIP = "gzip";
 
@@ -107,15 +117,7 @@ public class MatchController {
     }
 
     private String createLinkForMatchFile(String matchId, MatchFile matchFile) {
-        String linkBase = "/match/" + matchId + "/";
-
-        switch (matchFile) {
-            case STDOUT:  return linkBase + "stdout";
-            case STDERR: return linkBase + "stderr";
-            case BOT_1_OUTPUT: return linkBase + "bot1";
-            case BOT_2_OUTPUT: return linkBase + "bot2";
-            default: return ""; // Should not happen
-        }
+        return "/match/" + matchId + "/" + MATCH_FILE_URL_SUFFIX_MAPPING.get(matchFile);
     }
 
     @GetMapping("/{matchId}/data")
@@ -161,10 +163,11 @@ public class MatchController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/{matchId}/{matchFileName}")
-    public ResponseEntity<String> matchStdOut(@PathVariable String matchId, @PathVariable String matchFileName,
+    @GetMapping("/{matchId}/{matchFileUrlSuffix}")
+    public ResponseEntity<String> matchStdOut(@PathVariable String matchId, @PathVariable String matchFileUrlSuffix,
                                               @AuthenticationPrincipal User user) {
-        MatchFile matchFile = getMatchFileByName(matchFileName.trim());
+        MatchFile matchFile = getMatchFileByUrlSuffix(matchFileUrlSuffix.trim());
+
         return ResponseEntity.ok()
             .contentType(MediaType.TEXT_PLAIN)
             // The match file content will never change, so it can be cached "forever" by the browser.
@@ -172,14 +175,12 @@ public class MatchController {
             .body(getMatchFileTextContent(matchId, user, matchFile));
     }
 
-    private MatchFile getMatchFileByName(String matchFileName) {
-        switch (matchFileName) {
-            case "stdout": return MatchFile.STDOUT;
-            case "stderr": return MatchFile.STDERR;
-            case "bot1": return MatchFile.BOT_1_OUTPUT;
-            case "bot2": return MatchFile.BOT_2_OUTPUT;
-            default: throw new NotFoundException();
-        }
+    private MatchFile getMatchFileByUrlSuffix(String matchFileName) {
+        return MATCH_FILE_URL_SUFFIX_MAPPING.entrySet().stream()
+            .filter(entry -> entry.getValue().equals(matchFileName))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElseThrow(NotFoundException::new);
     }
 
     private String getMatchFileTextContent(String matchId, User user, MatchFile matchFile) {
