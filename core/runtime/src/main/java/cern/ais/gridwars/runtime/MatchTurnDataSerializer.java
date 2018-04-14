@@ -13,7 +13,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 
-public class MatchTurnStateSerializer {
+public class MatchTurnDataSerializer {
 
     // See: cern.ais.gridwars.Game:325
     static final int BYTES_PER_TURN_STATE = GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE * 4;

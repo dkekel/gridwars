@@ -26,7 +26,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/bot/**").fullyAuthenticated()
             .antMatchers("/match/**").fullyAuthenticated()
-            .antMatchers("/user/edit").fullyAuthenticated()
             .antMatchers("/**").permitAll()
             .and()
                 .formLogin().loginPage("/user/signin").permitAll()
@@ -47,7 +46,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(
             "/static/**",
             "**/favicon.ico",
-            "/match/data/**" // there is nothing secret in the match turn data
+            "/match/**/data" // there is nothing secret in the match turn data
         );
     }
 

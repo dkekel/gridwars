@@ -1,12 +1,12 @@
 package cern.ais.gridwars.web.config;
 
-import cern.ais.gridwars.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import java.nio.file.Paths;
 
 // TODO dump all config values to the logs in PostConstruct to see what options apply
 
@@ -43,9 +43,9 @@ public class GridWarsProperties {
         private String runtimeDir;
 
         protected void initDirs() {
-            botJarDir = FileUtils.joinFilePathsToSinglePath(baseWorkDir, "bots");
-            matchesDir = FileUtils.joinFilePathsToSinglePath(baseWorkDir, "matches");
-            runtimeDir = FileUtils.joinFilePathsToSinglePath(baseWorkDir, "runtime");
+            botJarDir = Paths.get(baseWorkDir, "bots").toString();
+            matchesDir = Paths.get(baseWorkDir, "matches").toString();
+            runtimeDir = Paths.get(baseWorkDir, "runtime").toString();
 
             if (LOG.isInfoEnabled()) {
                 LOG.info("Base work dir: {}", baseWorkDir);

@@ -9,7 +9,8 @@
 
     <style>
         #gameView,
-        #errorLabel {
+        #errorLabel,
+        .available-files-container {
             text-align: center;
         }
 
@@ -19,29 +20,37 @@
     </style>
 </head>
 <body th:onload="|matchViewer.init('${matchDataUrl}')|">
-<main layout:fragment="content" class="container">
-    <div id="errorLabel" class="alert alert-danger" role="alert" hidden>ERROR: the match data could not be loaded</div>
+    <main layout:fragment="content" class="container">
+        <div id="errorLabel" class="alert alert-danger" role="alert" hidden>ERROR: the match data could not be loaded</div>
 
-    <div id="gameView" hidden>
-        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        <div id="gameView" hidden>
+            <canvas id="gameCanvas" width="600" height="600"></canvas>
+            <canvas id="preCanvas" hidden></canvas>
 
-        <div>
-            <span>Turn: <span id="currentTurn"></span></span><span class="ml-3">Speed: <span id="speed"></span>x</span>
+            <div>
+                <span>Turn: <span id="currentTurn"></span></span><span class="ml-3">Speed: <span id="speed"></span>x</span>
+            </div>
+
+            <div>
+                <button onclick="matchViewer.goToStart();" title="Go to start">|&lt;</button>
+                <button onclick="matchViewer.goToPreviousTurn();" title="Go to previous turn">&lt;</button>
+                <button onclick="matchViewer.togglePlay();" title="Toggle play/pause">Play / Pause</button>
+                <button onclick="matchViewer.goToNextTurn();" title="Go to next turn">&gt;</button>
+                <button onclick="matchViewer.goToEnd();" title="Go to end">&gt;|</button>
+                <button onclick="matchViewer.decreaseSpeed();" title="Decrease speed" class="ml-3">&lt;&lt;</button>
+                <button onclick="matchViewer.resetSpeed();" title="Reset speed">1x</button>
+                <button onclick="matchViewer.increaseSpeed();" title="Increase speed">&gt;&gt;</button>
+            </div>
         </div>
 
-        <div>
-            <button onclick="matchViewer.goToStart();" title="Go to start">|&lt;</button>
-            <button onclick="matchViewer.goToPreviousTurn();" title="Go to previous turn">&lt;</button>
-            <button onclick="matchViewer.togglePlay();" title="Toggle play/pause">Play / Pause</button>
-            <button onclick="matchViewer.goToNextTurn();" title="Go to next turn">&gt;</button>
-            <button onclick="matchViewer.goToEnd();" title="Go to end">&gt;|</button>
-            <button onclick="matchViewer.decreaseSpeed();" title="Decrease speed" class="ml-3">&lt;&lt;</button>
-            <button onclick="matchViewer.resetSpeed();" title="Reset speed">1x</button>
-            <button onclick="matchViewer.increaseSpeed();" title="Increase speed">&gt;&gt;</button>
+        <div class="available-files-container mt-3">
+            <div th:unless="${availableFiles.isEmpty()}" class="btn-group dropright">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">Available Match Files</button>
+                <div class="dropdown-menu">
+                    <a th:each="file : ${availableFiles}" th:href="${file.link}" th:text="${file.name}" target="_blank" class="dropdown-item"></a>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <canvas id="preCanvas" hidden></canvas>
-</main>
+    </main>
 </body>
 </html>

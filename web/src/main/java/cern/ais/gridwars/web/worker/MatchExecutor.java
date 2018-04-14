@@ -1,6 +1,6 @@
 package cern.ais.gridwars.web.worker;
 
-
+import cern.ais.gridwars.runtime.MatchFile;
 import cern.ais.gridwars.runtime.MatchResult;
 import cern.ais.gridwars.runtime.MatchRuntimeConstants;
 import cern.ais.gridwars.web.config.GridWarsProperties;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -20,9 +21,6 @@ import java.util.stream.Stream;
 
 
 class MatchExecutor {
-
-    private static final String STDOUT_FILE_NAME = "stdout.txt";
-    private static final String STDERR_FILE_NAME = "stderr.txt";
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final GridWarsProperties gridWarsProperties;
@@ -48,47 +46,35 @@ class MatchExecutor {
     }
 
     private void createMatchWorkDir(Match match) {
-        String matchDirPath = FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getMatchesDir(),
-                match.getId());
-        matchDir = new File(matchDirPath);
+        matchDir = Paths.get(gridWarsProperties.getDirectories().getMatchesDir(), match.getId()).toFile();
 
         if (!matchDir.exists()) {
             if (!matchDir.mkdir()) {
-                throw new MatchExecutionException("Could not create match dir: " + matchDirPath);
+                throw new MatchExecutionException("Could not create match dir: " + matchDir.getAbsolutePath());
             }
         } else {
             if (!matchDir.isDirectory()) {
-                throw new MatchExecutionException("Match dir file exist, but is not a directory: " + matchDirPath);
+                throw new MatchExecutionException("Match dir file exist, but is not a directory: " + matchDir.getAbsolutePath());
             }
 
-            clearDirectory(matchDir);
-        }
-    }
-
-    private void clearDirectory(File dir) {
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                FileUtils.deleteFile(file);
-            }
+            FileUtils.clearDirectory(matchDir);
         }
     }
 
     private void createOutputFiles() {
-        stdOutFile = createOutputFile(STDOUT_FILE_NAME);
-        stdErrFile = createOutputFile(STDERR_FILE_NAME);
+        stdOutFile = createOutputFile(MatchFile.STDOUT);
+        stdErrFile = createOutputFile(MatchFile.STDERR);
     }
 
-    private File createOutputFile(String fileName) {
-        String outputFilePath = FileUtils.joinFilePathsToSinglePath(matchDir.getAbsolutePath(), fileName);
-        File outputFile = new File(outputFilePath);
+    private File createOutputFile(MatchFile matchFile) {
+        File outputFile = matchFile.toFile(matchDir);
 
         try {
             if (!outputFile.createNewFile()) {
-                throw new MatchExecutionException("Failed to create output file: " + outputFilePath);
+                throw new MatchExecutionException("Failed to create output file: " + outputFile.getAbsolutePath());
             }
         } catch (IOException e) {
-            throw new MatchExecutionException("Failed to create output file: " + outputFilePath, e);
+            throw new MatchExecutionException("Failed to create output file: " + outputFile.getAbsolutePath(), e);
         }
 
         return outputFile;
@@ -110,8 +96,8 @@ class MatchExecutor {
         if (LOG.isDebugEnabled()) {
             LOG.debug(
                 "Starting match process for match: {}" +
-                "\n\tprocess working folder: {}" +
-                "\n\tprocess args: {}",
+                "\n\tProcess working folder: {}" +
+                "\n\tProcess args: {}",
                 match.getId(),
                 matchDir.getAbsolutePath(),
                 jvmProcessArguments.stream().collect(Collectors.joining(" "))
@@ -211,21 +197,17 @@ class MatchExecutor {
     }
 
     private String determineBotJarPath(Bot bot) {
-        return FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName());
+        return Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), bot.getJarFileName()).toString();
     }
 
     private MatchResult createSuccessfulExecutionMatchResult() {
-        String matchResultFilePath = getMatchResultFilePath();
+        String matchResultFilePath = MatchFile.RESULT.toAbsolutePath(matchDir);
         try {
             return MatchResult.loadFromFile(matchResultFilePath);
         } catch (Exception e) {
             LOG.error("Could not load match result file: {}", matchResultFilePath, e);
             return createErrorMatchResult("Failed to load match result file: " + e.getMessage());
         }
-    }
-
-    private String getMatchResultFilePath() {
-        return FileUtils.joinFilePathsToSinglePath(matchDir.getAbsolutePath(), MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
     }
 
     private MatchResult createAbnormalExitCodeMatchResult(int exitCode) {

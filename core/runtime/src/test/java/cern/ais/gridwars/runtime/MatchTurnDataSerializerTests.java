@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class MatchTurnStateSerializerTests {
+public class MatchTurnDataSerializerTests {
 
     @Test
     public void serializationAndDeserializationShouldWork() throws IOException {
         final File turnsFile = createTurnsTmpFile();
         final List<byte[]> expectedTurnStates = generateTestTurnData();
-        final MatchTurnStateSerializer serializer = new MatchTurnStateSerializer();
+        final MatchTurnDataSerializer serializer = new MatchTurnDataSerializer();
         final int expectedBytesCount = serializer.serializeToFile(expectedTurnStates, turnsFile.getAbsolutePath());
         final Optional<InputStream> deserializedTurnStates = serializer.deserializeUncompressedFromFile(turnsFile.getAbsolutePath());
 
@@ -37,7 +37,7 @@ public class MatchTurnStateSerializerTests {
         final List<byte[]> turnStates = new LinkedList<>();
 
         for (int i = 0; i < 10; i++) {
-            byte[] turnState = new byte[MatchTurnStateSerializer.BYTES_PER_TURN_STATE];
+            byte[] turnState = new byte[MatchTurnDataSerializer.BYTES_PER_TURN_STATE];
             random.nextBytes(turnState);
             turnStates.add(turnState);
         }

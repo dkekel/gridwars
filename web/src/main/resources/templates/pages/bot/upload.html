@@ -14,6 +14,7 @@
         <div th:if="${error}" th:text="#{page.upload.error(${error})}" class="alert alert-danger" role="alert"></div>
         <div th:if="${success}" th:text="#{page.upload.success(${success})}" class="alert alert-success" role="alert"></div>
 
+        <!-- TODO improve this with a nice Bootstrap input form: https://getbootstrap.com/docs/4.0/components/input-group/ -->
         <form th:action="@{/bot/upload}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label th:text="#{page.upload.jarFile}" for="botJarFile"></label>

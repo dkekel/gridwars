@@ -37,7 +37,7 @@ public class MatchRuntime {
     private static final long MEGA_BYTE_FACTOR = 1024 * 1024;
 
     private final BotClassLoader botClassLoader = new BotClassLoader();
-    private final MatchTurnStateSerializer matchTurnStateSerializer = new MatchTurnStateSerializer();
+    private final MatchTurnDataSerializer matchTurnDataSerializer = new MatchTurnDataSerializer();
     private final MatchResult matchResult = new MatchResult();
     private final List<Player> players = new ArrayList<>(2);
     private final List<byte[]> turnStates = new LinkedList<>();
@@ -136,8 +136,8 @@ public class MatchRuntime {
         players.clear();
         turnStates.clear();
 
-        players.add(createPlayer(0, bot1, MatchRuntimeConstants.BOT_1_OUTPUT_FILE_NAME));
-        players.add(createPlayer(1, bot2, MatchRuntimeConstants.BOT_2_OUTPUT_FILE_NAME));
+        players.add(createPlayer(0, bot1, MatchFile.BOT_1_OUTPUT.fileName));
+        players.add(createPlayer(1, bot2, MatchFile.BOT_2_OUTPUT.fileName));
 
         Game game = new Game(players, (player, turn, movementCommands, binaryGameStatus) -> {
             turnStates.add(binaryGameStatus.array());
@@ -192,14 +192,14 @@ public class MatchRuntime {
     }
 
     private void persistTurnStates() {
-        info("Persisting turn states data of size [mb]: " + matchTurnStateSerializer.calculateTurnStatesSizeInMb(turnStates.size()));
+        info("Persisting turn states data of size [mb]: " + matchTurnDataSerializer.calculateTurnStatesSizeInMb(turnStates.size()));
         long start = System.currentTimeMillis();
-        matchTurnStateSerializer.serializeToFile(turnStates, MatchRuntimeConstants.MATCH_TURNS_PAYLOAD_FILE_NAME);
+        matchTurnDataSerializer.serializeToFile(turnStates, MatchFile.TURN_DATA.fileName);
         info("Persisting turn states data took [ms]: " + (System.currentTimeMillis() - start));
     }
 
     private void persistMatchResult() {
-        matchResult.storeToFile(MatchRuntimeConstants.MATCH_RESULT_FILE_NAME);
+        matchResult.storeToFile(MatchFile.RESULT.fileName);
     }
 
     private void logMatchResult() {

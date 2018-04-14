@@ -37,7 +37,7 @@ public class BotController {
     }
 
     @PostMapping("/upload")
-    public ModelAndView doUpload(@RequestParam("botJarFile") MultipartFile botJarFile,
+    public ModelAndView doUpload(@RequestParam MultipartFile botJarFile,
                                  RedirectAttributes redirectAttributes,
                                  @AuthenticationPrincipal User user) {
         LOG.debug("Received bot jar - name: {}, original name: {}, content type: {}, size: {}, upload user: {}",

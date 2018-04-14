@@ -3,13 +3,13 @@ package cern.ais.gridwars.web.config;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.*;
-import cern.ais.gridwars.web.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.Instant;
 
 
@@ -113,6 +113,6 @@ public class DevConfiguration {
     }
 
     private File getBotFile(String botJarFileName) {
-        return new File(FileUtils.joinFilePathsToSinglePath(gridWarsProperties.getDirectories().getBotJarDir(), botJarFileName));
+        return Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), botJarFileName).toFile();
     }
 }

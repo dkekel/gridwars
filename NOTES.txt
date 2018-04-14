@@ -9,13 +9,12 @@ User registration:
 - Add a registration password that will be announced in the presentation and add it to the sign-up form
 
 Bot upload:
-- Modify GlobalErrorController to show better message when upload size is too big
-    - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 - Don't show a 500 error page when something goes south, but rather a error message in the upload form
-- Create a hash fingerprint of the uploaded file and store it, just to see who uses the same jar file...
 
 Error handling:
 - Do not render error html pages on ajax request errors in controller methods
+- Modify GlobalErrorController to show better message when upload size is too big
+    - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 
 Match runtime process:
 - How to disable reflection?
@@ -28,8 +27,6 @@ Web access log:
 
 Mailing:
 - Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
-- create an e-group and add the external e-mail addresses by hand in order to send e-mails on behalf of grid.wars
-    - Mails can be sent and received using OWA and the service account: https://mmm.cern.ch/owa/
 
 API & Impl:
 - Clean up and reformat code
@@ -45,7 +42,13 @@ Emulator:
 - Rename "Visualizer" into "Emulator" and put it into its own module
 - Create a new example/starter module that will be downloadable
 
+DB:
+- Check how to use a file for H2 db
+- add a password when using in production file mode
+
 UI:
+- Create a CERN CA signed certificate that can be used for HTTPS
+- Test if the interface appears to be save from injection and XSS attacks
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 - Add a footer
 
@@ -72,6 +75,7 @@ Functionality that I can avoid to create:
 Info:
 ========================================================================================================================
 - Service account: gridwars Fiba-Raxi
+- Egroups for participants: https://e-groups.cern.ch/e-groups/Egroup.do?egroupName=gridwars-2018&tab=3
 
 
 GridWars Machine:
