@@ -27,7 +27,15 @@ public class MailService {
     }
 
     public void sendMail(MailBuilder mailBuilder) {
-        doSend(createMailMessage(mailBuilder));
+        if (mailSendingEnabled()) {
+            doSend(createMailMessage(mailBuilder));
+        } else {
+            LOG.debug("E-mail sending is disabled, discarding mail with subject: " + mailBuilder.getSubject());
+        }
+    }
+
+    private boolean mailSendingEnabled() {
+        return gridWarsProperties.getMail().getEnabled();
     }
 
     private SimpleMailMessage createMailMessage(MailBuilder mailBuilder) {

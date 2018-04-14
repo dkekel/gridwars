@@ -136,8 +136,18 @@ public class GridWarsProperties {
     }
 
     public class Mail {
+        private Boolean enabled;
         private String from;
         private String bcc;
+
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        public Mail setEnabled(Boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
 
         public String getFrom() {
             return from;

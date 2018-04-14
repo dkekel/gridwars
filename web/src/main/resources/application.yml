@@ -11,6 +11,7 @@ gridwars:
         workerHeapSize: 256m
         executionTimeoutSeconds: 70 # TODO adjust the value below to a more realistic value
     mail:
+        enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bcc: 'benjamin.wolff@cern.ch'
 
