@@ -5,17 +5,19 @@ import java.nio.file.Paths;
 
 public enum MatchFile {
 
-    STDOUT("stdout.log"),
-    STDERR("stderr.log"),
-    RESULT("result.properties"),
-    BOT_1_OUTPUT("bot1.log"),
-    BOT_2_OUTPUT("bot2.log"),
-    TURN_DATA("turns.gz");
+    STDOUT("stdout.log", "Standard Output"),
+    STDERR("stderr.log", "Error Output"),
+    RESULT("result.properties", "Result Properties"),
+    BOT_1_OUTPUT("bot1.log", "Bot 1 Output"),
+    BOT_2_OUTPUT("bot2.log", "Bot 2 Output"),
+    TURN_DATA("turns.gz", "Turn Data");
 
-    final String fileName;
+    public final String fileName;
+    public final String description;
 
-    MatchFile(String fileName) {
+    MatchFile(String fileName, String description) {
         this.fileName = fileName;
+        this.description = description;
     }
 
     public File toFile(String baseDir) {

@@ -103,17 +103,7 @@ public class MatchController {
     }
 
     private MatchFileInfo toMatchFileInfo(String matchId, MatchFile matchFile) {
-        return new MatchFileInfo(getDescriptionOf(matchFile), createLinkForMatchFile(matchId, matchFile));
-    }
-
-    private String getDescriptionOf(MatchFile matchFile) {
-        switch (matchFile) {
-            case STDOUT: return "Standard Output";
-            case STDERR: return "Error Output";
-            case BOT_1_OUTPUT: return "Bot 1 Output";
-            case BOT_2_OUTPUT: return "Bot 2 Output";
-            default: return ""; // Should not happen
-        }
+        return new MatchFileInfo(matchFile.description, createLinkForMatchFile(matchId, matchFile));
     }
 
     private String createLinkForMatchFile(String matchId, MatchFile matchFile) {
