@@ -100,15 +100,8 @@ public class Game
     }
   }
 
-  private void shufflePlayerList()
-  {
-    // Random shuffle
-    Collections.shuffle(playerList);
-  }
-
   public void startUp()
   {
-    shufflePlayerList();
     for (Player player : playerList)
     {
       // Initialize player starting cell
