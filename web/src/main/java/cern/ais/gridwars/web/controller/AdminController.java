@@ -26,6 +26,8 @@ public class AdminController {
     public ModelAndView workerStatus() {
         return ModelAndViewBuilder.forPage("admin/worker")
             .addAttribute("workerStatuses", matchWorkerService.getMatchWorkerStatuses())
+            .addAttribute("activeWorkerThreads", matchWorkerService.getActiveWorkerThreads())
+            .addAttribute("maxWorkerThreads", matchWorkerService.getMaxWorkerThreads())
             .toModelAndView();
     }
 

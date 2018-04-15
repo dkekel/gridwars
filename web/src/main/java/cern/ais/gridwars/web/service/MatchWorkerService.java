@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -56,6 +57,14 @@ public class MatchWorkerService {
 
     public List<MatchWorkerStatus> getMatchWorkerStatuses() {
         return matchWorkers.stream().map(MatchWorkerStatus::fromMatchWorker).collect(Collectors.toList());
+    }
+
+    public int getMaxWorkerThreads() {
+        return ((ThreadPoolTaskExecutor) taskExecutor).getMaxPoolSize();
+    }
+
+    public int getActiveWorkerThreads() {
+        return ((ThreadPoolTaskExecutor) taskExecutor).getActiveCount();
     }
 
     @PostConstruct

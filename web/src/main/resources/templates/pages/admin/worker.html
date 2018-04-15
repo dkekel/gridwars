@@ -56,6 +56,10 @@
             <button type="submit" th:text="#{page.admin.worker.stop}" class="btn btn-danger"></button>
         </form>
     </div>
+
+    <div class="text-center mt-2">
+        <span class="text-muted font-italic">Active worker threads: <span th:text="${activeWorkerThreads} + ' / ' + ${maxWorkerThreads}"></span></span>
+    </div>
 </main>
 </body>
 </html>
