@@ -26,6 +26,7 @@ public class MatchService {
     );
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Random random = new Random();
     private final MatchRepository matchRepository;
     private final BotService botService;
     private final GridWarsProperties gridWarsProperties;
@@ -49,7 +50,14 @@ public class MatchService {
         int numberOfMatches = gridWarsProperties.getMatches().getMatchCountPerOpponent();
 
         for (int n = 0; n < numberOfMatches; n++) {
-            createSingleMatch(bot1, bot2);
+            // When generating the matches, shuffle around bot 1 and 2 to introduce a bit more
+            // randomness and thus fairness. Otherwise, one bot will always get the first turn,
+            // which may have a small influence on the result.
+            if (random.nextInt() % 2 == 0) {
+                createSingleMatch(bot1, bot2);
+            } else {
+                createSingleMatch(bot2, bot1);
+            }
         }
 
         matchRepository.flush();
