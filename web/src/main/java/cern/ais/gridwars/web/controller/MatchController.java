@@ -84,14 +84,21 @@ public class MatchController {
     @GetMapping("/{matchId}")
     public ModelAndView show(@PathVariable String matchId, @AuthenticationPrincipal User user) {
         return matchService.getMatchById(matchId)
-            .map(match ->
-                ModelAndViewBuilder.forPage("match/show")
-                    .addAttribute("match", match)
-                    .addAttribute("matchDataUrl", "/match/" + matchId + "/data")
-                    .addAttribute("availableFiles", getAvailableMatchFiles(match, user))
-                    .toModelAndView()
-            )
+            .map(match -> createShowMatchResponse(match, user))
             .orElseThrow(NotFoundException::new);
+    }
+
+    private ModelAndView createShowMatchResponse(Match match, User user) {
+        ModelAndViewBuilder mavBuilder = ModelAndViewBuilder.forPage("match/show")
+            .addAttribute("match", match)
+            .addAttribute("matchDataUrl", "/match/" + match.getId() + "/data")
+            .addAttribute("availableFiles", getAvailableMatchFiles(match, user));
+
+        if (match.isFailed()) {
+            mavBuilder.addAttribute("error", match.getFailReason());
+        }
+
+        return mavBuilder.toModelAndView();
     }
 
     private List<MatchFileInfo> getAvailableMatchFiles(Match match, User user) {

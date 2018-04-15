@@ -25,7 +25,7 @@ window.matchViewer = (function() {
     let canvasWidth;
 
     function init(matchDataUrl) {
-        errorLabel = document.getElementById('errorLabel');
+        errorLabel = document.getElementById('matchDataLoadErrorLabel');
         gameView = document.getElementById('gameView');
         preCanvas = document.getElementById("preCanvas");
         gameCanvas = document.getElementById("gameCanvas");
