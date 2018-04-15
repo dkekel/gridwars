@@ -5,7 +5,11 @@ gridwars:
     directories:
         # Default value, should be provided upon start by a system property.
         baseWorkDir: 'work'
+    registration:
+        enabled: true
+        registrationPassword: 'CERNsc2018%'
     matches:
+        botUploadEnabled: true
         matchCountPerOpponent: 1
         workerCount: 2
         workerHeapSize: 256m

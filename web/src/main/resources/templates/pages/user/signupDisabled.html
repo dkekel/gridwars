@@ -1,0 +1,14 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.user.signup.title}"></title>
+</head>
+<body>
+<main layout:fragment="content" class="container">
+    <h5 class="alert alert-danger text-center" th:text="'Sorry! The user registration is closed.'"></h5>
+</main>
+</body>
+</html>

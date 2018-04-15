@@ -16,6 +16,7 @@ public class GridWarsProperties {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final Directories directories = new Directories();
+    private final Registration registration = new Registration();
     private final Matches matches = new Matches();
     private final Mail mail = new Mail();
 
@@ -26,6 +27,10 @@ public class GridWarsProperties {
 
     public Directories getDirectories() {
         return directories;
+    }
+
+    public Registration getRegistration() {
+        return registration;
     }
 
     public Matches getMatches() {
@@ -92,11 +97,44 @@ public class GridWarsProperties {
         }
     }
 
+    public class Registration {
+        private Boolean enabled;
+        private String registrationPassword;
+
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        public Registration setEnabled(Boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
+        public String getRegistrationPassword() {
+            return registrationPassword;
+        }
+
+        public Registration setRegistrationPassword(String registrationPassword) {
+            this.registrationPassword = registrationPassword;
+            return this;
+        }
+    }
+
     public class Matches {
+        private Boolean botUploadEnabled;
         private Integer matchCountPerOpponent;
         private Integer workerCount;
         private String workerHeapSize;
         private Integer executionTimeoutSeconds;
+
+        public Boolean getBotUploadEnabled() {
+            return botUploadEnabled;
+        }
+
+        public Matches setBotUploadEnabled(Boolean botUploadEnabled) {
+            this.botUploadEnabled = botUploadEnabled;
+            return this;
+        }
 
         public Integer getMatchCountPerOpponent() {
             return matchCountPerOpponent;

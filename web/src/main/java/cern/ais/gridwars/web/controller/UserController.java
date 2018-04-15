@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.domain.User;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Objects;
 
@@ -26,10 +28,12 @@ import java.util.Objects;
 public class UserController {
 
     private final UserService userService;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, GridWarsProperties gridWarsProperties) {
         this.userService = Objects.requireNonNull(userService);
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     // IMPORTANT: Only map GET method here, not POST, to let the login filter do its work.
@@ -42,24 +46,37 @@ public class UserController {
     public ModelAndView showSignup(@AuthenticationPrincipal User currentUser) {
         restrictAccessForSignedInNonAdminUser(currentUser);
 
-        return ModelAndViewBuilder.forPage("/user/signup")
-            .addAttribute("newUser", new User())
-            .toModelAndView();
+        if (isUserRegistrationDisabled() && !isAdmin(currentUser)) {
+            return ModelAndViewBuilder.forPage("/user/signupDisabled").toModelAndView();
+        } else {
+            return ModelAndViewBuilder.forPage("/user/signup")
+                .addAttribute("newUser", new User())
+                .toModelAndView();
+        }
     }
 
     private void restrictAccessForSignedInNonAdminUser(User currentUser) {
-        if ((currentUser != null) && !currentUser.isAdmin()) {
+        if ((currentUser != null) && !isAdmin(currentUser)) {
             throw new AccessDeniedException();
         }
     }
 
+    private boolean isAdmin(User user) {
+        return (user != null) && user.isAdmin();
+    }
+
     @PostMapping("/signup")
     public ModelAndView doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result,
-                                 RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
+                                 RedirectAttributes redirectAttributes, HttpServletRequest request,
+                                 @AuthenticationPrincipal User currentUser) {
         restrictAccessForSignedInNonAdminUser(currentUser);
 
+        if (isUserRegistrationDisabled() && !isAdmin(currentUser)) {
+            throw new AccessDeniedException();
+        }
+
         if (!result.hasErrors()) {
-            preprocessNewUser(newUser);
+            preprocessNewUser(newUser, request);
 
             try {
                 boolean bypassConfirmation = (currentUser != null) && currentUser.isAdmin();
@@ -79,12 +96,17 @@ public class UserController {
         }
     }
 
-    private void preprocessNewUser(User newUser) {
+    private boolean isUserRegistrationDisabled() {
+        return !gridWarsProperties.getRegistration().getEnabled();
+    }
+
+    private void preprocessNewUser(User newUser, HttpServletRequest request) {
         newUser.setId(null);
         newUser.setUsername(trim(newUser.getUsername()));
         newUser.setTeamName(trim(newUser.getTeamName()));
         newUser.setEmail(trim(newUser.getEmail()));
         newUser.setAdmin(false);
+        newUser.setIp(request.getRemoteAddr());
     }
 
     @GetMapping("/confirm/{confirmationId}")

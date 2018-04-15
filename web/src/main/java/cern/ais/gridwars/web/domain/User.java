@@ -69,6 +69,8 @@ public class User implements UserDetails {
 
     private Instant confirmed;
 
+    private String ip;
+
     @Column(nullable = false)
     private boolean enabled = false;
 
@@ -136,6 +138,15 @@ public class User implements UserDetails {
 
     public User setConfirmed(Instant confirmed) {
         this.confirmed = confirmed;
+        return this;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public User setIp(String ip) {
+        this.ip = ip;
         return this;
     }
 

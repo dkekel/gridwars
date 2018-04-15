@@ -108,6 +108,7 @@ public class UserService implements UserDetailsService {
             .setTeamName(user.getTeamName())
             .setAdmin(user.isAdmin())
             .setConfirmationId(DomainUtils.generateId())
+            .setIp(user.getIp())
             .setEnabled(true);
 
         if (bypassConfirmation) {
