@@ -28,7 +28,7 @@ public class UserController {
         this.userService = Objects.requireNonNull(userService);
     }
 
-    // IMPORTANT: Only map GET method here, not POST, to let the login filter to its work
+    // IMPORTANT: Only map GET method here, not POST, to let the login filter do its work.
     @GetMapping("/signin")
     public ModelAndView showSignin() {
         return ModelAndViewBuilder.forPage("/user/signin").toModelAndView();
@@ -42,8 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ModelAndView doSignup(@ModelAttribute("newUser") @Valid User newUser,
-                                 BindingResult result, Errors errors) {
+    public ModelAndView doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result, Errors errors) {
         if (!errors.hasErrors()) {
             preprocessNewUser(newUser);
 
@@ -59,6 +58,7 @@ public class UserController {
                 .addAttribute("newUser", newUser)
                 .toModelAndView();
         } else {
+            // TODO use RedirectAttributes here instead of a URL parameter?
             return ModelAndViewBuilder.forRedirect("/user/signin?created=" + newUser.getUsername()).toModelAndView();
         }
     }

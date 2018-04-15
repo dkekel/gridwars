@@ -8,7 +8,7 @@
 </head>
 <body>
 <main layout:fragment="content" class="container">
-    <div class="signup-form">
+    <div class="signup-form mx-auto">
         <h2 th:text="#{page.signup.title}"></h2>
 
         <form th:action="@{/user/signup}" th:object="${newUser}" class="was-validated" method="post">

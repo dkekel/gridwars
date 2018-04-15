@@ -8,7 +8,7 @@
 </head>
 <body>
 <main layout:fragment="content" class="container">
-    <div class="signin-form">
+    <div class="signin-form mx-auto">
         <h2 th:text="#{page.signin.title}"></h2>
 
         <div th:if="${param.error}" th:text="#{page.signin.error}" class="alert alert-danger" role="alert"></div>
@@ -22,7 +22,7 @@
             <div class="form-group">
                 <input name="password" type="password" class="form-control" th:placeholder="#{page.signin.password}" maxlength="32" autocomplete="password" required>
             </div>
-            <button type="submit" name="submit" th:text="#{page.signin.submit}" class="btn btn-primary"></button>
+            <button type="submit" th:text="#{page.signin.submit}" class="btn btn-primary"></button>
         </form>
     </div>
 </main>
