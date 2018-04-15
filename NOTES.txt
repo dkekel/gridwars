@@ -8,17 +8,16 @@ User registration:
 - User edit functionality
 - Add a registration password that will be announced in the presentation and add it to the sign-up form
 
-Bot upload:
-- Don't show a 500 error page when something goes south, but rather a error message in the upload form
-
 Error handling:
 - Do not render error html pages on ajax request errors in controller methods
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 
 Match runtime process:
+- How to restrict access to the file system?
 - How to disable reflection?
     - Can be disabled using a SecurityManager and catching the SecurityException
+- Tweak the stack size -Xss
 
 Web access log:
 - Simple web access log
@@ -47,18 +46,29 @@ DB:
 - add a password when using in production file mode
 
 UI:
+- On all pages that show lists of teams/bots, highlight the team/bot of the current user
 - Create a CERN CA signed certificate that can be used for HTTPS
 - Test if the interface appears to be save from injection and XSS attacks
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 - Add a footer
 
+Admin UI:
+- Simple actions for
+    - Update a user password
+    - block bot upload and user registration, and to
+    - Disable/delete bots
+    - Match queue, cancel matches by hand
+- Could be implemented using actuator to change config properties??
+
 Misc:
+- Create a new "gridwars-starter" package that has a basic gridwars setup with a main class and two example bots that
+  fight each other
+
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
 
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 
-- Implement functionality to block bot upload, user registration, and to stop/start match processing
-    - Could be simple admin controller actions that modify the gridwars properties (or actuator?)
+- If there is time, add an admin controller that allows to read the server logs directly in the browser...
 
 - Have logs also printed to files under "work/logs"
     - dated and rolling logs?
