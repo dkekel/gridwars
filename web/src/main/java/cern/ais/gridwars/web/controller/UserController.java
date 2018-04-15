@@ -1,9 +1,11 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -35,7 +37,12 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public ModelAndView showSignup() {
+    public ModelAndView showSignup(@AuthenticationPrincipal User user) {
+        // Don't allow signed in non-admin users to use the sign up form again.
+        if ((user != null) && !user.isAdmin()) {
+            throw new AccessDeniedException();
+        }
+
         return ModelAndViewBuilder.forPage("/user/signup")
             .addAttribute("newUser", new User())
             .toModelAndView();
