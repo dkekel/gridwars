@@ -8,8 +8,8 @@
 </head>
 <body>
     <main layout:fragment="content" class="container">
-        <h1 class="text-center" th:text="#{page.matches.title}"></h1>
-        <table class="table">
+        <h2 class="text-center" th:text="#{page.matches.title}"></h2>
+        <table class="table table-sm">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col"></th>
@@ -33,7 +33,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="font-weight-light font-italic text-center" th:text="#{page.matches.results(${matches.size()})}"></div>
+        <div class="font-weight-light text-center" th:text="#{page.matches.results(${matches.size()})}"></div>
     </main>
 </body>
 </html>

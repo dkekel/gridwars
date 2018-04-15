@@ -31,12 +31,12 @@ public class RankingService {
         Map<String, RankingInfo> userRankings = new HashMap<>();
 
         // TODO do we also need to exclude disabled users??
-        matchService.getAllFinishedMatchesForActiveBots().forEach(match -> evaluateMatch(match, userRankings));
+        matchService.getAllFinishedMatchesForActiveBots().forEach(match -> evaluateMatchForBothBots(match, userRankings));
 
         return userRankings.values().stream().sorted().collect(Collectors.toList());
     }
 
-    private void evaluateMatch(Match match, Map<String, RankingInfo> userRankings) {
+    private void evaluateMatchForBothBots(Match match, Map<String, RankingInfo> userRankings) {
         RankingInfo rankingInfoUser1 = getOrCreateRankingInfoForUser(match.getBot1().getUser(), userRankings);
         RankingInfo rankingInfoUser2 = getOrCreateRankingInfoForUser(match.getBot2().getUser(), userRankings);
 
@@ -67,6 +67,22 @@ public class RankingService {
         return rankingInfo;
     }
 
+    @Transactional(readOnly = true)
+    public RankingInfo generateRankingInfoOfMatchesForBot(List<Match> matches, Bot bot) {
+        RankingInfo rankingInfo = new RankingInfo(bot.getUser(), bot);
+        matches.forEach(match -> evaluateMatchForBot(match, bot, rankingInfo));
+        return rankingInfo;
+    }
+
+    private void evaluateMatchForBot(Match match, Bot bot, RankingInfo rankingInfo) {
+        if (match.isBotWinner(bot)) {
+            rankingInfo.wins++;
+        } else if (match.isBotLoser(bot)) {
+            rankingInfo.losses++;
+        } else if (match.isDraw()) {
+            rankingInfo.draws++;
+        }
+    }
 
     public static final class RankingInfo implements Comparable<RankingInfo> {
 

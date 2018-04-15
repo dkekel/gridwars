@@ -7,6 +7,7 @@ import cern.ais.gridwars.web.service.BotFileService;
 import cern.ais.gridwars.web.service.BotService;
 import cern.ais.gridwars.web.service.BotUploadService;
 import cern.ais.gridwars.web.service.MatchService;
+import cern.ais.gridwars.web.service.RankingService;
 import cern.ais.gridwars.web.util.ControllerUtils;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.slf4j.Logger;
@@ -44,23 +45,30 @@ public class BotController {
     private final BotUploadService botUploadService;
     private final BotFileService botFileService;
     private final MatchService matchService;
+    private final RankingService rankingService;
 
     @Autowired
     public BotController(BotService botService, BotUploadService botUploadService, BotFileService botFileService,
-                         MatchService matchService) {
+                         MatchService matchService, RankingService rankingService) {
         this.botService = Objects.requireNonNull(botService);
         this.botUploadService = Objects.requireNonNull(botUploadService);
         this.botFileService = Objects.requireNonNull(botFileService);
         this.matchService = Objects.requireNonNull(matchService);
+        this.rankingService = Objects.requireNonNull(rankingService);
     }
 
     @GetMapping("/show")
     public ModelAndView showActiveBot(@AuthenticationPrincipal User currentUser) {
         ModelAndViewBuilder mavBuilder = ModelAndViewBuilder.forPage("bot/show");
 
-        botService.getActiveBotOfUser(currentUser).ifPresent(bot ->
-            mavBuilder.addAttribute("activeBot", bot).addAttribute("botMatches", getBotMatches(bot))
-        );
+        botService.getActiveBotOfUser(currentUser).ifPresent(bot -> {
+            List<Match> botMatches = getBotMatches(bot);
+
+            mavBuilder
+                .addAttribute("activeBot", bot)
+                .addAttribute("botMatches", botMatches)
+                .addAttribute("rankingInfo", rankingService.generateRankingInfoOfMatchesForBot(botMatches, bot));
+        });
 
         return mavBuilder.toModelAndView();
     }

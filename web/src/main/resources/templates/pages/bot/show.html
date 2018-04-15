@@ -11,10 +11,6 @@
         .bot-table td {
             vertical-align: middle;
         }
-
-        .bot-table tr > td:first-child {
-             text-align: end;
-        }
     </style>
 </head>
 <body>
@@ -46,26 +42,26 @@
         <table class="bot-table table table-bordered table-sm">
             <tbody>
                 <tr>
-                    <td class="table-active" th:text="#{page.bot.show.teamName}"></td>
+                    <td class="table-active text-right" th:text="#{page.bot.show.teamName}"></td>
                     <td th:text="${activeBot.user.teamName}"></td>
                 </tr>
                 <tr>
-                    <td class="table-active" th:text="#{page.bot.show.botClassName}"></td>
+                    <td class="table-active text-right" th:text="#{page.bot.show.botClassName}"></td>
                     <td th:text="${activeBot.botClassName}"></td>
                 </tr>
                 <tr>
-                    <td class="table-active" th:text="#{page.bot.show.botJarFile}"></td>
+                    <td class="table-active text-right" th:text="#{page.bot.show.botJarFile}"></td>
                     <td>
                         <a th:href="@{'/bot/download/' + ${activeBot.id}}" th:text="#{page.bot.show.download}" target="_blank"></a>
                         <span th:text="#{page.bot.show.botJarFileSize(${activeBot.jarFileSize / 1024})}"></span>
                     </td>
                 </tr>
                 <tr>
-                    <td class="table-active" th:text="#{page.bot.show.uploaded}"></td>
+                    <td class="table-active text-right" th:text="#{page.bot.show.uploaded}"></td>
                     <td th:text="${#temporals.format(activeBot.uploadedDateTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
                 </tr>
                 <tr>
-                    <td class="table-active" th:text="#{page.bot.show.uploadNew}"></td>
+                    <td class="table-active text-right" th:text="#{page.bot.show.uploadNew}"></td>
                     <td>
                         <form th:action="@{/bot/upload}" method="post" enctype="multipart/form-data">
                             <button type="submit" th:text="#{page.bot.show.upload.submit}"></button>
@@ -78,35 +74,57 @@
         </table>
 
         <div class="mt-3">
-            <h3 th:text="#{page.bot.show.botMatches}" class="text-center"></h3>
-            <table class="table">
+            <h3 th:text="#{page.bot.show.scores}" class="text-center"></h3>
+            <table class="table table-bordered table-sm">
                 <thead class="thead-dark">
-                <tr>
-                    <th scope="col"></th>
-                    <th scope="col" class="text-center" th:text="#{page.bot.show.matches.outcome}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.bot.show.matches.team1}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.bot.show.matches.team2}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.bot.show.matches.turns}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.bot.show.matches.duration}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.bot.show.matches.started}"></th>
-                </tr>
+                    <tr>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.wins}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.draws}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.losses}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.total}"></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr th:each="match : ${botMatches}"
-                    th:class="${match.isBotWinner(activeBot)} ? 'table-success' : (${match.isBotLoser(activeBot)} ? 'table-danger' : (${match.draw} ? 'table-warning' : _))">
-                    <td class="text-center"><a th:text="#{page.matches.show}" th:href="@{'/match/' + ${match.id}}"></a></td>
-                    <td class="text-center"
-                        th:text="${match.isBotWinner(activeBot)} ? 'Win' : (${match.isBotLoser(activeBot)} ? 'Loss' : (${match.draw} ? 'Draw' : (${match.failed ? 'FAILED' : _})))"
-                        th:classappend="${match.failed ? 'text-danger font-weight-bold' : _}"></td>
-                    <td th:text="${match.bot1.teamBotLabel}" th:class="${match.bot1Winner} ? 'font-weight-bold' : _"></td>
-                    <td th:text="${match.bot2.teamBotLabel}" th:class="${match.bot2Winner} ? 'font-weight-bold' : _"></td>
-                    <td th:text="${match.turnCount}" class="text-center"></td>
-                    <td th:text="${#numbers.formatDecimal(match.durationMillis / 1000d, 1, 2)}" class="text-center"></td>
-                    <td th:text="${#temporals.format(match.startedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>
-                </tr>
+                    <tr>
+                        <td class="table-success text-center" th:text="${rankingInfo.wins}"></td>
+                        <td class="table-warning text-center" th:text="${rankingInfo.draws}"></td>
+                        <td class="table-danger text-center" th:text="${rankingInfo.losses}"></td>
+                        <td class="text-center" th:text="${rankingInfo.total}"></td>
+                    </tr>
                 </tbody>
             </table>
-            <div class="font-weight-light font-italic text-center" th:text="#{page.matches.results(${botMatches.size()})}"></div>
+        </div>
+
+        <div class="mt-3">
+            <h3 th:text="#{page.bot.show.botMatches}" class="text-center"></h3>
+            <table class="table table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.matches.outcome}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.matches.team1}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.matches.team2}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.matches.turns}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.matches.duration}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.bot.show.matches.started}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="match : ${botMatches}"
+                        th:class="${match.isBotWinner(activeBot)} ? 'table-success' : (${match.isBotLoser(activeBot)} ? 'table-danger' : (${match.draw} ? 'table-warning' : _))">
+                        <td class="text-center"><a th:text="#{page.matches.show}" th:href="@{'/match/' + ${match.id}}"></a></td>
+                        <td class="text-center"
+                            th:text="${match.isBotWinner(activeBot)} ? 'Win' : (${match.isBotLoser(activeBot)} ? 'Loss' : (${match.draw} ? 'Draw' : (${match.failed ? 'FAILED' : _})))"
+                            th:classappend="${match.failed ? 'text-danger font-weight-bold' : _}"></td>
+                        <td th:text="${match.bot1.teamBotLabel}" th:class="${match.bot1Winner} ? 'font-weight-bold' : _"></td>
+                        <td th:text="${match.bot2.teamBotLabel}" th:class="${match.bot2Winner} ? 'font-weight-bold' : _"></td>
+                        <td th:text="${match.turnCount}" class="text-center"></td>
+                        <td th:text="${#numbers.formatDecimal(match.durationMillis / 1000d, 1, 2)}" class="text-center"></td>
+                        <td th:text="${#temporals.format(match.startedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="font-weight-light text-center" th:text="#{page.matches.results(${botMatches.size()})}"></div>
         </div>
     </div>
 
