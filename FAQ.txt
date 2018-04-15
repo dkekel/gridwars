@@ -5,7 +5,7 @@ Q: Can I used 3rd party Java libs?
 A: Sorry, but no. It's just you, your brain, your team and the standard Java API.
 
 Q: Is there a size limit for the bot jar upload?
-A: Yes, it's 5 minutes. But this is way more than enough when not using 3rd party libs.
+A: Yes, it's 5 MB. But this is way more than enough when not using 3rd party libs. The size of your jar file is typically just a few KBs.
 
 Q: Can I use reflections?
 A: No, if you are getting caught trying, you will lose the turn.

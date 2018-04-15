@@ -2,30 +2,16 @@ TODO:
 ========================================================================================================================
 User registration:
 - Validate the email address at the domain class level
-- Confirmation link for new user registration
-    - Bypass if an admin created the user
-- Additional information for user registration (ip, hostname, user agent)
-- User edit functionality
 - Add a registration password that will be announced in the presentation and add it to the sign-up form
 
-Error handling:
-- Do not render error html pages on ajax request errors in controller methods
-- Modify GlobalErrorController to show better message when upload size is too big
-    - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
-
-Match runtime process:
-- How to restrict access to the file system?
-- How to disable reflection?
-    - Can be disabled using a SecurityManager and catching the SecurityException
-- Tweak the stack size -Xss
-
-Web access log:
-- Simple web access log
-    - Could simply use the trace actuator?
-- Tag requests with unique id and show this id in log output to find the matching requests
-
-Mailing:
-- Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
+Admin UI:
+- Simple actions for
+    - Update/reset a user password
+    - block bot upload and user registration
+    - Disable/delete bots
+    - Match queue, cancel or reset matches by hand
+    - Reset all matches (cancel) and generate new matches...
+- Could be implemented using actuator to change config properties??
 
 API & Impl:
 - Clean up and reformat code
@@ -41,24 +27,40 @@ Emulator:
 - Rename "Visualizer" into "Emulator" and put it into its own module
 - Create a new example/starter module that will be downloadable
 
+UI:
+- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
+- Add a footer??
+- Use DataTables to make the tables sortable etc.
+
+Maches:
+- Think about a fair scoring system for the ranking
+    - Maybe an elo based system like in football or so with points?
+
+Server Deployment:
+- Create a CERN CA signed certificate that can be used for HTTPS
+
+Error handling:
+- Do not render error html pages on ajax request errors in controller methods
+- Modify GlobalErrorController to show better message when upload size is too big
+    - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+
+Match runtime process:
+- How to restrict access to the file system, or to other files than the match folder?
+- How to disable reflection?
+    - Can be disabled using a SecurityManager and catching the SecurityException
+- Tweak the stack size -Xss
+
+Web access log:
+- Simple web access log
+    - Could simply use the trace actuator?
+- Tag requests with unique id and show this id in log output to find the matching requests
+
+Mailing:
+- Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
+
 DB:
 - Check how to use a file for H2 db
 - add a password when using in production file mode
-
-UI:
-- On all pages that show lists of teams/bots, highlight the team/bot of the current user
-- Create a CERN CA signed certificate that can be used for HTTPS
-- Test if the interface appears to be save from injection and XSS attacks
-- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
-- Add a footer
-
-Admin UI:
-- Simple actions for
-    - Update a user password
-    - block bot upload and user registration, and to
-    - Disable/delete bots
-    - Match queue, cancel matches by hand
-- Could be implemented using actuator to change config properties??
 
 Misc:
 - Create a new "gridwars-starter" package that has a basic gridwars setup with a main class and two example bots that
@@ -73,13 +75,7 @@ Misc:
 - Have logs also printed to files under "work/logs"
     - dated and rolling logs?
     - Only when running as a jar and not with bootRun...
-
-
-Functionality that I can avoid to create:
-========================================================================================================================
-- Forgot password: They should mail me, I will reset the password to a new one
-    - I still need to bcrypt it, so there must be such an admin functionality...
-    - Users must be able to change their password though
+    - Otherwise they can be piped using an .sh starter shell script, then also properly dated
 
 
 Info:
