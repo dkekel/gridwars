@@ -76,8 +76,7 @@ public class BotService {
             String botClassName = validateBotJarFileAndExtractBotClassName(storedBotJarFile);
             return createNewBotRecord(storedBotJarFile, botClassName, user, uploadTime);
         } catch (Exception e) {
-            LOG.error("Failed to validate and persist bot uploaded by user '{}': {}", user.getUsername(),
-                e.getMessage(), e);
+            LOG.error("Failed to validate and persist bot uploaded by user '{}': {}", user.getUsername(), e.getMessage());
             FileUtils.deleteFile(storedBotJarFile);
             throw e;
         }

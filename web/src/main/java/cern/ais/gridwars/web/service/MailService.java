@@ -9,7 +9,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PreDestroy;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class MailService {
@@ -18,6 +21,7 @@ public class MailService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final JavaMailSender mailSender;
     private final GridWarsProperties gridWarsProperties;
 
@@ -29,7 +33,7 @@ public class MailService {
 
     public void sendMail(MailBuilder mailBuilder) {
         if (mailSendingEnabled()) {
-            doSend(createMailMessage(mailBuilder));
+            sendMailAsync(createMailMessage(mailBuilder));
         } else {
             LOG.info("E-mail sending is disabled, discarding mail with subject: " + mailBuilder.getSubject());
         }
@@ -72,15 +76,28 @@ public class MailService {
         }
     }
 
-    private void doSend(SimpleMailMessage message) {
-        long startMillis = System.currentTimeMillis();
-        mailSender.send(message);
-        long durationMillis = System.currentTimeMillis() - startMillis;
+    private void sendMailAsync(final SimpleMailMessage message) {
+        executorService.execute(() -> doSend(message));
+    }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Sent mail to: {}; subject: {}; took: {} ms", String.join(",", message.getTo()),
-                message.getSubject(), durationMillis);
+    private void doSend(SimpleMailMessage message) {
+        try {
+            long startMillis = System.currentTimeMillis();
+            mailSender.send(message);
+            long durationMillis = System.currentTimeMillis() - startMillis;
+
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Sent mail to: {}; subject: {}; took: {} ms", String.join(",", message.getTo()),
+                    message.getSubject(), durationMillis);
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to send mail: {}", e.getMessage(), e);
         }
+    }
+
+    @PreDestroy
+    protected void destroy() {
+        executorService.shutdownNow();
     }
 
     public static final class MailBuilder {
