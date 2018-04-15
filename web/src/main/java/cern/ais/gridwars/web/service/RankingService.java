@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,12 @@ import java.util.stream.Collectors;
 public class RankingService {
 
     private final MatchService matchService;
+    private final BotService botService;
 
     @Autowired
-    public RankingService(MatchService matchService) {
+    public RankingService(MatchService matchService, BotService botService) {
         this.matchService = Objects.requireNonNull(matchService);
+        this.botService = Objects.requireNonNull(botService);
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +59,8 @@ public class RankingService {
         RankingInfo rankingInfo = userRankings.get(user.getId());
 
         if (rankingInfo == null) {
-            rankingInfo = new RankingInfo(user);
+            Bot bot = botService.getActiveBotOfUser(user).orElse(null);
+            rankingInfo = new RankingInfo(user, bot);
             userRankings.put(user.getId(), rankingInfo);
         }
 
@@ -67,6 +71,7 @@ public class RankingService {
     public static final class RankingInfo implements Comparable<RankingInfo> {
 
         private final User user;
+        private final Bot bot;
         private int wins = 0;
         private int draws = 0;
         private int losses = 0;
@@ -79,12 +84,17 @@ public class RankingService {
             return o.wins - wins;
         }
 
-        private RankingInfo(User user) {
+        private RankingInfo(User user, Bot bot) {
             this.user = user;
+            this.bot = bot;
         }
 
         public User getUser() {
             return user;
+        }
+
+        public Bot getBot() {
+            return bot;
         }
 
         public int getWins() {

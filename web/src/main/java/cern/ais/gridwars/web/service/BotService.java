@@ -25,6 +25,7 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
@@ -43,6 +44,11 @@ public class BotService {
     public BotService(BotRepository botRepository, JarStorageService jarStorageService) {
         this.botRepository = Objects.requireNonNull(botRepository);
         this.jarStorageService = Objects.requireNonNull(jarStorageService);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Bot> getActiveBotOfUser(User user) {
+        return botRepository.findFirstByUserAndActiveIsTrueOrderByUploadedDesc(user);
     }
 
     @Transactional(readOnly = true)
