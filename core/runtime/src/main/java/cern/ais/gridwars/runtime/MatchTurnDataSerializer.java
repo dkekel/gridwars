@@ -13,6 +13,19 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 
+/**
+ * Stores/loads the binary match turn data to/from the file system
+ *
+ * The turn data of a match is list of turns as a byte array. These bytes are compressed using the GZIP
+ * algorithm and stored in a specified file path.
+ *
+ * When loading the data back from the file, it can be loaded in the compressed GZIP format or uncompressed.
+ * The raw turn data is usually only used in the browser to replay the match. We can leverage the fact
+ * that the browsers accept GZIP compressed responses and simply load the data compressed from the file system.
+ * Setting the correct response compression headers, the browser will take care of uncompressing the bytes. As
+ * a result, we save a lot of disk and network i/o and also CPU, because we don't need to ever uncompress the
+ * bytes on the server-side. Neat!
+ */
 public class MatchTurnDataSerializer {
 
     // See: cern.ais.gridwars.Game:325

@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  *
  * The result is communicated to the controller process using a properties file. Yes, Java property files
  * are so 1999, but it's important that the match runtime implementation has a very lightweight class path
- * and only used native JRE classes. So I decided against including a <insert fancy JSON lib name> dependency.
+ * and only used native JRE classes. So I decided against including a "insert fancy JSON lib name here" dependency.
  */
 public class MatchResult {
 
