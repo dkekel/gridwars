@@ -48,8 +48,8 @@ public class DevConfiguration {
                 .setUsername("user1")
                 .setPassword("bla1")
                 .setEmail("user1@cern.ch")
-                .setTeamName("Team User1")
-                .setEnabled(true)
+                .setTeamName("Team User1"),
+            true, false
         );
 
         User user2 = userService.create(
@@ -57,8 +57,8 @@ public class DevConfiguration {
                 .setUsername("user2")
                 .setPassword("bla2")
                 .setEmail("user2@cern.ch")
-                .setTeamName("Team User2")
-                .setEnabled(true)
+                .setTeamName("Team User2"),
+            true, false
         );
 
         User user3 = userService.create(
@@ -66,8 +66,8 @@ public class DevConfiguration {
                 .setUsername("user3")
                 .setPassword("bla3")
                 .setEmail("user3@cern.ch")
-                .setTeamName("Team User3")
-                .setEnabled(true)
+                .setTeamName("Team User3"),
+            true, false
         );
 
         User user4 = userService.create(
@@ -75,8 +75,8 @@ public class DevConfiguration {
                 .setUsername("user4")
                 .setPassword("bla4")
                 .setEmail("user4@cern.ch")
-                .setTeamName("Team User4")
-                .setEnabled(true)
+                .setTeamName("Team User4"),
+            true, false
         );
 
         User admin1 = userService.create(
@@ -85,8 +85,8 @@ public class DevConfiguration {
                 .setPassword("blabla")
                 .setEmail("admin@cern.ch")
                 .setTeamName("Team Admin")
-                .setAdmin(true)
-                .setEnabled(true)
+                .setAdmin(true),
+            true, false
         );
 
         // =====================================================================

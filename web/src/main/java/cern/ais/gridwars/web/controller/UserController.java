@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -61,7 +62,8 @@ public class UserController {
             preprocessNewUser(newUser);
 
             try {
-                userService.create(newUser);
+                boolean bypassConfirmation = (currentUser != null) && currentUser.isAdmin();
+                userService.create(newUser, bypassConfirmation, true);
             } catch (UserService.UserFieldValueException ufve) {
                 result.rejectValue(ufve.getFieldName(), ufve.getErrorMessageCode());
             }
@@ -83,6 +85,18 @@ public class UserController {
         newUser.setTeamName(trim(newUser.getTeamName()));
         newUser.setEmail(trim(newUser.getEmail()));
         newUser.setAdmin(false);
+    }
+
+    @GetMapping("/confirm/{confirmationId}")
+    public ModelAndView confirmUser(@PathVariable String confirmationId, RedirectAttributes redirectAttributes) {
+        return userService.getByConfirmationId(confirmationId)
+            .filter(user -> !user.isConfirmed())
+            .map(user -> {
+                userService.confirmUser(user.getId());
+                redirectAttributes.addFlashAttribute("confirmed", user.getUsername());
+                return ModelAndViewBuilder.forRedirect("/user/signin").toModelAndView();
+            })
+            .orElseThrow(NotFoundException::new);
     }
 
     @GetMapping("/update")

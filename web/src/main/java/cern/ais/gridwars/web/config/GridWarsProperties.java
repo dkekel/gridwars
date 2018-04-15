@@ -140,6 +140,7 @@ public class GridWarsProperties {
         private String from;
         private String bccRecipient;
         private String toRecipientOverride;
+        private String baseUrl;
 
         public Boolean getEnabled() {
             return enabled;
@@ -174,6 +175,15 @@ public class GridWarsProperties {
 
         public Mail setToRecipientOverride(String toRecipientOverride) {
             this.toRecipientOverride = toRecipientOverride;
+            return this;
+        }
+
+        public String getBaseUrl() {
+            return baseUrl;
+        }
+
+        public Mail setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
             return this;
         }
     }

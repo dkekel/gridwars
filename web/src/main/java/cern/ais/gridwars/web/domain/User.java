@@ -169,6 +169,10 @@ public class User implements UserDetails {
         return this;
     }
 
+    public boolean isConfirmed() {
+        return (confirmed != null);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.unmodifiableList(authorities);
@@ -201,7 +205,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled && (confirmed != null);
+        return enabled && isConfirmed();
     }
 
     @Override

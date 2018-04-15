@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 @Service
 public class MailService {
+
+    private static final String SUBJECT_PREFIX = "[GridWars] ";
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -43,7 +42,7 @@ public class MailService {
     private SimpleMailMessage createMailMessage(MailBuilder mailBuilder) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(gridWarsProperties.getMail().getFrom());
-        message.setSubject(mailBuilder.getSubject());
+        message.setSubject(SUBJECT_PREFIX + mailBuilder.getSubject());
 
         String toRecipientOverride = gridWarsProperties.getMail().getToRecipientOverride();
         if (StringUtils.hasLength(toRecipientOverride)) {
@@ -69,15 +68,18 @@ public class MailService {
         if ((recipients == null) || (recipients.length == 0)) {
             return "";
         } else {
-            return Stream.of(recipients).collect(Collectors.joining(";"));
+            return String.join(";", recipients);
         }
     }
 
     private void doSend(SimpleMailMessage message) {
+        long startMillis = System.currentTimeMillis();
         mailSender.send(message);
+        long durationMillis = System.currentTimeMillis() - startMillis;
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Sent mail to: {}; subject: {}", String.join(",", message.getTo()), message.getSubject());
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Sent mail to: {}; subject: {}; took: {} ms", String.join(",", message.getTo()),
+                message.getSubject(), durationMillis);
         }
     }
 

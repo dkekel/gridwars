@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -21,11 +22,15 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserMailingService userMailingService;
+
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+                       UserMailingService userMailingService) {
         this.userRepository = Objects.requireNonNull(userRepository);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
+        this.userMailingService = Objects.requireNonNull(userMailingService);
     }
 
     @Transactional(readOnly = true)
@@ -42,6 +47,19 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(userId);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> getByConfirmationId(String confirmationId) {
+        return userRepository.findByConfirmationId(confirmationId);
+    }
+
+    @Transactional
+    public void confirmUser(String userId) {
+        getById(userId).ifPresent(user -> {
+            user.setConfirmed(Instant.now());
+            userRepository.saveAndFlush(user);
+        });
+    }
+
     private User populateAuthorities(final User user) {
         user.clearAuthorities();
         user.addAuthority(User.ROLE_USER_AUTHORITY);
@@ -54,7 +72,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User create(User newUser) {
+    public User create(User newUser, boolean bypassConfirmation, boolean sendMailToAdmin) {
         if (userRepository.existsByUsername(newUser.getUsername())) {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
@@ -67,7 +85,39 @@ public class UserService implements UserDetailsService {
             throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
-        return saveNewUser(newUser);
+        User newSavedUser = saveNewUser(newUser, bypassConfirmation);
+
+        if (!bypassConfirmation) {
+            userMailingService.sendConfirmationMail(newSavedUser);
+        }
+
+        if (sendMailToAdmin) {
+            userMailingService.sendUserRegistrationMailToAdmin(newUser);
+        }
+
+        return newSavedUser;
+    }
+
+    private User saveNewUser(User user, boolean bypassConfirmation) {
+        User newUser = new User()
+            .setId(DomainUtils.generateId())
+            .setUsername(user.getUsername())
+            .setPassword(encodePassword(user.getPassword()))
+            .setEmail(user.getEmail())
+            .setCreated(Instant.now())
+            .setTeamName(user.getTeamName())
+            .setAdmin(user.isAdmin())
+            .setConfirmationId(DomainUtils.generateId())
+            .setEnabled(true);
+
+        if (bypassConfirmation) {
+            newUser.setConfirmed(Instant.now());
+        } else {
+            newUser.setConfirmed(null);
+        }
+
+        userRepository.saveAndFlush(newUser);
+        return newUser;
     }
 
     @Transactional
@@ -89,23 +139,6 @@ public class UserService implements UserDetailsService {
         }
 
         updateExistingUser(user);
-    }
-
-    private User saveNewUser(User user) {
-        User newUser = new User()
-            .setId(DomainUtils.generateId())
-            .setUsername(user.getUsername())
-            .setPassword(encodePassword(user.getPassword()))
-            .setEmail(user.getEmail())
-            .setCreated(Instant.now())
-            .setTeamName(user.getTeamName())
-            .setAdmin(user.isAdmin())
-            .setEnabled(true) // TODO disable by default and send confirmation mail
-            .setConfirmationId(DomainUtils.generateId())
-            .setConfirmed(Instant.now()); // TODO should be set to null (if current user is not an admin) and must be confirmed by the user...
-
-        userRepository.saveAndFlush(newUser);
-        return newUser;
     }
 
     private void updateExistingUser(User user) {

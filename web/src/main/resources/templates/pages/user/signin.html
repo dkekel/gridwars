@@ -18,15 +18,15 @@
         <h2 th:text="#{page.user.signin.title}" class="mb-3"></h2>
 
         <div th:if="${param.error}" th:text="#{page.user.signin.error}" class="alert alert-danger" role="alert"></div>
-        <div th:if="${created}" th:text="#{page.user.signin.created(${created})}" class="alert alert-success" role="alert"></div>
+        <div th:if="${created}" th:text="#{page.user.signin.created(${created})}" class="alert alert-warning" role="alert"></div>
         <div th:if="${confirmed}" th:text="#{page.user.signin.confirmed(${confirmed})}" class="alert alert-success" role="alert"></div>
 
         <form th:action="@{/user/signin}" method="post">
             <div class="form-group">
-                <input name="username" type="text" class="form-control" th:value="${param.confirmed} ?: _" th:placeholder="#{page.user.signin.username}" maxlength="16" autocomplete="username" required autofocus>
+                <input name="username" type="text" class="form-control" th:value="${confirmed} ?: _" th:placeholder="#{page.user.signin.username}" maxlength="16" autocomplete="username" required th:autofocus="${confirmed == null}">
             </div>
             <div class="form-group">
-                <input name="password" type="password" class="form-control" th:placeholder="#{page.user.signin.password}" maxlength="32" autocomplete="password" required>
+                <input name="password" type="password" class="form-control" th:placeholder="#{page.user.signin.password}" maxlength="32" autocomplete="password" required th:autofocus="${confirmed != null}">
             </div>
             <div class="forgot-password-hint">
                 <small class="text-muted">Forgot your username or password? Please contact <a href="mailto:grid.wars@cern.ch">grid.wars@cern.ch</a></small>
