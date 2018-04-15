@@ -24,17 +24,24 @@
     <div th:if="${success}" th:text="#{page.bot.show.upload.success(${success})}" class="alert alert-success text-center" role="alert"></div>
 
     <div th:unless="${activeBot}">
-        <!-- TODO improve this with a nice Bootstrap input form: https://getbootstrap.com/docs/4.0/components/input-group/ -->
-        <form th:action="@{/bot/upload}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label th:text="#{page.bot.show.upload.jarFile}" for="botJarFile"></label>
-                <input id="botJarFile" name="botJarFile" class="form-control" type="file" required accept=".jar">
-            </div>
-            <button type="submit" th:text="#{page.bot.show.upload.submit}"></button>
-        </form>
+        <h3 th:text="#{page.bot.show.noBotAvailable}" class="text-center"></h3>
+        <table class="bot-table table table-bordered table-sm">
+            <tbody>
+                <tr>
+                    <td class="table-active" th:text="#{page.bot.show.uploadFirst}"></td>
+                    <td>
+                        <form th:action="@{/bot/upload}" method="post" enctype="multipart/form-data">
+                            <button type="submit" th:text="#{page.bot.show.upload.submit}"></button>
+                            <input id="botJarFile" name="botJarFile" type="file" required accept=".jar">
+                        </form>
+                        <small class="text-muted" th:text="#{page.bot.show.uploadLimit}"></small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <tr th:if="${activeBot}">
+    <div th:if="${activeBot}">
         <h3 th:text="#{page.bot.show.activeBot}" class="text-center"></h3>
         <table class="bot-table table table-bordered table-sm">
             <tbody>
@@ -110,7 +117,7 @@
         if (uploadField) {
             uploadField.onchange = function () {
                 if ((this.files.length > 0) && (this.files[0].size > maxFileSize)) {
-                    uploadField.setCustomValidity("File is too big. The maximum upload file size is 5MB.");
+                    uploadField.setCustomValidity("File is too big. The maximum upload file size is 5 MB.");
                 } else {
                     uploadField.setCustomValidity("");
                 }
