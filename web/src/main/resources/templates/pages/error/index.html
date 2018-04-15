@@ -7,9 +7,11 @@
     <title th:text="${errorMsg}"></title>
 </head>
 <body>
-    <main layout:fragment="content" class="container text-center">
-        <h1 th:text="#{page.error.errorCode(${errorCode})}"></h1>
-        <p th:text="${errorMsg}" class="alert alert-danger"></p>
+    <main layout:fragment="content" class="container">
+        <div class="alert alert-danger text-center">
+            <h1 th:text="#{page.error.errorCode(${errorCode})}" class="text-dark"></h1>
+            <h4 th:text="${errorMsg}"></h4>
+        </div>
     </main>
 </body>
 </html>
