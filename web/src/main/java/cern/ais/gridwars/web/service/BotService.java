@@ -38,12 +38,17 @@ public class BotService {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final BotRepository botRepository;
-    private final JarStorageService jarStorageService;
+    private final BotFileService botFileService;
 
     @Autowired
-    public BotService(BotRepository botRepository, JarStorageService jarStorageService) {
+    public BotService(BotRepository botRepository, BotFileService botFileService) {
         this.botRepository = Objects.requireNonNull(botRepository);
-        this.jarStorageService = Objects.requireNonNull(jarStorageService);
+        this.botFileService = Objects.requireNonNull(botFileService);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Bot> getBotById(String botId) {
+        return botRepository.findById(botId);
     }
 
     @Transactional(readOnly = true)
@@ -57,13 +62,12 @@ public class BotService {
     }
 
     @Transactional(readOnly = true)
-    public List<Bot> getActiveBotsOfUser(User user) {
+    public List<Bot> getAllActiveBotsOfUser(User user) {
         // Should usually only return a single result. Only returns a list in case there are multiple active bots,
         // for whatever reason.
-        return botRepository.findAllByUserAndActiveIsTrue(user);
+        return botRepository.findAllByUserAndActiveIsTrueOrderByUploadedDesc(user);
     }
 
-    // TODO refactor this, the BotService should not be aware of any web classes (MultipartFile in this case)
     @Transactional
     public Bot validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
         File storedBotJarFile = null;
@@ -80,7 +84,7 @@ public class BotService {
     }
 
     private File storeUploadedBotJarFile(MultipartFile uploadedJarFile, User user, Instant uploadTime) {
-        return jarStorageService.storeUploadedJarFile(uploadedJarFile, user.getId(), uploadTime);
+        return botFileService.storeUploadedJarFile(uploadedJarFile, user.getId(), uploadTime);
     }
 
     private String validateBotJarFileAndExtractBotClassName(File botJarFile) {
@@ -192,6 +196,7 @@ public class BotService {
     @Transactional
     public void inactivateBot(Bot bot) {
         bot.setActive(false);
+        bot.setInactivated(Instant.now());
         botRepository.saveAndFlush(bot);
     }
 

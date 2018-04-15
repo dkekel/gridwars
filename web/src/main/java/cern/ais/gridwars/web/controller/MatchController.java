@@ -9,9 +9,9 @@ import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.MatchFileService;
 import cern.ais.gridwars.web.service.MatchService;
 import cern.ais.gridwars.web.service.RankingService;
+import cern.ais.gridwars.web.util.ControllerUtils;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -51,8 +50,6 @@ public class MatchController {
                 put(MatchFile.BOT_2_OUTPUT, "bot2");
             }
         });
-    private static final CacheControl FOREVER_CACHE_CONTROL = CacheControl.maxAge(31556926, TimeUnit.SECONDS).cachePublic();
-    private static final String GZIP = "gzip";
 
     private final MatchTurnDataSerializer serializer = new MatchTurnDataSerializer();
     private final MatchService matchService;
@@ -75,7 +72,7 @@ public class MatchController {
 
     @GetMapping("/list")
     public ModelAndView listStartedMatches() {
-        List<Match> matches = matchService.findAllFinishedMatchesForActiveBots().stream()
+        List<Match> matches = matchService.getAllFinishedMatchesForActiveBots().stream()
             .sorted(Comparator.comparing(Match::getStarted).reversed())
             .collect(Collectors.toList());
 
@@ -86,7 +83,7 @@ public class MatchController {
 
     @GetMapping("/{matchId}")
     public ModelAndView show(@PathVariable String matchId, @AuthenticationPrincipal User user) {
-        return matchService.loadMatch(matchId)
+        return matchService.getMatchById(matchId)
             .map(match ->
                 ModelAndViewBuilder.forPage("match/show")
                     .addAttribute("match", match)
@@ -118,11 +115,11 @@ public class MatchController {
 
         return getDeserializedMatchData(matchId, acceptsGzipCompression)
             .map(dataStream -> createMatchDataResponse(dataStream, acceptsGzipCompression))
-            .orElseGet(this::createNotFoundMatchDataResponse);
+            .orElseGet(ControllerUtils::createNotFoundByteDataResponse);
     }
 
     private boolean acceptsGzipEncoding(String acceptEncoding) {
-        return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains(GZIP);
+        return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains(ControllerUtils.GZIP);
     }
 
     private Optional<InputStream> getDeserializedMatchData(String matchId, boolean acceptsGzipCompression) {
@@ -136,11 +133,10 @@ public class MatchController {
     private ResponseEntity<byte[]> createMatchDataResponse(InputStream data, boolean acceptsGzipCompression) {
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            // The turn data of a match will never change, so it can be cached "forever" by the browser.
-            .cacheControl(FOREVER_CACHE_CONTROL);
+            .cacheControl(ControllerUtils.FOREVER_CACHE_CONTROL);
 
         if (acceptsGzipCompression) {
-            builder.header(HttpHeaders.CONTENT_ENCODING, GZIP);
+            builder.header(HttpHeaders.CONTENT_ENCODING, ControllerUtils.GZIP);
         }
 
         try (InputStream dataStream = data) { // Ensures that the stream will be closed afterwards!
@@ -150,10 +146,6 @@ public class MatchController {
         }
     }
 
-    private ResponseEntity<byte[]> createNotFoundMatchDataResponse() {
-        return ResponseEntity.notFound().build();
-    }
-
     @GetMapping("/{matchId}/{matchFileUrlSuffix}")
     public ResponseEntity<String> matchStdOut(@PathVariable String matchId, @PathVariable String matchFileUrlSuffix,
                                               @AuthenticationPrincipal User user) {
@@ -161,8 +153,7 @@ public class MatchController {
 
         return ResponseEntity.ok()
             .contentType(MediaType.TEXT_PLAIN)
-            // The match file content will never change, so it can be cached "forever" by the browser.
-            .cacheControl(FOREVER_CACHE_CONTROL)
+            .cacheControl(ControllerUtils.FOREVER_CACHE_CONTROL)
             .body(getMatchFileTextContent(matchId, user, matchFile));
     }
 
@@ -175,7 +166,7 @@ public class MatchController {
     }
 
     private String getMatchFileTextContent(String matchId, User user, MatchFile matchFile) {
-        return matchService.loadMatch(matchId)
+        return matchService.getMatchById(matchId)
             .map(match -> validateUserAccessToMatchFile(match, user, matchFile))
             .flatMap(match -> matchFileService.getMatchFileTextContent(match.getId(), matchFile))
             .orElseThrow(NotFoundException::new);

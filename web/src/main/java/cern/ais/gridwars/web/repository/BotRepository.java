@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface BotRepository extends JpaRepository<Bot, String> {
 
     Optional<Bot> findFirstByUserAndActiveIsTrueOrderByUploadedDesc(User user);
-    List<Bot> findAllByUserAndActiveIsTrue(User user);
+    List<Bot> findAllByUserAndActiveIsTrueOrderByUploadedDesc(User user);
     List<Bot> findAllByActiveIsTrue();
 }

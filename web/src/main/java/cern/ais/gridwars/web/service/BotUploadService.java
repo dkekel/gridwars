@@ -29,7 +29,7 @@ public class BotUploadService {
 
     @Transactional
     public Bot uploadNewBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
-        List<Bot> oldBots = botService.getActiveBotsOfUser(user);
+        List<Bot> oldBots = botService.getAllActiveBotsOfUser(user);
         Bot newBot = botService.validateAndCreateNewUploadedBot(uploadedBotJarFile, user, uploadTime);
 
         inactivateOldBots(oldBots);

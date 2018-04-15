@@ -20,7 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class MatchService {
 
-    private static final List<Match.Status> STARTED_MATCH_STATUSES = Arrays.asList(Match.Status.FINISHED, Match.Status.FAILED);
+    private static final List<Match.Status> STARTED_MATCH_STATUSES = Arrays.asList(
+        Match.Status.FINISHED,
+        Match.Status.FAILED
+    );
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchRepository matchRepository;
@@ -48,6 +51,7 @@ public class MatchService {
         for (int n = 0; n < numberOfMatches; n++) {
             createSingleMatch(bot1, bot2);
         }
+
         matchRepository.flush();
         LOG.debug("Generated {} matches between bot {} and bot {}", numberOfMatches, bot1.getId(), bot2.getId());
     }
@@ -117,19 +121,12 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Match> loadMatch(String matchId) {
+    public Optional<Match> getMatchById(String matchId) {
         return matchRepository.findById(matchId);
     }
 
     @Transactional(readOnly = true)
-    public List<Match> findAllStartedMatchesForActiveBots() {
-        return matchRepository.findAllByStatusIn(STARTED_MATCH_STATUSES).stream()
-            .filter(this::areBothBotsActive)
-            .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<Match> findAllFinishedMatchesForActiveBots() {
+    public List<Match> getAllFinishedMatchesForActiveBots() {
         return matchRepository.findAllByStatusIn(Collections.singletonList(Match.Status.FINISHED)).stream()
             .filter(this::areBothBotsActive)
             .collect(Collectors.toList());
@@ -137,6 +134,17 @@ public class MatchService {
 
     private boolean areBothBotsActive(Match match) {
         return match.getBot1().isActive() && match.getBot2().isActive();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Match> getAllStartedMatchesForBot(Bot bot) {
+        return matchRepository.findAllByBot1OrBot2(bot, bot).stream()
+            .filter(this::wasMatchStarted)
+            .collect(Collectors.toList());
+    }
+
+    private boolean wasMatchStarted(Match match) {
+        return STARTED_MATCH_STATUSES.contains(match.getStatus());
     }
 
     @Transactional

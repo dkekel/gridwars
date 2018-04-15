@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Entity
@@ -190,29 +189,36 @@ public class Match {
         return (started != null && ended != null) ? Duration.between(started, ended).toMillis() : null;
     }
 
-    public Optional<Bot> getWinner() {
-        if (Status.FINISHED != status) {
-            return Optional.empty();
-        }
-        if (Outcome.WIN == outcome) {
-            return Optional.of(bot1);
-        } else if (Outcome.LOSS == outcome) {
-            return Optional.of(bot2);
-        } else {
-            return Optional.empty();
-        }
+    public boolean isFailed() {
+        return (Status.FAILED == status);
+    }
+
+    public boolean isFinished() {
+        return (Status.FINISHED == status);
     }
 
     public boolean isBot1Winner() {
-        return (Status.FINISHED == status) && (Outcome.WIN == outcome);
+        return isFinished() && (Outcome.WIN == outcome);
     }
 
     public boolean isBot2Winner() {
-        return (Status.FINISHED == status) && (Outcome.LOSS == outcome);
+        return isFinished() && (Outcome.LOSS == outcome);
     }
 
-    public String getWinnerLabel() {
-        return getWinner().map(Bot::getTeamBotLabel).orElse("-");
+    public boolean isDraw() {
+        return isFinished() && (Outcome.DRAW == outcome);
+    }
+
+    public boolean isBotWinner(Bot bot) {
+        return (isBot1Winner() && bot1.equals(bot)) || (isBot2Winner() && bot2.equals(bot));
+    }
+
+    public boolean isBotLoser(Bot bot) {
+        return (isBot1Winner() && bot2.equals(bot)) || (isBot2Winner() && bot1.equals(bot));
+    }
+
+    public boolean isMatchOfUser(User user) {
+        return bot1.getUser().equals(user) || bot2.getUser().equals(user);
     }
 
     @Override

@@ -27,6 +27,14 @@ public final class FileUtils {
         }
     }
 
+    public static boolean exists(File file) {
+        return file.exists() && file.canRead();
+    }
+
+    public static boolean existsAndHasContent(File file) {
+        return exists(file) && (file.length() > 0);
+    }
+
     private FileUtils() {
     }
 }

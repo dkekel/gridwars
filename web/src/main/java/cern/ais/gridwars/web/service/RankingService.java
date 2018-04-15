@@ -31,7 +31,7 @@ public class RankingService {
         Map<String, RankingInfo> userRankings = new HashMap<>();
 
         // TODO do we also need to exclude disabled users??
-        matchService.findAllFinishedMatchesForActiveBots().forEach(match -> evaluateMatch(match, userRankings));
+        matchService.getAllFinishedMatchesForActiveBots().forEach(match -> evaluateMatch(match, userRankings));
 
         return userRankings.values().stream().sorted().collect(Collectors.toList());
     }

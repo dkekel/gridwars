@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 
@@ -35,6 +37,8 @@ public class Bot {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    private Instant inactivated;
 
     @ManyToOne(optional = false)
     private User user;
@@ -93,12 +97,25 @@ public class Bot {
         return this;
     }
 
+    public LocalDateTime getUploadedDateTime() {
+        return LocalDateTime.ofInstant(uploaded, ZoneId.systemDefault());
+    }
+
     public boolean isActive() {
         return active;
     }
 
     public Bot setActive(boolean active) {
         this.active = active;
+        return this;
+    }
+
+    public Instant getInactivated() {
+        return inactivated;
+    }
+
+    public Bot setInactivated(Instant inactivated) {
+        this.inactivated = inactivated;
         return this;
     }
 

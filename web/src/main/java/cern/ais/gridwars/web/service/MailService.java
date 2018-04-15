@@ -30,7 +30,7 @@ public class MailService {
         if (mailSendingEnabled()) {
             doSend(createMailMessage(mailBuilder));
         } else {
-            LOG.debug("E-mail sending is disabled, discarding mail with subject: " + mailBuilder.getSubject());
+            LOG.info("E-mail sending is disabled, discarding mail with subject: " + mailBuilder.getSubject());
         }
     }
 
