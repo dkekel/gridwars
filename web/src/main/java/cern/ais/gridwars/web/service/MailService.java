@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -41,17 +43,34 @@ public class MailService {
     private SimpleMailMessage createMailMessage(MailBuilder mailBuilder) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(gridWarsProperties.getMail().getFrom());
-        message.setTo(mailBuilder.getTo());
-        message.setCc(mailBuilder.getCc());
         message.setSubject(mailBuilder.getSubject());
-        message.setText(mailBuilder.getText());
 
-        String bccRecipient = gridWarsProperties.getMail().getBcc();
+        String toRecipientOverride = gridWarsProperties.getMail().getToRecipientOverride();
+        if (StringUtils.hasLength(toRecipientOverride)) {
+            message.setText(mailBuilder.getText() +
+                "\n\nOriginal TO: " + joinRecipients(mailBuilder.getTo()) +
+                "\nOriginal CC: " + joinRecipients(mailBuilder.getCc()));
+            message.setTo(toRecipientOverride);
+        } else {
+            message.setTo(mailBuilder.getTo());
+            message.setCc(mailBuilder.getCc());
+            message.setText(mailBuilder.getText());
+        }
+
+        String bccRecipient = gridWarsProperties.getMail().getBccRecipient();
         if (StringUtils.hasLength(bccRecipient)) {
             message.setBcc(bccRecipient);
         }
 
         return message;
+    }
+
+    private String joinRecipients(String[] recipients) {
+        if ((recipients == null) || (recipients.length == 0)) {
+            return "";
+        } else {
+            return Stream.of(recipients).collect(Collectors.joining(";"));
+        }
     }
 
     private void doSend(SimpleMailMessage message) {

@@ -138,7 +138,8 @@ public class GridWarsProperties {
     public class Mail {
         private Boolean enabled;
         private String from;
-        private String bcc;
+        private String bccRecipient;
+        private String toRecipientOverride;
 
         public Boolean getEnabled() {
             return enabled;
@@ -158,12 +159,21 @@ public class GridWarsProperties {
             return this;
         }
 
-        public String getBcc() {
-            return bcc;
+        public String getBccRecipient() {
+            return bccRecipient;
         }
 
-        public Mail setBcc(String bcc) {
-            this.bcc = bcc;
+        public Mail setBccRecipient(String bccRecipient) {
+            this.bccRecipient = bccRecipient;
+            return this;
+        }
+
+        public String getToRecipientOverride() {
+            return toRecipientOverride;
+        }
+
+        public Mail setToRecipientOverride(String toRecipientOverride) {
+            this.toRecipientOverride = toRecipientOverride;
             return this;
         }
     }

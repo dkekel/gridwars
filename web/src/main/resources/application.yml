@@ -13,7 +13,7 @@ gridwars:
     mail:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
-        bcc: 'benjamin.wolff@cern.ch'
+        bccRecipient: 'benjamin.wolff@cern.ch'
         toRecipientOverride: 'benjamin.wolff@cern.ch'
 
 # ==================================================================================================
