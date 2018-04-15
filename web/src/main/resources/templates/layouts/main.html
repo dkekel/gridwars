@@ -54,12 +54,12 @@
             </ul>
 
             <div th:unless="${currentUser}" class="ml-auto">
-                <a th:href="@{/user/signin}" th:text="#{layout.main.signin}" target="_self" class="navbar-text"></a>
-                <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" target="_self" class="navbar-text ml-3"></a>
+                <a th:href="@{/user/signin}" th:text="#{layout.main.signin}" class="navbar-text"></a>
+                <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" class="navbar-text ml-3"></a>
             </div>
 
             <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0 ml-auto">
-                <a href="#" class="navbar-text">
+                <a th:href="@{/user/update}" class="navbar-text">
                     <span th:text="${currentUser.username} + ' (' + ${currentUser.teamName} + ')'"></span><span th:if="${currentUser.admin}" th:text="#{layout.main.userAdminSuffix}" class="ml-1"></span>
                 </a>
                 <a href="javascript:{}" th:text="#{layout.main.signout}" onclick="document.getElementById('signOutForm').submit();" class="navbar-text ml-4"></a>

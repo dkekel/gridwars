@@ -14,6 +14,7 @@ gridwars:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bcc: 'benjamin.wolff@cern.ch'
+        toRecipientOverride: 'benjamin.wolff@cern.ch'
 
 # ==================================================================================================
 # Spring Profiles Configuration

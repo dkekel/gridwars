@@ -82,9 +82,9 @@ public class MatchController {
     }
 
     @GetMapping("/{matchId}")
-    public ModelAndView show(@PathVariable String matchId, @AuthenticationPrincipal User user) {
+    public ModelAndView show(@PathVariable String matchId, @AuthenticationPrincipal User currentUser) {
         return matchService.getMatchById(matchId)
-            .map(match -> createShowMatchResponse(match, user))
+            .map(match -> createShowMatchResponse(match, currentUser))
             .orElseThrow(NotFoundException::new);
     }
 
@@ -155,13 +155,13 @@ public class MatchController {
 
     @GetMapping("/{matchId}/{matchFileUrlSuffix}")
     public ResponseEntity<String> matchStdOut(@PathVariable String matchId, @PathVariable String matchFileUrlSuffix,
-                                              @AuthenticationPrincipal User user) {
+                                              @AuthenticationPrincipal User currentUser) {
         MatchFile matchFile = getMatchFileByUrlSuffix(matchFileUrlSuffix.trim());
 
         return ResponseEntity.ok()
             .contentType(MediaType.TEXT_PLAIN)
             .cacheControl(ControllerUtils.FOREVER_CACHE_CONTROL)
-            .body(getMatchFileTextContent(matchId, user, matchFile));
+            .body(getMatchFileTextContent(matchId, currentUser, matchFile));
     }
 
     private MatchFile getMatchFileByUrlSuffix(String matchFileName) {

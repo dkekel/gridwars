@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.*;
@@ -34,6 +35,11 @@ public class UserService implements UserDetailsService {
             .findByUsername(username)
             .map(this::populateAuthorities)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getById(String userId) {
+        return userRepository.findById(userId);
     }
 
     private User populateAuthorities(final User user) {
@@ -107,20 +113,18 @@ public class UserService implements UserDetailsService {
            existingUser.setEmail(user.getEmail());
            existingUser.setTeamName(user.getTeamName());
 
-           if (isNotBlank(user.getPassword())) {
+           if (StringUtils.hasLength(user.getPassword())) {
                existingUser.setPassword(encodePassword(user.getPassword()));
            }
 
            userRepository.saveAndFlush(existingUser);
        });
+
+       // TODO Throw exception if user not found??
     }
 
     private String encodePassword(String password) {
         return passwordEncoder.encode(password);
-    }
-
-    private boolean isNotBlank(String value) {
-        return (value != null) && !value.isEmpty();
     }
 
     public static class UserFieldValueException extends RuntimeException {

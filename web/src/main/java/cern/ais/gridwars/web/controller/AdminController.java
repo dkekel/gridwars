@@ -37,24 +37,24 @@ public class AdminController {
     }
 
     @PostMapping(path = "/worker", params = { "action=start" })
-    public ModelAndView startWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User user) {
-        logAction("START", user);
+    public ModelAndView startWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
+        logAction("START", currentUser);
         matchWorkerService.startAllMatchWorkers();
         redirectAttributes.addFlashAttribute("started", true);
         return ModelAndViewBuilder.forRedirect("/admin/worker").toModelAndView();
     }
 
     @PostMapping(path = "/worker", params = { "action=wakeup" })
-    public ModelAndView wakeUpWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User user) {
-        logAction("WAKE UP", user);
+    public ModelAndView wakeUpWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
+        logAction("WAKE UP", currentUser);
         matchWorkerService.wakeUpAllMatchWorkers();
         redirectAttributes.addFlashAttribute("wokenup", true);
         return ModelAndViewBuilder.forRedirect("/admin/worker").toModelAndView();
     }
 
     @PostMapping(path = "/worker", params = { "action=stop" })
-    public ModelAndView stopWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User user) {
-        logAction("STOP", user);
+    public ModelAndView stopWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
+        logAction("STOP", currentUser);
         matchWorkerService.stopAllMatchWorkers();
         redirectAttributes.addFlashAttribute("stopped", true);
         return ModelAndViewBuilder.forRedirect("/admin/worker").toModelAndView();

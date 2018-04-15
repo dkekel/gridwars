@@ -44,7 +44,7 @@ public class User implements UserDetails {
     private String username;
 
     @Column(nullable = false)
-    @Size(min = 6, max = 255) // This field stores a hash, so make it big enough!
+    @Size(max = 255) // This field stores a hash, so make it big enough!
     private String password;
 
     @Column(nullable = false, unique = true)

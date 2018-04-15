@@ -4,25 +4,39 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title th:text="#{page.signin.title}"></title>
+    <title th:text="#{page.user.signin.title}"></title>
+
+    <style>
+        .forgot-password-hint {
+            margin-top: -1rem;
+        }
+    </style>
 </head>
 <body>
 <main layout:fragment="content" class="container">
     <div class="signin-form mx-auto">
-        <h2 th:text="#{page.signin.title}"></h2>
+        <h2 th:text="#{page.user.signin.title}" class="mb-3"></h2>
 
-        <div th:if="${param.error}" th:text="#{page.signin.error}" class="alert alert-danger" role="alert"></div>
-        <div th:if="${param.created}" th:text="#{page.signin.created(${param.created})}" class="alert alert-success" role="alert"></div>
-        <div th:if="${param.confirmed}" th:text="#{page.signin.confirmed(${param.confirmed})}" class="alert alert-success" role="alert"></div>
+        <div th:if="${param.error}" th:text="#{page.user.signin.error}" class="alert alert-danger" role="alert"></div>
+        <div th:if="${created}" th:text="#{page.user.signin.created(${created})}" class="alert alert-success" role="alert"></div>
+        <div th:if="${confirmed}" th:text="#{page.user.signin.confirmed(${confirmed})}" class="alert alert-success" role="alert"></div>
 
         <form th:action="@{/user/signin}" method="post">
             <div class="form-group">
-                <input name="username" type="text" class="form-control" th:value="${param.confirmed} ?: _" th:placeholder="#{page.signin.username}" maxlength="16" autocomplete="username" required autofocus>
+                <input name="username" type="text" class="form-control" th:value="${param.confirmed} ?: _" th:placeholder="#{page.user.signin.username}" maxlength="16" autocomplete="username" required autofocus>
             </div>
             <div class="form-group">
-                <input name="password" type="password" class="form-control" th:placeholder="#{page.signin.password}" maxlength="32" autocomplete="password" required>
+                <input name="password" type="password" class="form-control" th:placeholder="#{page.user.signin.password}" maxlength="32" autocomplete="password" required>
             </div>
-            <button type="submit" th:text="#{page.signin.submit}" class="btn btn-primary"></button>
+            <div class="forgot-password-hint">
+                <small class="text-muted">Forgot your username or password? Please contact <a href="mailto:grid.wars@cern.ch">grid.wars@cern.ch</a></small>
+            </div>
+            <div>
+                <small class="text-muted">No user account yet? <a th:href="@{/user/signup}">Sign up here</a></small>
+            </div>
+            <div class="mt-1">
+                <button type="submit" th:text="#{page.user.signin.submit}" class="btn btn-primary"></button>
+            </div>
         </form>
     </div>
 </main>

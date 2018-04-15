@@ -55,10 +55,10 @@ public class BotController {
     }
 
     @GetMapping("/show")
-    public ModelAndView showActiveBot(@AuthenticationPrincipal User user) {
+    public ModelAndView showActiveBot(@AuthenticationPrincipal User currentUser) {
         ModelAndViewBuilder mavBuilder = ModelAndViewBuilder.forPage("bot/show");
 
-        botService.getActiveBotOfUser(user).ifPresent(bot ->
+        botService.getActiveBotOfUser(currentUser).ifPresent(bot ->
             mavBuilder.addAttribute("activeBot", bot).addAttribute("botMatches", getBotMatches(bot))
         );
 
@@ -72,9 +72,9 @@ public class BotController {
     }
 
     @GetMapping("/download/{botId}")
-    public ResponseEntity<byte[]> download(@PathVariable String botId, @AuthenticationPrincipal User user) {
+    public ResponseEntity<byte[]> download(@PathVariable String botId, @AuthenticationPrincipal User currentUser) {
         return botService.getBotById(botId)
-            .filter(bot -> user.isAdmin() || bot.getUser().equals(user))
+            .filter(bot -> currentUser.isAdmin() || bot.getUser().equals(currentUser))
             .map(this::createBotDownloadResponse)
             .orElseGet(ControllerUtils::createNotFoundByteDataResponse);
     }
@@ -109,13 +109,13 @@ public class BotController {
     @PostMapping("/upload")
     public ModelAndView doUpload(@RequestParam MultipartFile botJarFile,
                                  RedirectAttributes redirectAttributes,
-                                 @AuthenticationPrincipal User user) {
+                                 @AuthenticationPrincipal User currentUser) {
         LOG.info("Received bot jar - name: {}, original name: {}, content type: {}, size: {}, upload user: {}",
                 botJarFile.getName(), botJarFile.getOriginalFilename(), botJarFile.getContentType(),
-                botJarFile.getSize(), user.getUsername());
+                botJarFile.getSize(), currentUser.getUsername());
 
         try {
-            Bot newBot = botUploadService.uploadNewBot(botJarFile, user, Instant.now());
+            Bot newBot = botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now());
             redirectAttributes.addFlashAttribute("success", newBot.getName());
         } catch (BotService.BotException bue) {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());
