@@ -143,21 +143,29 @@ public class UserController {
     @GetMapping("/update")
     public ModelAndView showUpdateUser(@AuthenticationPrincipal User currentUser) {
         return userService.getById(currentUser.getId())
-            .map(userCopy -> ModelAndViewBuilder.forPage("user/update")
-                .addAttribute("user", userCopy)
-                .toModelAndView())
+            .map(this::toUpdateUserDto)
+            .map(updateUserDto ->
+                ModelAndViewBuilder.forPage("user/update")
+                    .addAttribute("user", updateUserDto)
+                    .toModelAndView())
             .orElseThrow(NotFoundException::new);
     }
 
+    private UpdateUserDto toUpdateUserDto(User user) {
+        return new UpdateUserDto()
+            .setUsername(user.getUsername())
+            .setEmail(user.getEmail())
+            .setTeamName(user.getTeamName());
+    }
+
     @PostMapping("/update")
-    public ModelAndView updateUser(@ModelAttribute("user") @Valid User updatedUser, BindingResult result,
+    public ModelAndView updateUser(@ModelAttribute("user") @Valid UpdateUserDto updateUserDto, BindingResult result,
                                    RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
         if (!result.hasErrors()) {
-            updatedUser.setId(currentUser.getId());
-            preprocessUpdatedUser(updatedUser);
+            preprocessUpdatedUser(updateUserDto, currentUser);
 
             try {
-                userService.update(updatedUser);
+                userService.update(updateUserDto);
             } catch (UserService.UserFieldValueException ufve) {
                 result.rejectValue(ufve.getFieldName(), ufve.getErrorMessageCode());
             }
@@ -165,7 +173,7 @@ public class UserController {
 
         if (result.hasErrors()) {
             return ModelAndViewBuilder.forPage("user/update")
-                .addAttribute("user", updatedUser)
+                .addAttribute("user", updateUserDto)
                 .toModelAndView();
         } else {
             redirectAttributes.addFlashAttribute("success", true);
@@ -173,9 +181,10 @@ public class UserController {
         }
     }
 
-    private void preprocessUpdatedUser(User updatedUser) {
-        updatedUser.setTeamName(trim(updatedUser.getTeamName()));
-        updatedUser.setEmail(trim(updatedUser.getEmail()));
+    private void preprocessUpdatedUser(UpdateUserDto updateUserDto, User currentUser) {
+        updateUserDto.setId(currentUser.getId());
+        updateUserDto.setTeamName(trim(updateUserDto.getTeamName()));
+        updateUserDto.setEmail(trim(updateUserDto.getEmail()));
     }
 
     private String trim(String value) {

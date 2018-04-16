@@ -2,19 +2,16 @@ package cern.ais.gridwars.web.controller;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
-public class NewUserDto {
+public class UpdateUserDto {
 
-    @NotNull
-    @NotEmpty
-    @Size(min = 4, max = 16)
-    @Pattern(regexp = "[A-Za-z0-9-_]+")
+    private String id;
+
     private String username;
 
-    @Size(min = 6, max = 32)
+    @Size(max = 32)
     private String password;
 
     @NotNull
@@ -28,17 +25,20 @@ public class NewUserDto {
     @Size(min = 4, max = 32)
     private String teamName;
 
-    @NotNull
-    @NotEmpty
-    private String registrationPassword;
+    public String getId() {
+        return id;
+    }
 
-    private String ip;
+    public UpdateUserDto setId(String id) {
+        this.id = id;
+        return this;
+    }
 
     public String getUsername() {
         return username;
     }
 
-    public NewUserDto setUsername(String username) {
+    public UpdateUserDto setUsername(String username) {
         this.username = username;
         return this;
     }
@@ -47,7 +47,7 @@ public class NewUserDto {
         return password;
     }
 
-    public NewUserDto setPassword(String password) {
+    public UpdateUserDto setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -56,7 +56,7 @@ public class NewUserDto {
         return email;
     }
 
-    public NewUserDto setEmail(String email) {
+    public UpdateUserDto setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -65,26 +65,8 @@ public class NewUserDto {
         return teamName;
     }
 
-    public NewUserDto setTeamName(String teamName) {
+    public UpdateUserDto setTeamName(String teamName) {
         this.teamName = teamName;
-        return this;
-    }
-
-    public String getRegistrationPassword() {
-        return registrationPassword;
-    }
-
-    public NewUserDto setRegistrationPassword(String registrationPassword) {
-        this.registrationPassword = registrationPassword;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public NewUserDto setIp(String ip) {
-        this.ip = ip;
         return this;
     }
 }

@@ -1,6 +1,7 @@
 package cern.ais.gridwars.web.service;
 
 import cern.ais.gridwars.web.controller.NewUserDto;
+import cern.ais.gridwars.web.controller.UpdateUserDto;
 import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
@@ -123,33 +124,33 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(User user) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new RuntimeException("User does not exist: " + user.getId() + " (" + user.getUsername() + ")");
+    public void update(UpdateUserDto updateUserDto) {
+        if (!userRepository.existsById(updateUserDto.getId())) {
+            throw new RuntimeException("User does not exist: " + updateUserDto.getId() + " (" + updateUserDto.getUsername() + ")");
         }
 
-        if (userRepository.existsByUsernameAndIdNot(user.getUsername(), user.getId())) {
+        if (userRepository.existsByUsernameAndIdNot(updateUserDto.getUsername(), updateUserDto.getId())) {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
-        if (userRepository.existsByEmailAndIdNot(user.getEmail(), user.getId())) {
+        if (userRepository.existsByEmailAndIdNot(updateUserDto.getEmail(), updateUserDto.getId())) {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
-        if (userRepository.existsByTeamNameAndIdNot(user.getTeamName(), user.getId())) {
+        if (userRepository.existsByTeamNameAndIdNot(updateUserDto.getTeamName(), updateUserDto.getId())) {
             throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
-        updateExistingUser(user);
+        updateExistingUser(updateUserDto);
     }
 
-    private void updateExistingUser(User user) {
-       userRepository.findById(user.getId()).ifPresent(existingUser -> {
-           existingUser.setEmail(user.getEmail());
-           existingUser.setTeamName(user.getTeamName());
+    private void updateExistingUser(UpdateUserDto updateUserDto) {
+       userRepository.findById(updateUserDto.getId()).ifPresent(existingUser -> {
+           existingUser.setEmail(updateUserDto.getEmail());
+           existingUser.setTeamName(updateUserDto.getTeamName());
 
-           if (StringUtils.hasLength(user.getPassword())) {
-               existingUser.setPassword(encodePassword(user.getPassword()));
+           if (StringUtils.hasLength(updateUserDto.getPassword())) {
+               existingUser.setPassword(encodePassword(updateUserDto.getPassword()));
            }
 
            userRepository.saveAndFlush(existingUser);
