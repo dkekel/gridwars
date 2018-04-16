@@ -64,7 +64,15 @@ dependencies {
 	testCompile('org.springframework.security:spring-security-test')
 }
 
-task setUpRuntimeLibWorkDir(type: Copy, dependsOn: classes) {
+task setUpWorkDir(dependsOn: processResources) {
+    doLast {
+        ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
+            project.file("${workDirName}/${subWorkDir}").mkdirs()
+        }
+    }
+}
+
+task setUpRuntimeLibWorkDir(type: Copy, dependsOn: setUpWorkDir) {
     from project(':core:api').jar
     from project(':core:impl').jar
     from project(':core:runtime').jar
@@ -73,14 +81,11 @@ task setUpRuntimeLibWorkDir(type: Copy, dependsOn: classes) {
 }
 bootRun.dependsOn(setUpRuntimeLibWorkDir)
 
-task cleanWorkDir(type: Delete) {
-    def matchFolder = file("${workDirName}/matches")
+task cleanWorkDir(type: Delete, dependsOn: setUpWorkDir) {
+    def matchFolder = project.file("${workDirName}/matches")
 
     if (matchFolder && matchFolder.exists()) {
         delete matchFolder.listFiles()
     }
 }
 bootRun.dependsOn(cleanWorkDir)
-
-// TODO create a task to set up an external work dir folder to allow running the app as a runnable jar
-

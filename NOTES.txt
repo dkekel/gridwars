@@ -31,8 +31,9 @@ UI:
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 - Add a footer??
 - Use DataTables to make the tables sortable etc.
+- Add some nice icons fot the "Winner" (e.g. a trophy) using an icon set like font awesome
 
-Maches:
+Matches:
 - Think about a fair scoring system for the ranking
     - Maybe an elo based system like in football or so with points?
 
