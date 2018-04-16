@@ -1,5 +1,7 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.util.validation.ValidEmail;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -20,7 +22,7 @@ public class NewUserDto {
     @NotNull
     @NotEmpty
     @Size(max = 32)
-    // TODO Validate email
+    @ValidEmail
     private String email;
 
     @NotNull
