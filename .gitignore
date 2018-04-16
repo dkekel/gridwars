@@ -19,5 +19,4 @@ target/
 *.gz
 
 # Web app files
-web/work/**/*.jar
-web/work/**/*.properties
+web/work/**
