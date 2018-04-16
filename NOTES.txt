@@ -1,17 +1,28 @@
 TODO:
 ========================================================================================================================
 User registration:
-- Validate the email address at the domain class level
-- Add a registration password that will be announced in the presentation and add it to the sign-up form
+- Validate the email address at the create user dto level
 
 Admin UI:
 - Simple actions for
     - Update/reset a user password
     - block bot upload and user registration
     - Disable/delete bots
+    - Stop, Start, Wake individual match workers
     - Match queue, cancel or reset matches by hand
     - Reset all matches (cancel) and generate new matches...
 - Could be implemented using actuator to change config properties??
+
+
+Match runtime process:
+- Use a SecurityManager to restrict access to:
+    - Threads
+    - Sys props
+    - Using sockets
+    - File system
+    - Reflections
+    - Well, basically everything... I should only whitelist the permissions for the match runtime classes on a need-to-have basis
+- Tweak the stack size -Xss
 
 API & Impl:
 - Clean up and reformat code
@@ -45,12 +56,6 @@ Error handling:
 - Modify GlobalErrorController to show better message when upload size is too big
     - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 
-Match runtime process:
-- How to restrict access to the file system, or to other files than the match folder?
-- How to disable reflection?
-    - Can be disabled using a SecurityManager and catching the SecurityException
-- Tweak the stack size -Xss
-
 Web access log:
 - Simple web access log
     - Could simply use the trace actuator?
@@ -68,6 +73,7 @@ Misc:
   fight each other
 
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
+    - List suspiciously large match output log files
 
 - Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
 
@@ -125,3 +131,14 @@ Useful links:
 - File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
 
 - Using ProcessBuilder: https://www.developer.com/java/data/understanding-java-process-and-java-processbuilder.html
+
+- Enable HTTPS and redirect HTTP to HTTPS: https://www.thomasvitale.com/https-spring-boot-ssl-certificate/
+
+- Using SecurityManager to restrict reflection, file access, etc.:
+    - https://docs.oracle.com/javase/tutorial/essential/environment/security.html
+    - https://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html
+    - https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html
+    - Reflections: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#ReflectPermission
+    - ClassLoading and threads: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#RuntimePermission
+    - File access: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#FilePermission
+    - Socket permissions: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#SocketPermission
