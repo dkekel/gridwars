@@ -74,7 +74,11 @@ task setUpRuntimeLibWorkDir(type: Copy, dependsOn: classes) {
 bootRun.dependsOn(setUpRuntimeLibWorkDir)
 
 task cleanWorkDir(type: Delete) {
-    delete file("${workDirName}/matches").listFiles()
+    def matchFolder = file("${workDirName}/matches")
+
+    if (matchFolder && matchFolder.exists()) {
+        delete matchFolder.listFiles()
+    }
 }
 bootRun.dependsOn(cleanWorkDir)
 
