@@ -38,8 +38,8 @@ class MatchExecutor {
            createOutputFiles();
            return doExecuteMatch(match);
         } catch (Exception e) {
-            LOG.error("Execution of match failed before process could be started: {}", match.getId(), e);
-            return markMatchAsFailed(match, "Execution of match failed before process could be started: " + e.getMessage());
+            LOG.error("Execution of match {} failed before process could be started: {}", match.getId(), e.getMessage(), e);
+            return markMatchAsFailed(match, "Execution of match failed before process could be started");
         } finally {
             cleanUp();
         }
@@ -49,7 +49,7 @@ class MatchExecutor {
         matchDir = Paths.get(gridWarsProperties.getDirectories().getMatchesDir(), match.getId()).toFile();
 
         if (!matchDir.exists()) {
-            if (!matchDir.mkdir()) {
+            if (!matchDir.mkdirs()) {
                 throw new MatchExecutionException("Could not create match dir: " + matchDir.getAbsolutePath());
             }
         } else {

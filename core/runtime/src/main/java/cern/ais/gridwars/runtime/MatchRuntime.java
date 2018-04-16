@@ -125,8 +125,7 @@ public class MatchRuntime {
         try {
             return botClassLoader.loadAndInstantiateBot(botJarPath, botClassName);
         } catch (Exception e) {
-            error("Failed to load and instantiate bot " + botNumber + ": " + e.getMessage());
-            throw e;
+            throw new MatchExecutionException("Failed to load and instantiate bot  " + botNumber + ": " + botClassName, e);
         }
      }
 
@@ -156,7 +155,7 @@ public class MatchRuntime {
 
             populateSuccessfulMatchResult(game.getWinner());
         } catch (TimeoutException ignored) {
-            String errorMessage = "Match execution took too long and timed out after " + MATCH_TIME_OUT_MILLIS + " ms";
+            String errorMessage = "Match execution timed out after " + MATCH_TIME_OUT_MILLIS + " ms";
             error(errorMessage);
             populateErrorMatchResult(errorMessage);
         }
