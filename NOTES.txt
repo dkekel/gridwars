@@ -1,11 +1,15 @@
 TODO:
 ========================================================================================================================
-User registration:
-- Validate the email address at the create user dto level
+Match runtime process:
+- Treat SecurityException in a special way in the game implementation to see which bot cheated
+- Tweak the stack size -Xss
 
 Admin UI:
 - Simple actions for
     - Update/reset a user password
+    - List all active bots
+        - Disable/delete bots
+        - List all matches of bots
     - block bot upload and user registration
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
@@ -13,22 +17,12 @@ Admin UI:
     - Reset all matches (cancel) and generate new matches...
 - Could be implemented using actuator to change config properties??
 
-
-Match runtime process:
-- Use a SecurityManager to restrict access to:
-    - Threads
-    - Sys props
-    - Using sockets
-    - File system
-    - Reflections
-    - Well, basically everything... I should only whitelist the permissions for the match runtime classes on a need-to-have basis
-- Tweak the stack size -Xss
-
 API & Impl:
 - Clean up and reformat code
 - Re-implement turn threads using completeable futures to enforce timeout
-- How can I limit the output to sysout/syserr?
+- How can I limit the output size of sysout/syserr?
     - Maybe own implementation or wrapper of PrintWriter that counts the characters and stops the output when limit was reached...?
+    - Some bots may easily fill it with hundreds of MBs...
 
 Bots:
 - Clean up rubbish in core/bots and add new example bots
@@ -39,6 +33,7 @@ Emulator:
 - Create a new example/starter module that will be downloadable
 
 UI:
+- Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 - Add a footer??
 - Use DataTables to make the tables sortable etc.
@@ -49,7 +44,8 @@ Matches:
     - Maybe an elo based system like in football or so with points?
 
 Server Deployment:
-- Create a CERN CA signed certificate that can be used for HTTPS
+- Create an HTTPS certificate using: https://www.sslforfree.com/
+    - First have to open CERN firewall
 
 Error handling:
 - Do not render error html pages on ajax request errors in controller methods
@@ -137,7 +133,16 @@ Useful links:
 - Using SecurityManager to restrict reflection, file access, etc.:
     - https://docs.oracle.com/javase/tutorial/essential/environment/security.html
     - https://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html
+        - The passages about the "codeBase" property is very interesting and probably what we are looking fore
+        - We can simply grant all permissions to the jar files that make the match execution by using the match
+          runtime folder as the codeBase, including all jar files in there.
+        - To all other code sources, which also includes the bot jar files, we only allow a minimal set to run
+          code and to print to system.out and system.err.
+    - https://docs.oracle.com/javase/8/docs/technotes/guides/security/doprivileged.html
+        - Interesting information at the beginning that all classes shipped with the JDK/JRE are loaded with all
+          permissions, so we don't need to configure explicit permissions for them.
     - https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html
+        - Lists all the relevant permissions that we can allow (or check to have disabled!)
     - Reflections: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#ReflectPermission
     - ClassLoading and threads: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#RuntimePermission
     - File access: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#FilePermission
