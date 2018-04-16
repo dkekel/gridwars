@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.controller.NewUserDto;
 import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
@@ -72,43 +73,43 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User create(User newUser, boolean bypassConfirmation, boolean sendMailToAdmin) {
-        if (userRepository.existsByUsername(newUser.getUsername())) {
+    public User create(NewUserDto newUserDto, boolean createAdmin, boolean bypassConfirmation, boolean sendMailToAdmin) {
+        if (userRepository.existsByUsername(newUserDto.getUsername())) {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
-        if (userRepository.existsByEmail(newUser.getEmail())) {
+        if (userRepository.existsByEmail(newUserDto.getEmail())) {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
-        if (userRepository.existsByTeamName(newUser.getTeamName())) {
+        if (userRepository.existsByTeamName(newUserDto.getTeamName())) {
             throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
-        User newSavedUser = saveNewUser(newUser, bypassConfirmation);
+        User newUser = saveNewUser(newUserDto, createAdmin, bypassConfirmation);
 
         if (!bypassConfirmation) {
-            userMailingService.sendConfirmationMail(newSavedUser);
+            userMailingService.sendConfirmationMail(newUser);
         }
 
         if (sendMailToAdmin) {
             userMailingService.sendUserRegistrationMailToAdmin(newUser);
         }
 
-        return newSavedUser;
+        return newUser;
     }
 
-    private User saveNewUser(User user, boolean bypassConfirmation) {
+    private User saveNewUser(NewUserDto newUserDto, boolean createAdmin, boolean bypassConfirmation) {
         User newUser = new User()
             .setId(DomainUtils.generateId())
-            .setUsername(user.getUsername())
-            .setPassword(encodePassword(user.getPassword()))
-            .setEmail(user.getEmail())
+            .setUsername(newUserDto.getUsername())
+            .setPassword(encodePassword(newUserDto.getPassword()))
+            .setEmail(newUserDto.getEmail())
             .setCreated(Instant.now())
-            .setTeamName(user.getTeamName())
-            .setAdmin(user.isAdmin())
+            .setTeamName(newUserDto.getTeamName())
+            .setAdmin(createAdmin)
             .setConfirmationId(DomainUtils.generateId())
-            .setIp(user.getIp())
+            .setIp(newUserDto.getIp())
             .setEnabled(true);
 
         if (bypassConfirmation) {

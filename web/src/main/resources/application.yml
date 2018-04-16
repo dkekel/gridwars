@@ -7,7 +7,7 @@ gridwars:
         baseWorkDir: 'work'
     registration:
         enabled: true
-        registrationPassword: 'CERNsc2018%'
+        registrationPassword: '123'
     matches:
         botUploadEnabled: true
         matchCountPerOpponent: 1

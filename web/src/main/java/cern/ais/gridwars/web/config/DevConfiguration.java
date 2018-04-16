@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.config;
 
+import cern.ais.gridwars.web.controller.NewUserDto;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.*;
@@ -44,49 +45,48 @@ public class DevConfiguration {
         // Users
         // =====================================================================
         User user1 = userService.create(
-            new User()
+            new NewUserDto()
                 .setUsername("user1")
                 .setPassword("bla1")
                 .setEmail("user1@cern.ch")
                 .setTeamName("Team User1"),
-            true, false
+            true, false,false
         );
 
         User user2 = userService.create(
-            new User()
+            new NewUserDto()
                 .setUsername("user2")
                 .setPassword("bla2")
                 .setEmail("user2@cern.ch")
                 .setTeamName("Team User2"),
-            true, false
+            true, false,false
         );
 
         User user3 = userService.create(
-            new User()
+            new NewUserDto()
                 .setUsername("user3")
                 .setPassword("bla3")
                 .setEmail("user3@cern.ch")
                 .setTeamName("Team User3"),
-            true, false
+            true, false,false
         );
 
         User user4 = userService.create(
-            new User()
+            new NewUserDto()
                 .setUsername("user4")
                 .setPassword("bla4")
                 .setEmail("user4@cern.ch")
                 .setTeamName("Team User4"),
-            true, false
+            true, false,false
         );
 
         User admin1 = userService.create(
-            new User()
+            new NewUserDto()
                 .setUsername("admin")
                 .setPassword("blabla")
                 .setEmail("admin@cern.ch")
-                .setTeamName("Team Admin")
-                .setAdmin(true),
-            true, false
+                .setTeamName("Team Admin"),
+            true, true, false
         );
 
         // =====================================================================

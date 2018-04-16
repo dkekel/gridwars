@@ -9,6 +9,7 @@ import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -39,7 +40,7 @@ public class UserController {
     // IMPORTANT: Only map GET method here, not POST, to let the login filter do its work.
     @GetMapping("/signin")
     public ModelAndView showSignin() {
-        return ModelAndViewBuilder.forPage("/user/signin").toModelAndView();
+        return ModelAndViewBuilder.forPage("user/signin").toModelAndView();
     }
 
     @GetMapping("/signup")
@@ -47,10 +48,10 @@ public class UserController {
         restrictAccessForSignedInNonAdminUser(currentUser);
 
         if (isUserRegistrationDisabled() && !isAdmin(currentUser)) {
-            return ModelAndViewBuilder.forPage("/user/signupDisabled").toModelAndView();
+            return ModelAndViewBuilder.forPage("user/signupDisabled").toModelAndView();
         } else {
-            return ModelAndViewBuilder.forPage("/user/signup")
-                .addAttribute("newUser", new User())
+            return ModelAndViewBuilder.forPage("user/signup")
+                .addAttribute("newUser", new NewUserDto())
                 .toModelAndView();
         }
     }
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ModelAndView doSignup(@ModelAttribute("newUser") @Valid User newUser, BindingResult result,
+    public ModelAndView doSignup(@ModelAttribute("newUser") @Valid NewUserDto newUserDto, BindingResult result,
                                  RedirectAttributes redirectAttributes, HttpServletRequest request,
                                  @AuthenticationPrincipal User currentUser) {
         restrictAccessForSignedInNonAdminUser(currentUser);
@@ -75,23 +76,30 @@ public class UserController {
             throw new AccessDeniedException();
         }
 
+        // Admins can bypass the registration password
+        if (!result.hasErrors() && !isAdmin(currentUser)) {
+            if (!hasProvidedValidRegistrationPassword(newUserDto)) {
+                result.rejectValue("registrationPassword", "user.error.wrong.registrationPassword");
+            }
+        }
+
         if (!result.hasErrors()) {
-            preprocessNewUser(newUser, request);
+            preprocessNewUser(newUserDto, request);
 
             try {
-                boolean bypassConfirmation = (currentUser != null) && currentUser.isAdmin();
-                userService.create(newUser, bypassConfirmation, true);
+                boolean bypassConfirmation = isAdmin(currentUser);
+                userService.create(newUserDto, false, bypassConfirmation, true);
             } catch (UserService.UserFieldValueException ufve) {
                 result.rejectValue(ufve.getFieldName(), ufve.getErrorMessageCode());
             }
         }
 
         if (result.hasErrors()) {
-            return ModelAndViewBuilder.forPage("/user/signup")
-                .addAttribute("newUser", newUser)
+            return ModelAndViewBuilder.forPage("user/signup")
+                .addAttribute("newUser", newUserDto)
                 .toModelAndView();
         } else {
-            redirectAttributes.addFlashAttribute("created", newUser.getUsername());
+            redirectAttributes.addFlashAttribute("created", newUserDto.getUsername());
             return ModelAndViewBuilder.forRedirect("/user/signin").toModelAndView();
         }
     }
@@ -100,13 +108,24 @@ public class UserController {
         return !gridWarsProperties.getRegistration().getEnabled();
     }
 
-    private void preprocessNewUser(User newUser, HttpServletRequest request) {
-        newUser.setId(null);
-        newUser.setUsername(trim(newUser.getUsername()));
-        newUser.setTeamName(trim(newUser.getTeamName()));
-        newUser.setEmail(trim(newUser.getEmail()));
-        newUser.setAdmin(false);
-        newUser.setIp(request.getRemoteAddr());
+    private boolean hasProvidedValidRegistrationPassword(NewUserDto newUserDto) {
+        String expectedRegistrationPassword = getCompetitionRegistrationPassword();
+        if (StringUtils.hasLength(expectedRegistrationPassword)) {
+            return expectedRegistrationPassword.equals(newUserDto.getRegistrationPassword());
+        } else {
+            return true;
+        }
+    }
+
+    private String getCompetitionRegistrationPassword() {
+        return gridWarsProperties.getRegistration().getRegistrationPassword();
+    }
+
+    private void preprocessNewUser(NewUserDto newUserDto, HttpServletRequest request) {
+        newUserDto.setUsername(trim(newUserDto.getUsername()));
+        newUserDto.setTeamName(trim(newUserDto.getTeamName()));
+        newUserDto.setEmail(trim(newUserDto.getEmail()));
+        newUserDto.setIp(request.getRemoteAddr());
     }
 
     @GetMapping("/confirm/{confirmationId}")
@@ -124,7 +143,7 @@ public class UserController {
     @GetMapping("/update")
     public ModelAndView showUpdateUser(@AuthenticationPrincipal User currentUser) {
         return userService.getById(currentUser.getId())
-            .map(userCopy -> ModelAndViewBuilder.forPage("/user/update")
+            .map(userCopy -> ModelAndViewBuilder.forPage("user/update")
                 .addAttribute("user", userCopy)
                 .toModelAndView())
             .orElseThrow(NotFoundException::new);
@@ -145,7 +164,7 @@ public class UserController {
         }
 
         if (result.hasErrors()) {
-            return ModelAndViewBuilder.forPage("/user/update")
+            return ModelAndViewBuilder.forPage("user/update")
                 .addAttribute("user", updatedUser)
                 .toModelAndView();
         } else {

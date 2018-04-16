@@ -8,10 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,34 +33,21 @@ public class User implements UserDetails {
     private String id;
 
     @Column(nullable = false, unique = true)
-    @NotNull
-    @NotEmpty
-    @Size(min = 4, max = 16)
-    @Pattern(regexp = "[A-Za-z0-9-_]+")
     private String username;
 
     @Column(nullable = false)
-    @Size(max = 255) // This field stores a hash, so make it big enough!
     private String password;
 
     @Column(nullable = false, unique = true)
-    @NotNull
-    @NotEmpty
-    @Size(min = 4, max = 32)
     private String teamName;
 
     @Column(nullable = false, unique = true)
-    @NotNull
-    @NotEmpty
-    // TODO Validate email
-    @Size(max = 32)
     private String email;
 
     @Column(nullable = false)
     private Instant created;
 
     @Column(unique = true)
-    @Size(max = 255)
     private String confirmationId;
 
     private Instant confirmed;
