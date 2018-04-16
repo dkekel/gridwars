@@ -129,9 +129,12 @@ class MatchExecutor {
                 matchProcess.destroyForcibly();
                 return createTimeoutMatchResult();
             }
-        } catch (IOException | InterruptedException e) {
-            LOG.error("Execution of match process failed for match id: {}", match.getId(), e);
-            return createProcessExceptionMatchResult(e.getMessage());
+        } catch (IOException ioe) {
+            LOG.error("Execution of match process failed for match id: {}", match.getId(), ioe);
+            return createProcessExceptionMatchResult("IO error");
+        } catch (InterruptedException ie) {
+            LOG.error("Execution of match process failed for match id: {}", match.getId(), ie);
+            return createProcessExceptionMatchResult("Execution process got interrupted");
         }
     }
 
