@@ -49,6 +49,9 @@ dependencies {
     compile project(':core:impl')
     compile project(':core:runtime')
 
+    // TODO Only used during development to provide test bots
+    compile project(':core:bots')
+
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-web')
@@ -64,7 +67,7 @@ dependencies {
 	testCompile('org.springframework.security:spring-security-test')
 }
 
-task setUpWorkDir(dependsOn: processResources) {
+task createWorkDir(dependsOn: processResources) {
     doLast {
         ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
             project.file("${workDirName}/${subWorkDir}").mkdirs()
@@ -72,20 +75,31 @@ task setUpWorkDir(dependsOn: processResources) {
     }
 }
 
-task setUpRuntimeLibWorkDir(type: Copy, dependsOn: setUpWorkDir) {
+task cleanWorkDir(type: Delete, dependsOn: createWorkDir) {
+    ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
+        def workSubDir = project.file("${workDirName}/${subWorkDir}")
+
+        if (workSubDir && workSubDir.exists()) {
+            delete workSubDir.listFiles()
+        }
+    }
+}
+
+task setUpBotsWorkDir(type: Copy, dependsOn: cleanWorkDir) {
+    from project(':core:bots').jar
+
+    into project.file("${workDirName}/bots")
+}
+
+task setUpRuntimeLibWorkDir(type: Copy, dependsOn: cleanWorkDir) {
     from project(':core:api').jar
     from project(':core:impl').jar
     from project(':core:runtime').jar
+    from 'gridwars.policy'
 
     into project.file("${workDirName}/runtime")
 }
-bootRun.dependsOn(setUpRuntimeLibWorkDir)
 
-task cleanWorkDir(type: Delete, dependsOn: setUpWorkDir) {
-    def matchFolder = project.file("${workDirName}/matches")
-
-    if (matchFolder && matchFolder.exists()) {
-        delete matchFolder.listFiles()
-    }
+task setUpWorkDir(dependsOn: [setUpBotsWorkDir, setUpRuntimeLibWorkDir]) {
 }
-bootRun.dependsOn(cleanWorkDir)
+bootRun.dependsOn(setUpWorkDir)

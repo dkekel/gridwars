@@ -41,6 +41,12 @@ public class DevConfiguration {
 
     @PostConstruct
     public void initTestData() {
+        final long MEGA_BYTE_FACTOR = 1024 * 1024;
+        final Runtime runtime = Runtime.getRuntime();
+        final long usedMemoryMb = (runtime.totalMemory() - runtime.freeMemory()) / MEGA_BYTE_FACTOR;
+        final long maxMemoryMb = runtime.maxMemory() / MEGA_BYTE_FACTOR;
+        System.out.println("#### Memory usage [MB}: " + usedMemoryMb + " / " + maxMemoryMb);
+
         // =====================================================================
         // Users
         // =====================================================================
@@ -92,15 +98,17 @@ public class DevConfiguration {
         // =====================================================================
         // Bots and Matches
         // =====================================================================
-        Bot bot1 = botService.createNewBotRecord(getBotFile("jaegerbot1.jar"), "cern.ais.gridwars.JaegerBot", user1, Instant.now());
+        File sharedBotFile = Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), "gridwars-bots.jar").toFile();
 
-        Bot bot2 = botService.createNewBotRecord(getBotFile("jaegerbot2.jar"), "cern.ais.gridwars.JaegerBot", user2, Instant.now());
+        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.ExpandBot", user1, Instant.now());
+
+        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.JaegerBot", user2, Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord(getBotFile("gintonicbot.jar"), "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
+        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
         matchService.generateMatches(bot3);
 
-        Bot bot4 = botService.createNewBotRecord(getBotFile("brugalcolabot.jar"), "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
+        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
         matchService.generateMatches(bot4);
 
         matchWorkerService.wakeUpAllMatchWorkers();
@@ -110,9 +118,5 @@ public class DevConfiguration {
 //            .setSubject("Hello from GridWars")
 //            .setText("Mail sending is working!")
 //        );
-    }
-
-    private File getBotFile(String botJarFileName) {
-        return Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), botJarFileName).toFile();
     }
 }
