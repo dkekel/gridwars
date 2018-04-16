@@ -102,6 +102,7 @@ public class MatchRuntime {
             } catch (Exception e) {
                 error("Match execution failed: " + e.getMessage(), e);
                 populateErrorMatchResult(e.getMessage());
+                // TODO do we need to treat SecurityException here in a special way??
             }
 
             persistMatchResult();

@@ -157,6 +157,8 @@ public class Game
       System.setSecurityManager(new GridWarsSecurityManager());
     }*/
 
+    // TODO Refactor the code below do to it in the proper way using an Executor and completable futures
+    // TODO Handle SecurityException in a special way to find out which bot cheated
     Thread playerThread = new Thread()
     {
       @Override

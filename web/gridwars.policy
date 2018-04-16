@@ -1,0 +1,8 @@
+grant codeBase "file:/D:/dev/idea_workspace/gridwars/web/work/runtime/*" {
+    permission java.security.AllPermission;
+};
+
+grant {
+    // Grant no permissions to all other code bases, also including the bot jars.
+    //permission java.security.AllPermission;
+};
