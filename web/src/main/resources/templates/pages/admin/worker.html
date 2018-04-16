@@ -8,11 +8,11 @@
 
     <style>
         .worker-idle {
-            background-color: lightblue;
+            background-color: lightgreen;
         }
 
         .worker-running {
-            background-color: lightgreen;
+            background-color: #fff3cd;
         }
 
         .worker-stopped {
@@ -22,7 +22,7 @@
 </head>
 <body>
 <main layout:fragment="content" class="container">
-    <h1 class="text-center" th:text="#{page.admin.worker.title}"></h1>
+    <h2 class="text-center" th:text="#{page.admin.worker.title}"></h2>
 
     <div class="text-center">
         <div th:if="${started}" th:text="#{page.admin.worker.startSuccess}" class="alert alert-success d-inline-block" role="alert"></div>
@@ -30,7 +30,11 @@
         <div th:if="${stopped}" th:text="#{page.admin.worker.stopSuccess}" class="alert alert-warning d-inline-block" role="alert"></div>
     </div>
 
-    <table class="table">
+    <div class="text-center">
+        <span class="text-muted" th:text="#{page.admin.worker.activeThreads(${activeWorkerThreads}, ${maxWorkerThreads})}"></span>
+    </div>
+
+    <table class="table table-bordered table-sm">
         <thead class="thead-dark">
         <tr>
             <th scope="col" class="text-center" th:text="#{page.admin.worker.number}"></th>
@@ -55,10 +59,6 @@
         <form th:action="@{/admin/worker(action=stop)}" method="post" onsubmit="return confirm('Are you sure you want to STOP all workers?')">
             <button type="submit" th:text="#{page.admin.worker.stop}" class="btn btn-danger"></button>
         </form>
-    </div>
-
-    <div class="text-center mt-2">
-        <span class="text-muted font-italic">Active worker threads: <span th:text="${activeWorkerThreads} + ' / ' + ${maxWorkerThreads}"></span></span>
     </div>
 </main>
 </body>
