@@ -32,7 +32,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/user/confirm/**").permitAll()
             .antMatchers("/**").permitAll()
             .and()
-                .formLogin().loginPage("/user/signin").permitAll()
+                .formLogin().loginPage("/user/signin").defaultSuccessUrl("/team").permitAll()
             .and()
                 .logout().logoutUrl("/user/signout").logoutSuccessUrl("/").permitAll();
         // @formatter:on
