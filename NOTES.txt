@@ -20,6 +20,7 @@ Admin UI:
 API & Impl:
 - Clean up and reformat code
 - Re-implement turn threads using completeable futures to enforce timeout
+- Also redirect sysout/syserr to the bot output files during class initialisation and instantiation
 - How can I limit the output size of sysout/syserr?
     - Maybe own implementation or wrapper of PrintWriter that counts the characters and stops the output when limit was reached...?
     - Some bots may easily fill it with hundreds of MBs...
@@ -33,6 +34,9 @@ Emulator:
 - Create a new example/starter module that will be downloadable
 
 UI:
+- Have a public page per bot that list the scores and played matches. It should not contain secret information, only
+  to the owner and admin.
+  - All bot names in the UI should be links to the common bot pages
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 - Add a footer??
@@ -45,7 +49,6 @@ Matches:
 
 Server Deployment:
 - Create an HTTPS certificate using: https://www.sslforfree.com/
-    - First have to open CERN firewall
 
 Error handling:
 - Do not render error html pages on ajax request errors in controller methods
@@ -67,6 +70,9 @@ DB:
 Misc:
 - Create a new "gridwars-starter" package that has a basic gridwars setup with a main class and two example bots that
   fight each other
+
+- Create a main admin account for me and then 1-5 admin accounts (according to bot level) that will be used to
+  upload new bots
 
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
     - List suspiciously large match output log files
@@ -90,14 +96,11 @@ Info:
 GridWars Machine:
 ========================================================================================================================
 Setup:
-- Connect with root@gridwars
-    - Put allowed public keys in /root/.ssh/authorized_keys
-- Install Java JDK: yum install java-1.8.0-oracle-devel
-- Install Git: yum install git
-- Create SSH keypair: ssh-keygen -t rsa
-    - Add that keypair to the Bitbucket repo to have access to the GridWars repo
+- Connect with aisgi@gridwars
+- Install Git (if not available): yum install git
+- Accessing gridwars repo on Bitbucket: use "ForwardAgent yes" when using ssh to forward to the local cert when pulling
 
-Firewall:
+Local Firewall:
 - See: https://stackoverflow.com/questions/24729024/open-firewall-port-on-centos-7
 - firewall-cmd --get-active-zones
 - firewall-cmd --zone=public --add-port=80/tcp --permanent
@@ -105,6 +108,22 @@ Firewall:
 - firewall-cmd --zone=public --add-port=8080/tcp --permanent
 - firewall-cmd --zone=public --add-port=8443/tcp --permanent
 - firewall-cmd --reload
+
+External Firewall:
+- Request for opening ports from outside: https://landb.cern.ch/landb/portal/firewallRequest/newRequest?interface=gridwars.CERN.CH
+
+Justification:
+
+Professional Requirement:
+The machine will be used for a programming competition for students during the CERN Spring Campus 2018 event organised by CERN (AIS) at the Riga Technical University: https://indico.cern.ch/event/671305/
+
+The machine will run the programming competition controller and will serve the web frontend.
+
+De-Centralization:
+The students will create self developed bots in Java and will upload the jar files to the controller via the web interface. The controller will then execute matches between the bots in separate JVM instance (with a fully restricted SecurityManager environment). For this we need a lot of CPU and RAM to play the potentially thousands of matches in a reasonable amount of time. Furthermore, we need full control over the newly spawned JVM processes and have control over other environment properties. It's a very special programming competition system that requires a bit more control over the environment that can't (and probably should not) be provided by the central web services.
+
+Maintenance:
+The machine is managed by the AIS Puppet hostgroups and regularly kept up-to-date. The web app behind is based on Spring Boot 2.0 with a fully configured Spring MVC web security environment, using many many web security best-practices, making it a very secure web application (which is running as a non-root user). It's also and self-contained application that does not make use of any other CERN services whatsoever. The ports will be closed again not so long after the Spring Campus event, thus further minimising the risks. And after all, the developer who created this pearl (me, CERN whitehat) knows what he is doing. :)
 
 
 Useful links:
@@ -138,9 +157,6 @@ Useful links:
           runtime folder as the codeBase, including all jar files in there.
         - To all other code sources, which also includes the bot jar files, we only allow a minimal set to run
           code and to print to system.out and system.err.
-    - https://docs.oracle.com/javase/8/docs/technotes/guides/security/doprivileged.html
-        - Interesting information at the beginning that all classes shipped with the JDK/JRE are loaded with all
-          permissions, so we don't need to configure explicit permissions for them.
     - https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html
         - Lists all the relevant permissions that we can allow (or check to have disabled!)
     - Reflections: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#ReflectPermission
