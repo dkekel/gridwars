@@ -38,7 +38,7 @@
             <tbody>
                 <tr th:each="ranking,iter : ${rankings}">
                     <th th:text="${iter.index} + 1" scope="row" class="text-center"></th>
-                    <td th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'"></td>
+                    <td><a th:href="@{'/team/' + ${ranking.user.id}}" th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'" class="text-dark"></a></td>
                     <td th:text="${ranking.wins}" class="text-center"></td>
                     <td th:text="${ranking.draws}" class="text-center"></td>
                     <td th:text="${ranking.losses}" class="text-center"></td>

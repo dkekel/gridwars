@@ -53,6 +53,7 @@ public class RankingService {
                 rankingInfoUser1.draws++;
                 rankingInfoUser2.draws++;
         }
+        // Failed matches are currently not taken into consideration for the ranking calculation.
     }
 
     private RankingInfo getOrCreateRankingInfoForUser(User user, Map<String, RankingInfo> userRankings) {
@@ -82,6 +83,7 @@ public class RankingService {
         } else if (match.isDraw()) {
             rankingInfo.draws++;
         }
+        // Failed matches are currently not taken into consideration for the ranking calculation.
     }
 
     public static final class RankingInfo implements Comparable<RankingInfo> {

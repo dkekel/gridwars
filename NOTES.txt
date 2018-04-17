@@ -2,7 +2,15 @@ TODO:
 ========================================================================================================================
 Match runtime process:
 - Treat SecurityException in a special way in the game implementation to see which bot cheated
+    - Introduce a "wall of shame" table that records which bot (team) cheated when
+    - At the end we can show a page that lists the teams with the most cheating entries, should contain the famous "shame! shame!" gif ;))
 - Tweak the stack size -Xss
+
+UI:
+- Add some nice icons fot the "Winner" (e.g. a trophy) using an icon set like font awesome
+- Use DataTables to make the tables sortable etc.
+- Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
+- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 
 Admin UI:
 - Simple actions for
@@ -33,15 +41,10 @@ Emulator:
 - Rename "Visualizer" into "Emulator" and put it into its own module
 - Create a new example/starter module that will be downloadable
 
-UI:
-- Have a public page per bot that list the scores and played matches. It should not contain secret information, only
-  to the owner and admin.
-  - All bot names in the UI should be links to the common bot pages
-- Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
-- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
-- Add a footer??
-- Use DataTables to make the tables sortable etc.
-- Add some nice icons fot the "Winner" (e.g. a trophy) using an icon set like font awesome
+DB:
+- Check how to use a file for H2 db
+- add a password when using in production file mode
+- if the performance is too slow when using a file-based H2 db, then add a second level cache (EHCache)
 
 Matches:
 - Think about a fair scoring system for the ranking
@@ -62,10 +65,6 @@ Web access log:
 
 Mailing:
 - Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
-
-DB:
-- Check how to use a file for H2 db
-- add a password when using in production file mode
 
 Misc:
 - Create a new "gridwars-starter" package that has a basic gridwars setup with a main class and two example bots that

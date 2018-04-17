@@ -86,6 +86,8 @@ public class Match {
 
     private Instant ended;
 
+    private Instant cancelled;
+
     private Integer turnCount;
 
     @Size(max = 1024)
@@ -164,6 +166,15 @@ public class Match {
 
     public Match setEnded(Instant ended) {
         this.ended = ended;
+        return this;
+    }
+
+    public Instant getCancelled() {
+        return cancelled;
+    }
+
+    public Match setCancelled(Instant cancelled) {
+        this.cancelled = cancelled;
         return this;
     }
 

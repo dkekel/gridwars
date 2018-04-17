@@ -15,7 +15,6 @@
                     <th scope="col"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.team1}"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.team2}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.matches.winner}"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.turns}"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.duration}"></th>
                     <th scope="col" class="text-center" th:text="#{page.matches.started}"></th>
@@ -24,9 +23,8 @@
             <tbody>
                 <tr th:each="match : ${matches}" th:class="${match.isMatchOfUser(currentUser)} ? 'table-active' : _">
                     <td class="text-center"><a th:text="#{page.matches.show}" th:href="@{'/match/' + ${match.id}}"></a></td>
-                    <td th:text="${match.bot1.teamBotLabel}" th:class="${match.bot1Winner} ? 'font-weight-bold' : _"></td>
-                    <td th:text="${match.bot2.teamBotLabel}" th:class="${match.bot2Winner} ? 'font-weight-bold' : _"></td>
-                    <td th:text="${match.bot1Winner} ? 'Team 1' : (${match.bot2Winner} ? 'Team 2' : 'Draw')" class="text-center"></td>
+                    <td><a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark" th:classappend="${match.bot1Winner} ? 'font-weight-bold' : _"></a></td>
+                    <td><a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark" th:classappend="${match.bot2Winner} ? 'font-weight-bold' : _"></a></td>
                     <td th:text="${match.turnCount}" class="text-center"></td>
                     <td th:text="${#numbers.formatDecimal(match.durationMillis / 1000d, 1, 2)}" class="text-center"></td>
                     <td th:text="${#temporals.format(match.startedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>

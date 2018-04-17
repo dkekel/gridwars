@@ -91,6 +91,7 @@ public class MatchService {
 
     private void cancelMatch(Match match) {
         match.setStatus(Match.Status.CANCELLED);
+        match.setCancelled(Instant.now());
         matchRepository.save(match);
     }
 
@@ -153,6 +154,17 @@ public class MatchService {
 
     private boolean wasMatchStarted(Match match) {
         return STARTED_MATCH_STATUSES.contains(match.getStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Match> getAllPublicMatchesForBot(Bot bot) {
+        return matchRepository.findAllByBot1OrBot2(bot, bot).stream()
+            .filter(this::isPublic)
+            .collect(Collectors.toList());
+    }
+
+    private boolean isPublic(Match match) {
+        return match.isFinished() && (Match.Outcome.DNF != match.getOutcome());
     }
 
     @Transactional

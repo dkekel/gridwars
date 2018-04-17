@@ -12,6 +12,8 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -50,50 +52,16 @@ public class DevConfiguration {
         // =====================================================================
         // Users
         // =====================================================================
-        User user1 = userService.create(
-            new NewUserDto()
-                .setUsername("user1")
-                .setPassword("bla1")
-                .setEmail("user1@cern.ch")
-                .setTeamName("Team User1"),
-            false, true, false
-        );
-
-        User user2 = userService.create(
-            new NewUserDto()
-                .setUsername("user2")
-                .setPassword("bla2")
-                .setEmail("user2@cern.ch")
-                .setTeamName("Team User2"),
-            false, true, false
-        );
-
-        User user3 = userService.create(
-            new NewUserDto()
-                .setUsername("user3")
-                .setPassword("bla3")
-                .setEmail("user3@cern.ch")
-                .setTeamName("Team User3"),
-            false, true, false
-        );
-
-        User user4 = userService.create(
-            new NewUserDto()
-                .setUsername("user4")
-                .setPassword("bla4")
-                .setEmail("user4@cern.ch")
-                .setTeamName("Team User4"),
-            false, true, false
-        );
-
-        User user5 = userService.create(
-            new NewUserDto()
-                .setUsername("user5")
-                .setPassword("bla4")
-                .setEmail("user5@cern.ch")
-                .setTeamName("Team User5"),
-            false, true, false
-        );
+        List<User> testUsers = new ArrayList<>();
+        for (int i = 1; i <= 6; i++) {
+            testUsers.add(userService.create(
+                new NewUserDto()
+                    .setUsername("user" + i)
+                    .setPassword("bla" + i)
+                    .setEmail("user" + i + "@cern.ch")
+                    .setTeamName("Team User" + i),
+                false, true, false));
+        }
 
         User admin1 = userService.create(
             new NewUserDto()
@@ -109,18 +77,18 @@ public class DevConfiguration {
         // =====================================================================
         File sharedBotFile = Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), "gridwars-bots.jar").toFile();
 
-        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.ExpandBot", user1, Instant.now());
+        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.ExpandBot", testUsers.get(0), Instant.now());
 
-        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.JaegerBot", user2, Instant.now());
+        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.JaegerBot", testUsers.get(1), Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.GinTonicBot", user3, Instant.now());
+        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.GinTonicBot", testUsers.get(2), Instant.now());
         matchService.generateMatches(bot3);
 
-        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
+        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.BrugalColaBot", testUsers.get(3), Instant.now());
         matchService.generateMatches(bot4);
 
-        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.PermissionCheckerBot", user5, Instant.now());
+        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.PermissionCheckerBot", testUsers.get(4), Instant.now());
         matchService.generateMatches(bot5);
 
         matchWorkerService.wakeUpAllMatchWorkers();

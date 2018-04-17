@@ -19,7 +19,6 @@
     <script th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
 </head>
 <body>
-    <!-- TODO improve navbar layout: https://getbootstrap.com/docs/4.0/components/navbar/#color-schemes -->
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" th:href="@{/}">
             <img th:src="@{/static/img/cern_logo.png}" width="30" height="30" alt="">
@@ -42,7 +41,7 @@
                     <a class="nav-link" th:href="@{/match/list}" th:text="#{layout.main.matches}" th:classappend="${#request.getRequestURI().contains('/match/list') ? 'active' : ''}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/bot/show}" th:text="#{layout.main.bot}" th:classappend="${#request.getRequestURI().contains('/bot/') ? 'active' : ''}"></a>
+                    <a class="nav-link" th:href="@{/team}" th:text="#{layout.main.team}" th:classappend="${#request.getRequestURI().contains('/team') ? 'active' : ''}"></a>
                 </li>
                 <li th:if="${currentUser.admin}" class="nav-item dropdown" th:classappend="${#request.getRequestURI().contains('/admin/') ? 'active' : ''}">
                     <a th:text="#{layout.main.admin}" class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"></a>

@@ -1,13 +1,10 @@
 package cern.ais.gridwars.web.controller;
 
 import cern.ais.gridwars.web.domain.Bot;
-import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.BotFileService;
 import cern.ais.gridwars.web.service.BotService;
 import cern.ais.gridwars.web.service.BotUploadService;
-import cern.ais.gridwars.web.service.MatchService;
-import cern.ais.gridwars.web.service.RankingService;
 import cern.ais.gridwars.web.util.ControllerUtils;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.slf4j.Logger;
@@ -28,10 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @Controller
@@ -44,39 +38,12 @@ public class BotController {
     private final BotService botService;
     private final BotUploadService botUploadService;
     private final BotFileService botFileService;
-    private final MatchService matchService;
-    private final RankingService rankingService;
 
     @Autowired
-    public BotController(BotService botService, BotUploadService botUploadService, BotFileService botFileService,
-                         MatchService matchService, RankingService rankingService) {
+    public BotController(BotService botService, BotUploadService botUploadService, BotFileService botFileService) {
         this.botService = Objects.requireNonNull(botService);
         this.botUploadService = Objects.requireNonNull(botUploadService);
         this.botFileService = Objects.requireNonNull(botFileService);
-        this.matchService = Objects.requireNonNull(matchService);
-        this.rankingService = Objects.requireNonNull(rankingService);
-    }
-
-    @GetMapping("/show")
-    public ModelAndView showActiveBot(@AuthenticationPrincipal User currentUser) {
-        ModelAndViewBuilder mavBuilder = ModelAndViewBuilder.forPage("bot/show");
-
-        botService.getActiveBotOfUser(currentUser).ifPresent(bot -> {
-            List<Match> botMatches = getBotMatches(bot);
-
-            mavBuilder
-                .addAttribute("activeBot", bot)
-                .addAttribute("botMatches", botMatches)
-                .addAttribute("rankingInfo", rankingService.generateRankingInfoOfMatchesForBot(botMatches, bot));
-        });
-
-        return mavBuilder.toModelAndView();
-    }
-
-    private List<Match> getBotMatches(Bot bot) {
-        return matchService.getAllStartedMatchesForBot(bot).stream()
-            .sorted(Comparator.comparing(Match::getStarted).reversed())
-            .collect(Collectors.toList());
     }
 
     @GetMapping("/download/{botId}")
@@ -115,10 +82,9 @@ public class BotController {
     }
 
     @PostMapping("/upload")
-    public ModelAndView doUpload(@RequestParam MultipartFile botJarFile,
-                                 RedirectAttributes redirectAttributes,
-                                 @AuthenticationPrincipal User currentUser) {
-        LOG.info("Received bot jar - name: {}, original name: {}, content type: {}, size: {}, upload user: {}",
+    public ModelAndView upload(@RequestParam MultipartFile botJarFile, RedirectAttributes redirectAttributes,
+                               @AuthenticationPrincipal User currentUser) {
+        LOG.info("Received bot jar upload - name: {}, original name: {}, content type: {}, size: {}, upload user: {}",
                 botJarFile.getName(), botJarFile.getOriginalFilename(), botJarFile.getContentType(),
                 botJarFile.getSize(), currentUser.getUsername());
 
@@ -129,6 +95,6 @@ public class BotController {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());
         }
 
-        return ModelAndViewBuilder.forRedirect("/bot/show").toModelAndView();
+        return ModelAndViewBuilder.forRedirect("/team/show").toModelAndView();
     }
 }
