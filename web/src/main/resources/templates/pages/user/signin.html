@@ -29,10 +29,10 @@
                 <input name="password" type="password" class="form-control" th:placeholder="#{page.user.signin.password}" maxlength="32" autocomplete="password" required th:autofocus="${confirmed != null}">
             </div>
             <div class="forgot-password-hint">
-                <small class="text-muted">Forgot your username or password? Please contact <a href="mailto:grid.wars@cern.ch">grid.wars@cern.ch</a></small>
+                <small class="text-muted" th:utext="#{page.user.signin.forgotPassword}"></small>
             </div>
             <div>
-                <small class="text-muted">No user account yet? <a th:href="@{/user/signup}">Sign up here</a></small>
+                <small class="text-muted" th:utext="#{page.user.signin.goToSignUp}"></small>
             </div>
             <div class="mt-1">
                 <button type="submit" th:text="#{page.user.signin.submit}" class="btn btn-primary"></button>

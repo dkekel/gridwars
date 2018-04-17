@@ -43,7 +43,7 @@
             <div class="form-group">
                 <label th:text="#{page.user.signup.registrationPassword}"></label>
                 <input th:field="*{registrationPassword}" name="registrationPassword" class="form-control" type="password" th:placeholder="#{page.user.signup.registrationPassword.placeholder}" th:errorclass="is-invalid" required/>
-                <small th:text="#{page.user.signup.registrationPassword.help}" class="form-text text-muted"></small>
+                <small th:utext="#{page.user.signup.registrationPassword.help}" class="form-text text-muted"></small>
                 <p th:each="error : ${#fields.errors('registrationPassword')}" th:text="${error}" class="text-danger"></p>
             </div>
             <div>
