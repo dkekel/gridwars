@@ -17,6 +17,7 @@
         </div>
         <div th:if="${currentUser}">
             <p th:text="#{page.welcome.greeting(${currentUser.teamName})}"></p>
+            <!-- TODO Add hint and link to getting started guide -->
         </div>
     </main>
 </body>
