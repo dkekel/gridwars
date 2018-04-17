@@ -100,6 +100,10 @@ Setup:
 - Install Git (if not available): yum install git
 - Accessing gridwars repo on Bitbucket: use "ForwardAgent yes" when using ssh to forward to the local cert when pulling
 
+Running GridWars app:
+- Running from ssh shell without being closed on disconnect (output will be written to nohup.out):
+$ nohup /ais/gridwars/gradlew :web:bootRun &
+
 Local Firewall:
 - See: https://stackoverflow.com/questions/24729024/open-firewall-port-on-centos-7
 - firewall-cmd --get-active-zones
