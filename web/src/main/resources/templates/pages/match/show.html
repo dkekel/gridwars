@@ -29,10 +29,14 @@
         <div th:text="#{page.match.show.error.loading}" id="matchDataLoadErrorLabel" class="alert alert-danger text-center" role="alert" hidden></div>
 
         <div th:unless="${error}" id="gameView" class="d-flex justify-content-center" hidden>
-            <div class="d-flex flex-column justify-content-center text-center mr-3">
-                <h4 class="team-1-label font-weight-bold text-truncate" th:text="${match.bot1.user.teamName}"></h4>
-                <h5 class="text-muted text-truncate" th:text="${match.bot1.name}"></h5>
-                <h5 th:if="${match.bot1Winner}" th:text="#{page.match.show.winner}"></h5>
+            <div class="text-center mr-3">
+                <div class="d-flex justify-content-center align-items-end h-50">
+                    <i th:if="${match.bot1Winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                </div>
+                <div class="h-50">
+                    <h4 class="team-1-label font-weight-bold text-truncate" th:text="${match.bot1.user.teamName}"></h4>
+                    <h5 class="text-muted text-truncate" th:text="${match.bot1.name}"></h5>
+                </div>
             </div>
 
             <div class="text-center">
@@ -55,10 +59,14 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-column justify-content-center text-center ml-3">
-                <h4 class="team-2-label font-weight-bold text-truncate" th:text="${match.bot2.user.teamName}"></h4>
-                <h5 class="text-muted text-truncate" th:text="${match.bot2.name}"></h5>
-                <h5 th:if="${match.bot2Winner}" th:text="#{page.match.show.winner}"></h5>
+            <div class="text-center ml-3">
+                <div class="d-flex justify-content-center align-items-end h-50">
+                    <i th:if="${match.bot2Winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                </div>
+                <div class="h-50">
+                    <h4 class="team-2-label font-weight-bold text-truncate" th:text="${match.bot2.user.teamName}"></h4>
+                    <h5 class="text-muted text-truncate" th:text="${match.bot2.name}"></h5>
+                </div>
             </div>
         </div>
 

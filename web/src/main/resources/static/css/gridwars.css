@@ -7,3 +7,7 @@ body {
 .signup-form {
     max-width: 35rem;
 }
+
+.winner {
+    color: goldenrod;
+}
