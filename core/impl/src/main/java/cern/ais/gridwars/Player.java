@@ -6,7 +6,6 @@
  *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
  *   Gerardo Lastra (gerardo.lastra@cern.ch)
  */
-
 package cern.ais.gridwars;
 
 import cern.ais.gridwars.bot.PlayerBot;
@@ -15,61 +14,54 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+
 public class Player {
-  final PlayerBot        playerBot;
-	final File outputFile;
-	final FileOutputStream outputStream;
-  final Integer colorIndex;
-  final long id;
 
-  public Player(long id, PlayerBot playerBot, File outputFile, Integer colorIndex) throws FileNotFoundException {
-    this.id = id;
-    this.playerBot = playerBot;
-    this.outputFile = outputFile;
-    this.outputStream = outputFile != null ? new FileOutputStream(outputFile) : null;
-    this.colorIndex = colorIndex;
-  }
+    private final long id;
+    private final PlayerBot playerBot;
+    private final FileOutputStream outputStream;
+    private final int colorIndex;
 
-  public long getId()
-  {
-    return id;
-  }
+    public Player(long id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
+        this.id = id;
+        this.playerBot = playerBot;
+        this.outputStream = (outputFile != null) ? new FileOutputStream(outputFile) : null;
+        this.colorIndex = colorIndex;
+    }
 
-  public PlayerBot getPlayerBot()
-  {
-    return playerBot;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public FileOutputStream getOutputStream()
-  {
-    return outputStream;
-  }
+    public PlayerBot getPlayerBot() {
+        return playerBot;
+    }
 
-  public Integer getColorIndex()
-  {
-    return colorIndex;
-  }
+    public FileOutputStream getOutputStream() {
+        return outputStream;
+    }
 
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    public int getColorIndex() {
+        return colorIndex;
+    }
 
-    Player player = (Player) o;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    return id == player.id;
-  }
+        Player player = (Player) o;
 
-  @Override
-  public int hashCode()
-  {
-    return Long.valueOf(id).hashCode();
-  }
+        return id == player.id;
+    }
 
-  @Override
-  public String toString()
-  {
-    return String.valueOf(id);
-  }
+    @Override
+    public int hashCode() {
+        return Long.valueOf(id).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id);
+    }
 }

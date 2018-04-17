@@ -75,7 +75,7 @@ public class Main implements PlayerBot
 			{
 				// FIXME test wasn't coordinate creation faster;
 				boolean isMy = universeView.belongsToMe(x, y);
-				Long population = universeView.getPopulation(x, y);
+				int population = universeView.getPopulation(x, y);
 				Cell cell = grid[y][x];
 				cell.population = isMy ? population : -population;
 				cell.coords = currCoords;

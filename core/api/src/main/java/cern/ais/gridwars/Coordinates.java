@@ -1,46 +1,39 @@
-/*
- * Copyright (C) CERN 2013 - European Laboratory for Particle Physics
- * All Rights Reserved.
- *
- * Authors:
- *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
- *   Gerardo Lastra (gerardo.lastra@cern.ch)
- */
-
 package cern.ais.gridwars;
 
 import cern.ais.gridwars.command.MovementCommand;
 
+
 /**
- * Represents a position in the grid where the game is played.
+ * <p>Represents a position in the universe. All function return new <code>Coordinates</code> objects
+ * relative to the current <code>Coordinates</code> object.</p>
+ *
+ * <p>Instances of this class are immutable and therefore thread-safe.</p>
  */
-public interface Coordinates
-{
-  public int getX();
+public interface Coordinates {
 
-  public int getY();
+    int getX();
 
-  /**
-   * Used to get a coordinate object placed in a relative distance to this one.
-   * @param distance Relative distance.
-   * @param direction Relative direction.
-   * @return New Coordinates object representing the new position.
-   */
-  public Coordinates getRelative(int distance, MovementCommand.Direction direction);
+    int getY();
 
-  public Coordinates getLeft(int distance);
+    /**
+     * Used to get a coordinate object placed in a relative distance to this one.
+     * Returns the relative coordinates in the direction and the distance.
+     */
+    Coordinates getRelative(int distance, MovementCommand.Direction direction);
 
-  public Coordinates getLeft();
+    Coordinates getLeft(int distance);
 
-  public Coordinates getRight(int distance);
+    Coordinates getLeft();
 
-  public Coordinates getRight();
+    Coordinates getRight(int distance);
 
-  public Coordinates getUp(int distance);
+    Coordinates getRight();
 
-  public Coordinates getUp();
+    Coordinates getUp(int distance);
 
-  public Coordinates getDown(int distance);
+    Coordinates getUp();
 
-  public Coordinates getDown();
+    Coordinates getDown(int distance);
+
+    Coordinates getDown();
 }

@@ -1,61 +1,45 @@
-/*
- * Copyright (C) CERN 2013 - European Laboratory for Particle Physics
- * All Rights Reserved.
- *
- * Authors:
- *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
- *   Gerardo Lastra (gerardo.lastra@cern.ch)
- */
-
 package cern.ais.gridwars.command;
 
 import cern.ais.gridwars.Coordinates;
 
+
 /**
- * Bean that encapsulates a movement command.
+ * Encapsulates a movement command.
  */
-public final class MovementCommand
-{
+public final class MovementCommand {
 
-  public static enum Direction
-  {
-    LEFT, RIGHT, UP, DOWN
-  }
-
-  final Coordinates coordinatesFrom;
-  final Direction   direction;
-  final Long        amount;
-
-  public MovementCommand(Coordinates coordinatesFrom, Direction direction, Long amount)
-  {
-    if (amount <= 0)
-    {
-      throw new RuntimeException("Negative amount " + amount.toString() + " in movement command.");
+    public enum Direction {
+        LEFT, RIGHT, UP, DOWN
     }
 
-    this.coordinatesFrom = coordinatesFrom;
-    this.direction = direction;
-    this.amount = amount;
-  }
+    private final Coordinates coordinatesFrom;
+    private final Direction direction;
+    private final int amount;
 
-  public final Coordinates getCoordinatesFrom()
-  {
-    return coordinatesFrom;
-  }
+    public MovementCommand(Coordinates coordinatesFrom, Direction direction, int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Negative amount in movement command: " + amount);
+        }
 
-  public final Direction getDirection()
-  {
-    return direction;
-  }
+        this.coordinatesFrom = coordinatesFrom;
+        this.direction = direction;
+        this.amount = amount;
+    }
 
-  public final Long getAmount()
-  {
-    return amount;
-  }
+    public final Coordinates getCoordinatesFrom() {
+        return coordinatesFrom;
+    }
 
-  @Override
-  public String toString()
-  {
-    return coordinatesFrom + "->" + direction + "(" + amount + ")";
-  }
+    public final Direction getDirection() {
+        return direction;
+    }
+
+    public final int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public String toString() {
+        return coordinatesFrom + " -> " + direction + " (" + amount + ")";
+    }
 }

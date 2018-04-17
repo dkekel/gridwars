@@ -64,7 +64,7 @@ public class Visualizer {
                         }
 
                         int alpha = (int) (Math.abs(population) / (double) GameConstants.MAXIMUM_POPULATION * 255);
-                        Color color = cell.getOwner().colorIndex == 0 ? Color.blue : Color.red;
+                        Color color = cell.getOwner().getColorIndex() == 0 ? Color.blue : Color.red;
                         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
                         graphics.setColor(color);

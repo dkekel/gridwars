@@ -120,24 +120,24 @@ public class AimedBot implements PlayerBot
 			if ((ratioX * (troopsInCell-five)) > 1)
 			{
 				//System.out.println("HAHA1: " +troopsInCell);
-				movementCommands.add(new MovementCommand(startCoords, Direction.LEFT, (long)(ratioX * (troopsInCell-five))));
+				movementCommands.add(new MovementCommand(startCoords, Direction.LEFT, (int) (ratioX * (troopsInCell-five))));
 			}
 		} else {
 			//System.out.println("HAHA2: " +troopsInCell);
 			if ((ratioX * (troopsInCell - five)) > 1) {
 				//System.out.println("HAHA2: " +troopsInCell);
-				movementCommands.add(new MovementCommand(startCoords, Direction.RIGHT, (long)(ratioX * (troopsInCell-five))));
+				movementCommands.add(new MovementCommand(startCoords, Direction.RIGHT, (int)(ratioX * (troopsInCell-five))));
 			}
 		}
 		if (deltaY < 0) {
 			if ((ratioY * (troopsInCell - five)) > 1) {
 				//System.out.println("HAHA3: " +(troopsInCell - five));
-				movementCommands.add(new MovementCommand(startCoords, Direction.UP, (long)(ratioY * (troopsInCell-five))));
+				movementCommands.add(new MovementCommand(startCoords, Direction.UP, (int)(ratioY * (troopsInCell-five))));
 			}
 		} else {
 			if ((ratioY * (troopsInCell - five)) > 1) {
 				//System.out.println("HAHA4: " +troopsInCell);
-				movementCommands.add(new MovementCommand(startCoords, Direction.DOWN, (long)(ratioY * (troopsInCell-five))));
+				movementCommands.add(new MovementCommand(startCoords, Direction.DOWN, (int)(ratioY * (troopsInCell-five))));
 			}
 		}
 	}

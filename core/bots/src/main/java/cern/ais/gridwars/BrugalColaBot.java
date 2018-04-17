@@ -155,7 +155,7 @@ public class BrugalColaBot implements PlayerBot {
         boolean mine;
         boolean done = false;
 
-        final long originalPopulation;
+        final int originalPopulation;
         final Coordinates coordinates;
         final List<NeighborCell> neighbours = new LinkedList<NeighborCell>();
 
@@ -372,9 +372,9 @@ public class BrugalColaBot implements PlayerBot {
     private abstract class Command {
         protected final Cell from;
         protected final Direction direction;
-        protected final long amount;
+        protected final int amount;
 
-        public Command(Cell from, Direction direction, long amount) {
+        public Command(Cell from, Direction direction, int amount) {
             this.from = from;
             this.direction = direction;
             this.amount = amount;
@@ -391,19 +391,19 @@ public class BrugalColaBot implements PlayerBot {
     }
 
     private class ExpandCommand extends Command {
-        public ExpandCommand(Cell from, Direction direction, long amount) {
+        public ExpandCommand(Cell from, Direction direction, int amount) {
             super(from, direction, amount);
         }
     }
 
     private class AttackCommand extends Command {
-        public AttackCommand(Cell from, Direction direction, long amount) {
+        public AttackCommand(Cell from, Direction direction, int amount) {
             super(from, direction, amount);
         }
     }
 
     private class DefenseCommand extends Command {
-        public DefenseCommand(Cell from, Direction direction, long amount) {
+        public DefenseCommand(Cell from, Direction direction, int amount) {
             super(from, direction, amount);
         }
     }

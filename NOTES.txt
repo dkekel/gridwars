@@ -7,7 +7,6 @@ Match runtime process:
 - Tweak the stack size -Xss
 
 UI:
-- Add some nice icons fot the "Winner" (e.g. a trophy) using an icon set like font awesome
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard

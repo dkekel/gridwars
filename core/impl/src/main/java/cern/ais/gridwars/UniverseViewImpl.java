@@ -6,7 +6,6 @@
  *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
  *   Gerardo Lastra (gerardo.lastra@cern.ch)
  */
-
 package cern.ais.gridwars;
 
 import cern.ais.gridwars.cell.Cell;
@@ -14,90 +13,75 @@ import cern.ais.gridwars.universe.Universe;
 
 import java.util.List;
 
-public class UniverseViewImpl implements UniverseView
-{
-  private final Universe          universe;
-  private final Player            player;
-  private final List<Coordinates> playerOwnedCells;
-  private final int               turn;
 
-  public UniverseViewImpl(Universe universe, Player player, int turn)
-  {
-    this.universe = universe;
-    this.player = player;
-    this.turn = turn;
-    playerOwnedCells = this.universe.getCellsForPlayer(this.player);
-  }
+public class UniverseViewImpl implements UniverseView {
 
-  public List<Coordinates> getMyCells()
-  {
-    return playerOwnedCells;
-  }
+    private final Universe universe;
+    private final Player player;
+    private final List<Coordinates> playerOwnedCells;
+    private final int turn;
 
-  public Long getPopulation(Coordinates coordinates)
-  {
-    return universe.getCell(coordinates).getPopulation();
-  }
+    public UniverseViewImpl(Universe universe, Player player, int turn) {
+        this.universe = universe;
+        this.player = player;
+        this.turn = turn;
+        this.playerOwnedCells = this.universe.getCellsForPlayer(this.player);
+    }
 
-  public Long getPopulation(int x, int y)
-  {
-    return getPopulation(new CoordinatesImpl(x, y));
-  }
+    public List<Coordinates> getMyCells() {
+        return playerOwnedCells;
+    }
 
-  public boolean isEmpty(Coordinates coordinates)
-  {
-    return universe.getCell(coordinates).isEmpty();
-  }
+    public int getPopulation(Coordinates coordinates) {
+        return universe.getCell(coordinates).getPopulation();
+    }
 
-  public boolean isEmpty(int x, int y)
-  {
-    return universe.getCell(x, y).isEmpty();
-  }
+    public int getPopulation(int x, int y) {
+        return getPopulation(new CoordinatesImpl(x, y));
+    }
 
-  public boolean belongsToMe(Coordinates coordinates)
-  {
-    Cell cell = universe.getCell(coordinates);
-    return !cell.isEmpty() && player.equals(cell.getOwner());
-  }
+    public boolean isEmpty(Coordinates coordinates) {
+        return universe.getCell(coordinates).isEmpty();
+    }
 
-  public boolean belongsToMe(int x, int y)
-  {
-    return belongsToMe(new CoordinatesImpl(x, y));
-  }
+    public boolean isEmpty(int x, int y) {
+        return universe.getCell(x, y).isEmpty();
+    }
 
+    public boolean belongsToMe(Coordinates coordinates) {
+        Cell cell = universe.getCell(coordinates);
+        return !cell.isEmpty() && player.equals(cell.getOwner());
+    }
 
-  public int getUniverseSize()
-  {
-    return GameConstants.UNIVERSE_SIZE;
-  }
+    public boolean belongsToMe(int x, int y) {
+        return belongsToMe(new CoordinatesImpl(x, y));
+    }
 
-  public Double getGrowthRate()
-  {
-    return GameConstants.GROWTH_RATE;
-  }
+    public int getUniverseSize() {
+        return GameConstants.UNIVERSE_SIZE;
+    }
 
-  public Long getMaximumPopulation()
-  {
-    return GameConstants.MAXIMUM_POPULATION;
-  }
+    public double getGrowthRate() {
+        return GameConstants.GROWTH_RATE;
+    }
 
-  public int getTimeOutInMilliseconds()
-  {
-    return GameConstants.TIMEOUT_DURATION_MS;
-  }
+    public long getMaximumPopulation() {
+        return GameConstants.MAXIMUM_POPULATION;
+    }
 
-  public int getTurnLimit()
-  {
-    return GameConstants.TURN_LIMIT;
-  }
+    public int getTimeOutInMilliseconds() {
+        return GameConstants.TURN_TIMEOUT_DURATION_MS;
+    }
 
-  public int getCurrentTurn()
-  {
-    return turn;
-  }
+    public int getTurnLimit() {
+        return GameConstants.TURN_LIMIT;
+    }
 
-  public Coordinates getCoordinates(int x, int y)
-  {
-  	return new CoordinatesImpl(x, y);
-  }
+    public int getCurrentTurn() {
+        return turn;
+    }
+
+    public Coordinates getCoordinates(int x, int y) {
+        return new CoordinatesImpl(x, y);
+    }
 }
