@@ -143,8 +143,8 @@ class MatchExecutor {
         args.add(createJavaExecutablePath());
         args.addAll(createJvmMemoryArguments());
         args.addAll(createMatchRuntimeClassPathArguments());
-        args.addAll(createBotArguments(match));
         args.addAll(createSecurityManagerArguments());
+        args.addAll(createBotArguments(match));
         args.add(MatchRuntimeConstants.MATCH_RUNTIME_MAIN_CLASS_NAME);
         return args;
     }
@@ -187,6 +187,24 @@ class MatchExecutor {
         return file.getName().toLowerCase().endsWith(".jar");
     }
 
+    private List<String> createSecurityManagerArguments() {
+        return Arrays.asList(
+            createSysPropArgument(MatchRuntimeConstants.MATCH_RUNTIME_DIR, gridWarsProperties.getDirectories().getRuntimeDir()),
+            "-Djava.security.manager",
+            createSecurityManagerPolicyArgument()
+        );
+    }
+
+    private String createSecurityManagerPolicyArgument() {
+        String policyFilePath = Paths.get(gridWarsProperties.getDirectories().getRuntimeDir(),
+            MatchRuntimeConstants.GRIDWARS_SECURITY_POLICY_FILE_NAME).toString();
+
+        // The double equal signs for java.security.policy are intended! It means to only use the specified
+        // policy file and not first evaluate the system default policy files, which is what we want.
+        // See: https://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html#DefaultLocs
+        return "-Djava.security.policy==" + policyFilePath;
+    }
+
     private List<String> createBotArguments(Match match) {
         return Arrays.asList(
             createSysPropArgument(MatchRuntimeConstants.BOT_1_JAR_PATH_SYS_PROP_KEY, determineBotJarPath(match.getBot1())),
@@ -198,12 +216,6 @@ class MatchExecutor {
 
     private String createSysPropArgument(String key, String value) {
         return "-D" + key + "=" + value;
-    }
-
-    private List<String> createSecurityManagerArguments() {
-        // The double equal signs for java.security.policy are intended! It means to only use the specified
-        // policy file and not first evaluate the system default policy files, which is what we want.
-        return Arrays.asList("-Djava.security.manager", "-Djava.security.policy==gridwars.policy");
     }
 
     private String determineBotJarPath(Bot bot) {

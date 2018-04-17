@@ -1,0 +1,15 @@
+// Allow the GridWars runtime code to do anything. After all, "we know what we are doing" (tm).
+//
+// The directory containing the runtime jar files is taken from a system property here to not
+// hardcode the filepath here. This path changes on different platform and depends on where
+// we place the work directory, which can vary as well.
+// See: https://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html#PropertyExp
+grant codeBase "file:${gridwars.runtime.dir}/*" {
+    permission java.security.AllPermission;
+};
+
+// All other code sources will not receive any permissions. This will also include the bot
+// jar files, they will run with a completely locked down security context, so the bots
+// won't be able to cheat.
+grant {
+};

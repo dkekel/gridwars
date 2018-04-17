@@ -86,6 +86,15 @@ public class DevConfiguration {
             false, true, false
         );
 
+        User user5 = userService.create(
+            new NewUserDto()
+                .setUsername("user5")
+                .setPassword("bla4")
+                .setEmail("user5@cern.ch")
+                .setTeamName("Team User5"),
+            false, true, false
+        );
+
         User admin1 = userService.create(
             new NewUserDto()
                 .setUsername("admin")
@@ -110,6 +119,9 @@ public class DevConfiguration {
 
         Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.BrugalColaBot", user4, Instant.now());
         matchService.generateMatches(bot4);
+
+        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.PermissionCheckerBot", user5, Instant.now());
+        matchService.generateMatches(bot5);
 
         matchWorkerService.wakeUpAllMatchWorkers();
 

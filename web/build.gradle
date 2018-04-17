@@ -95,11 +95,10 @@ task setUpRuntimeLibWorkDir(type: Copy, dependsOn: cleanWorkDir) {
     from project(':core:api').jar
     from project(':core:impl').jar
     from project(':core:runtime').jar
-    from 'gridwars.policy'
+    from project(':core:runtime').file('gridwars.policy')
 
     into project.file("${workDirName}/runtime")
 }
 
-task setUpWorkDir(dependsOn: [setUpBotsWorkDir, setUpRuntimeLibWorkDir]) {
-}
+task setUpWorkDir(dependsOn: [setUpBotsWorkDir, setUpRuntimeLibWorkDir])
 bootRun.dependsOn(setUpWorkDir)
