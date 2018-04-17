@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +53,12 @@ public class MatchWorkerService {
     }
 
     public void wakeUpAllMatchWorkers() {
-        matchWorkers.forEach(MatchWorker::wakeUp);
+        // Randomise the order in which we wake up the workers. This is just to avoid having
+        // the first few workers do all the work because they are woken up first. That's
+        // unfair, they might also want to go back to bad immediately. Empathic programming!
+        List<MatchWorker> matchWorkersShuffled = new ArrayList<>(matchWorkers);
+        Collections.shuffle(matchWorkersShuffled);
+        matchWorkersShuffled.forEach(MatchWorker::wakeUp);
         LOG.debug("Woke up all workers");
     }
 
