@@ -14,7 +14,7 @@ import cern.ais.gridwars.coordinates.CoordinatesImpl;
 import cern.ais.gridwars.universe.ArrayUniverse;
 import cern.ais.gridwars.universe.Universe;
 import cern.ais.gridwars.universe.UniverseViewImpl;
-import cern.ais.gridwars.util.OutputSwitcher;
+import cern.ais.gridwars.util.StdOutputSwitcher;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -46,6 +46,10 @@ public class Game {
         this.playerIterator = this.playerList.iterator();
         this.turnCallback = Objects.requireNonNull(turnCallback);
         this.debugMode = debugMode;
+
+        if (playerList.size() < 2) {
+            throw new IllegalArgumentException("Need at least two players to play a game");
+        }
     }
 
     public Universe getUniverse() {
@@ -65,7 +69,7 @@ public class Game {
     }
 
     public Player getWinner() {
-        checkIfFinished();
+        assertIsFinished();
         boolean potentialDraw = false;
         Player winner = null;
         int winnerPopulation = -1;
@@ -90,7 +94,7 @@ public class Game {
         return potentialDraw ? null : winner;
     }
 
-    private void checkIfFinished() {
+    private void assertIsFinished() {
         if (!isFinished()) {
             throw new IllegalStateException("Game not finished");
         }
@@ -161,7 +165,7 @@ public class Game {
         };
 
         if (player.getOutputStream() != null) {
-            OutputSwitcher.getInstance().switchToFile(player.getOutputStream());
+            StdOutputSwitcher.getInstance().switchToFile(player.getOutputStream());
         }
 
         playerThread.start();
@@ -195,7 +199,7 @@ public class Game {
             }
         }
 
-        OutputSwitcher.getInstance().restoreInitial();
+        StdOutputSwitcher.getInstance().restoreInitial();
 
         // Battle resolution & clean-up
         for (Cell cell : universe.getAllCells()) {

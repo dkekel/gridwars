@@ -16,6 +16,11 @@ A: Yes, it's 50 milliseconds. If you fail to provide a result within this time, 
 Q: Is there a timout for the whole match?
 A: Yes, it's XX seconds. If the match takes longer, it will be considered as failed and will not be considered for the rank calculation.
 
+Q: Can I output logs for my bot?
+A: Yes, you can simply write to stdout and/or stderr (System.out, System.err). The output will be redirected in a file
+   that you can download from the match view. Please note that the total maximal text that you are allowed to write
+   is X MB. If you try to print more, it will be discarded.
+
 Q: Can I read or write files on the file system?
 A: No.
 
