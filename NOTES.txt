@@ -27,6 +27,9 @@ Admin UI:
 API & Impl:
 - Re-implement turn threads using completeable futures to enforce timeout
 - Also redirect sysout/syserr to the bot output files during class initialisation and instantiation
+- Do not expose Impl classes to bot code
+    - the starter project will need a dependency to the emulator, which uses the Impl classes, which also makes them
+      visible in the bot class path. The packages should be rearranged that the bot class don't see the Impl classes.
 - How can I limit the output size of sysout/syserr?
     - Maybe own implementation or wrapper of PrintWriter that counts the characters and stops the output when limit was reached...?
     - Some bots may easily fill it with hundreds of MBs...
@@ -68,8 +71,7 @@ Misc:
 - Create a new "gridwars-starter" package that has a basic gridwars setup with a main class and two example bots that
   fight each other
 
-- Create a main admin account for me and then 1-5 admin accounts (according to bot level) that will be used to
-  upload new bots
+- Create a main admin account for me and then 1-7 admin accounts (according to bot level) that will be used to upload new bots
 
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
     - List suspiciously large match output log files
@@ -93,7 +95,7 @@ Info:
 GridWars Machine:
 ========================================================================================================================
 Setup:
-- Connect with aisgi@gridwars
+- Connect with aisgi@gridwars (or root@gridwars for actions that require root)
 - Install Git (if not available): yum install git
 - Accessing gridwars repo on Bitbucket: use "ForwardAgent yes" when using ssh to forward to the local cert when pulling
 
@@ -101,17 +103,16 @@ Running GridWars app:
 - Running from ssh shell without being closed on disconnect (output will be written to nohup.out):
 $ nohup /ais/gridwars/gradlew :web:bootRun &
 
-Local Firewall:
-- See: https://stackoverflow.com/questions/24729024/open-firewall-port-on-centos-7
-- firewall-cmd --get-active-zones
-- firewall-cmd --zone=public --add-port=80/tcp --permanent
-- firewall-cmd --zone=public --add-port=443/tcp --permanent
-- firewall-cmd --zone=public --add-port=8080/tcp --permanent
-- firewall-cmd --zone=public --add-port=8443/tcp --permanent
-- firewall-cmd --reload
+Enable/disable local firewall:
+# service iptables stop
+# service iptables start
 
-External Firewall:
-- Request for opening ports from outside: https://landb.cern.ch/landb/portal/firewallRequest/newRequest?interface=gridwars.CERN.CH
+Enable/disable puppet agent:
+# puppet agent --disable
+# puppet agent --enable
+
+
+External firewall opening request: https://landb.cern.ch/landb/portal/firewallRequest/newRequest?interface=gridwars.CERN.CH
 
 Justification:
 
