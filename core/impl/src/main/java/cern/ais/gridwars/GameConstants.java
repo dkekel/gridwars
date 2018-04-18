@@ -18,7 +18,7 @@ public final class GameConstants {
     public static final int TURN_TIMEOUT_MS = 50;
     public static final int BOT_INSTANTIATION_TIMEOUT_MS = 5000;
     public static final int TURN_LIMIT = 2000;
-    public static final int BOT_OUPUT_BYTE_LIMIT = 1024 * 1024 * 10; // 10 MB
+    public static final int BOT_PRINT_OUPUT_BYTE_LIMIT = 1024 * 1024 * 5; // 5 MB
 
     public static final byte[][] PLAYER_COLORS = {
         {(byte) 255, 0, 0}, // Red

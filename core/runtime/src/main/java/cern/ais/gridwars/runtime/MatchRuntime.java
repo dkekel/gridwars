@@ -5,7 +5,6 @@ import cern.ais.gridwars.Player;
 import cern.ais.gridwars.bot.PlayerBot;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -212,10 +211,7 @@ public class MatchRuntime {
         turnStates.clear();
 
         for (Player player : players) {
-            try {
-                player.getOutputStream().close();
-            } catch (IOException ignored) {
-            }
+            player.dispose();
         }
         players.clear();
     }

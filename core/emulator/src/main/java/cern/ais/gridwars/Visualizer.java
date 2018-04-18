@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO add a dispose handler that closes the player output streams...
 
 public class Visualizer {
     private static final int[] SPEEDS = new int[] { 10, 20, 40, 80, 160, 320, 500, 1000 };

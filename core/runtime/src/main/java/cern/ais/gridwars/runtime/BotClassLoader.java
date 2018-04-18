@@ -57,7 +57,7 @@ class BotClassLoader {
         final ExecutorService executorService = Executors.newCachedThreadPool();
         final CompletableFuture<PlayerBot> instantiatorFuture = new CompletableFuture<>();
 
-        // TODO redirect stdout and stderr to player output file
+        // TODO use StdOutputSwitcher to redirect stdout and stderr to the player output file
         executorService.submit(() -> {
             try {
                 instantiatorFuture.complete((PlayerBot) botClass.newInstance());

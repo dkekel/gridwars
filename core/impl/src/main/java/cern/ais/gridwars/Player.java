@@ -9,24 +9,30 @@
 package cern.ais.gridwars;
 
 import cern.ais.gridwars.bot.PlayerBot;
+import cern.ais.gridwars.util.BotPrintWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 
 
 public class Player {
 
     private final int id;
     private final PlayerBot playerBot;
-    private final FileOutputStream outputStream;
+    private final BotPrintWriter botOutputPrintWriter;
     private final int colorIndex;
 
     public Player(int id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
         this.id = id;
         this.playerBot = playerBot;
-        this.outputStream = (outputFile != null) ? new FileOutputStream(outputFile) : null;
+        this.botOutputPrintWriter = createBotPrintWriter(outputFile);
         this.colorIndex = colorIndex;
+    }
+
+    private BotPrintWriter createBotPrintWriter(File outputFile) throws FileNotFoundException {
+        return (outputFile != null)
+            ? new BotPrintWriter(outputFile, GameConstants.BOT_PRINT_OUPUT_BYTE_LIMIT, true)
+            : null;
     }
 
     public int getId() {
@@ -37,12 +43,22 @@ public class Player {
         return playerBot;
     }
 
-    public FileOutputStream getOutputStream() {
-        return outputStream;
+    public BotPrintWriter getBotOutputPrintWriter() {
+        return botOutputPrintWriter;
+    }
+
+    public boolean hasBotOutputPrintWriter() {
+        return botOutputPrintWriter != null;
     }
 
     public int getColorIndex() {
         return colorIndex;
+    }
+
+    public void dispose() {
+        if (hasBotOutputPrintWriter()) {
+            botOutputPrintWriter.close();
+        }
     }
 
     @Override

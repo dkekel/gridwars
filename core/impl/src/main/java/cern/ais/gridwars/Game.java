@@ -164,8 +164,8 @@ public class Game {
             }
         };
 
-        if (player.getOutputStream() != null) {
-            StdOutputSwitcher.getInstance().switchToFile(player.getOutputStream());
+        if (player.hasBotOutputPrintWriter()) {
+            StdOutputSwitcher.INSTANCE.switchToBotPrintWriter(player.getBotOutputPrintWriter());
         }
 
         playerThread.start();
@@ -199,7 +199,8 @@ public class Game {
             }
         }
 
-        StdOutputSwitcher.getInstance().restoreInitial();
+        // TODO do we need to flush or close anything??
+        StdOutputSwitcher.INSTANCE.restoreInitial();
 
         // Battle resolution & clean-up
         for (Cell cell : universe.getAllCells()) {
