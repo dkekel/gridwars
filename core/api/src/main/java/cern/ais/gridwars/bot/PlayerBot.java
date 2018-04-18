@@ -7,7 +7,7 @@ import java.util.List;
 
 
 /**
- * Must be implements by the main bot class.
+ * Must be implemented by the main bot class.
  */
 public interface PlayerBot {
     /**

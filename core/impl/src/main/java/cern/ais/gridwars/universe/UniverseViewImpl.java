@@ -6,11 +6,16 @@
  *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
  *   Gerardo Lastra (gerardo.lastra@cern.ch)
  */
-package cern.ais.gridwars;
+package cern.ais.gridwars.universe;
 
+import cern.ais.gridwars.Coordinates;
+import cern.ais.gridwars.coordinates.CoordinatesImpl;
+import cern.ais.gridwars.GameConstants;
+import cern.ais.gridwars.Player;
+import cern.ais.gridwars.UniverseView;
 import cern.ais.gridwars.cell.Cell;
-import cern.ais.gridwars.universe.Universe;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -25,63 +30,79 @@ public class UniverseViewImpl implements UniverseView {
         this.universe = universe;
         this.player = player;
         this.turn = turn;
-        this.playerOwnedCells = this.universe.getCellsForPlayer(this.player);
+        // TODO [optimisation] the list of player cells is eagerly initialised here, could it be lazily initialised
+        // in the getter method?
+        this.playerOwnedCells = Collections.unmodifiableList(universe.getCellCoordinatesForPlayer(player));
     }
 
+    @Override
     public List<Coordinates> getMyCells() {
         return playerOwnedCells;
     }
 
+    @Override
     public int getPopulation(Coordinates coordinates) {
         return universe.getCell(coordinates).getPopulation();
     }
 
+    @Override
     public int getPopulation(int x, int y) {
-        return getPopulation(new CoordinatesImpl(x, y));
+        return universe.getCell(x, y).getPopulation();
     }
 
+    @Override
     public boolean isEmpty(Coordinates coordinates) {
         return universe.getCell(coordinates).isEmpty();
     }
 
+    @Override
     public boolean isEmpty(int x, int y) {
         return universe.getCell(x, y).isEmpty();
     }
 
+    @Override
     public boolean belongsToMe(Coordinates coordinates) {
-        Cell cell = universe.getCell(coordinates);
-        return !cell.isEmpty() && player.equals(cell.getOwner());
+        return belongsToMe(coordinates.getX(), coordinates.getY());
     }
 
+    @Override
     public boolean belongsToMe(int x, int y) {
-        return belongsToMe(new CoordinatesImpl(x, y));
+        Cell cell = universe.getCell(x, y);
+        return !cell.isEmpty() && cell.isOwner(player);
     }
 
+    @Override
     public int getUniverseSize() {
         return GameConstants.UNIVERSE_SIZE;
     }
 
+    @Override
     public double getGrowthRate() {
         return GameConstants.GROWTH_RATE;
     }
 
+    @Override
     public long getMaximumPopulation() {
         return GameConstants.MAXIMUM_POPULATION;
     }
 
-    public int getTimeOutInMilliseconds() {
-        return GameConstants.TURN_TIMEOUT_DURATION_MS;
+    @Override
+    public int getTurnTimeOutInMilliseconds() {
+        return GameConstants.TURN_TIMEOUT_MS;
     }
 
+    @Override
     public int getTurnLimit() {
         return GameConstants.TURN_LIMIT;
     }
 
+    @Override
     public int getCurrentTurn() {
         return turn;
     }
 
+    @Override
     public Coordinates getCoordinates(int x, int y) {
-        return new CoordinatesImpl(x, y);
+        return CoordinatesImpl.of(x, y);
     }
 }

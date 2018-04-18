@@ -6,8 +6,10 @@
  *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
  *   Gerardo Lastra (gerardo.lastra@cern.ch)
  */
-package cern.ais.gridwars;
+package cern.ais.gridwars.coordinates;
 
+import cern.ais.gridwars.Coordinates;
+import cern.ais.gridwars.GameConstants;
 import cern.ais.gridwars.command.MovementCommand;
 
 
@@ -16,25 +18,25 @@ public class CoordinatesImpl implements Coordinates {
     private final int x;
     private final int y;
 
-    public CoordinatesImpl(int x, int y) {
-        if (x >= GameConstants.UNIVERSE_SIZE) {
-            x = x % GameConstants.UNIVERSE_SIZE;
+    public static CoordinatesImpl of(int x, int y) {
+        return new CoordinatesImpl(x, y);
+    }
+
+    private CoordinatesImpl(int x, int y) {
+        this.x = truncateToUniverseSize(x);
+        this.y = truncateToUniverseSize(y);
+    }
+
+    private int truncateToUniverseSize(int coordinateValue) {
+        if (coordinateValue >= GameConstants.UNIVERSE_SIZE) {
+            coordinateValue = coordinateValue % GameConstants.UNIVERSE_SIZE;
         }
 
-        while (x < 0) {
-            x += GameConstants.UNIVERSE_SIZE;
+        while (coordinateValue < 0) {
+            coordinateValue += GameConstants.UNIVERSE_SIZE;
         }
 
-        if (y >= GameConstants.UNIVERSE_SIZE) {
-            y = y % GameConstants.UNIVERSE_SIZE;
-        }
-
-        while (y < 0) {
-            y += GameConstants.UNIVERSE_SIZE;
-        }
-
-        this.x = x;
-        this.y = y;
+        return coordinateValue;
     }
 
     public int getX() {
@@ -111,6 +113,6 @@ public class CoordinatesImpl implements Coordinates {
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ')';
+        return "[" + x + ", " + y + ']';
     }
 }

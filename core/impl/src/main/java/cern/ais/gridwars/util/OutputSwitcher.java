@@ -3,14 +3,12 @@ package cern.ais.gridwars.util;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-/**
- * Copyright (C) 2013 CERN - European Laboratory for Particle Physics
- * All Rights Reserved.
- */
-public class OutputSwitcher {
+
+public final class OutputSwitcher {
+
     private static final OutputSwitcher instance = new OutputSwitcher();
-    private PrintStream oldOut = System.out;
-    private PrintStream oldErr = System.err;
+    private final PrintStream oldOut = System.out;
+    private final PrintStream oldErr = System.err;
 
     private OutputSwitcher() {
     }

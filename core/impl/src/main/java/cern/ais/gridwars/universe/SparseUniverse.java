@@ -10,31 +10,33 @@
 package cern.ais.gridwars.universe;
 
 import cern.ais.gridwars.Coordinates;
-import cern.ais.gridwars.CoordinatesImpl;
+import cern.ais.gridwars.coordinates.CoordinatesImpl;
 import cern.ais.gridwars.Player;
 import cern.ais.gridwars.cell.Cell;
 
 import java.util.*;
 
 
-// TODO Can be deleted?
+// TODO Can be deleted? Hm, maybe keep it for the time being. When there are only very few populated cells, this
+// universe data structure will perform much better, but where is the sweet spot when to use the sparse and when
+// to use the array universe??
 public class SparseUniverse implements Universe {
-    final Map<Coordinates, Cell> cellMap = new HashMap<Coordinates, Cell>();
+    private final Map<Coordinates, Cell> cellMap = new HashMap<>();
 
     public Cell getCell(Coordinates coordinates) {
         Cell result = cellMap.get(coordinates);
         if (result != null) {
             return result;
         } else {
-            return new Cell(coordinates);
+            return Cell.of(coordinates);
         }
     }
 
     public Cell getCell(int x, int y) {
-        return getCell(new CoordinatesImpl(x, y));
+        return getCell(CoordinatesImpl.of(x, y));
     }
 
-    public List<Coordinates> getCellsForPlayer(Player player) {
+    public List<Coordinates> getCellCoordinatesForPlayer(Player player) {
         List<Coordinates> result = new ArrayList<Coordinates>();
 
         for (Map.Entry<Coordinates, Cell> entry : cellMap.entrySet()) {
@@ -62,7 +64,7 @@ public class SparseUniverse implements Universe {
         return cellMap.values();
     }
 
-    public int getNumberOfAlivePlayers() {
+    public int getNumberOfAlivePlayers(int initialPlayerNumber) {
         int count = 0;
         List<Player> alreadyCounted = new ArrayList<Player>();
 

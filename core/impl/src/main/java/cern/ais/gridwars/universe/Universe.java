@@ -22,15 +22,9 @@ public interface Universe {
 
     Cell getCell(int x, int y);
 
-    List<Coordinates> getCellsForPlayer(Player player);
-
-    void putCell(Cell cell);
-
-    void removeCell(Coordinates coordinates);
-
-    void removeCell(Cell cell);
+    List<Coordinates> getCellCoordinatesForPlayer(Player player);
 
     Collection<Cell> getAllCells();
 
-    int getNumberOfAlivePlayers();
+    int getNumberOfAlivePlayers(int initialPlayerNumber);
 }

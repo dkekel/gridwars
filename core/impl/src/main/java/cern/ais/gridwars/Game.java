@@ -10,8 +10,10 @@ package cern.ais.gridwars;
 
 import cern.ais.gridwars.cell.Cell;
 import cern.ais.gridwars.command.MovementCommand;
+import cern.ais.gridwars.coordinates.CoordinatesImpl;
 import cern.ais.gridwars.universe.ArrayUniverse;
 import cern.ais.gridwars.universe.Universe;
+import cern.ais.gridwars.universe.UniverseViewImpl;
 import cern.ais.gridwars.util.OutputSwitcher;
 
 import java.nio.ByteBuffer;
@@ -20,99 +22,106 @@ import java.util.*;
 
 public class Game {
 
-    private static final byte[] emptyPixel = {0, 0, 0, 0};
-    protected final List<Player> playerList;
-    protected final Universe universe = new ArrayUniverse();
-    protected final TurnCallback turnCallback;
-    private boolean debugMode;
-    protected Iterator<Player> playerIterator;
-    protected int currentTurn;
+    public interface TurnCallback {
+        void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus);
+    }
+
+    private static final int UNIVERSE_STATE_BYTE_SIZE = GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE * 4;
+    private static final byte[] EMPTY_PIXEL = { 0, 0, 0, 0 };
+
+    private final List<Player> playerList = new LinkedList<>();
+    private Iterator<Player> playerIterator;
+    private final Universe universe = new ArrayUniverse();
+    private final Random random = new Random();
+    private final TurnCallback turnCallback;
+    private final boolean debugMode;
+    private int currentTurn;
 
     public Game(List<Player> playerList, TurnCallback turnCallback) {
         this(playerList, turnCallback, false);
     }
 
     public Game(List<Player> playerList, TurnCallback turnCallback, boolean debugMode) {
-        this.playerList = playerList;
-        this.turnCallback = turnCallback;
+        this.playerList.addAll(Objects.requireNonNull(playerList));
+        this.playerIterator = this.playerList.iterator();
+        this.turnCallback = Objects.requireNonNull(turnCallback);
         this.debugMode = debugMode;
-        playerIterator = this.playerList.iterator();
-    }
-
-    public List<Player> getPlayerList() {
-        return playerList;
     }
 
     public Universe getUniverse() {
         return universe;
     }
 
-    public boolean done() {
-        return universe.getNumberOfAlivePlayers() <= 1 || currentTurn > GameConstants.TURN_LIMIT;
+    public boolean isFinished() {
+        return maxTurnLimitReached() || onlyOneOrLessPlayerLeft();
+    }
+
+    private boolean maxTurnLimitReached() {
+        return (currentTurn > GameConstants.TURN_LIMIT);
+    }
+
+    private boolean onlyOneOrLessPlayerLeft() {
+        return (universe.getNumberOfAlivePlayers(playerList.size()) <= 1);
     }
 
     public Player getWinner() {
-        checkDone();
-
-        boolean draw = false;
-
-        // Compute each player's total population, return the one with the highest
+        checkIfFinished();
+        boolean potentialDraw = false;
         Player winner = null;
-        Long winnerPopulation = -1L;
+        int winnerPopulation = -1;
 
         for (Player player : playerList) {
-            Long count = 0L;
-            for (Coordinates coordinates : universe.getCellsForPlayer(player)) {
+            int count = 0;
+
+            // TODO [optimisation] use a parallel stream reduce operation here
+            for (Coordinates coordinates : universe.getCellCoordinatesForPlayer(player)) {
                 count += universe.getCell(coordinates).getPopulation();
             }
 
             if (count > winnerPopulation) {
                 winnerPopulation = count;
                 winner = player;
-                draw = false;
-            } else if (count.equals(winnerPopulation)) {
-                // Potential draw
-                draw = true;
+                potentialDraw = false;
+            } else if (count == winnerPopulation) {
+                potentialDraw = true;
             }
         }
 
-        if (draw)
-            return null;
-        else
-            return winner;
+        return potentialDraw ? null : winner;
     }
 
-    private void checkDone() {
-        if (!done()) {
-            throw new IllegalStateException("Game not done.");
+    private void checkIfFinished() {
+        if (!isFinished()) {
+            throw new IllegalStateException("Game not finished");
         }
     }
 
     public void startUp() {
         for (Player player : playerList) {
-            // Initialize player starting cell
-            CoordinatesImpl coordinates = new CoordinatesImpl(Math.round((float) Math.random() * (GameConstants.UNIVERSE_SIZE - 1)),
-                Math.round((float) Math.random() * (GameConstants.UNIVERSE_SIZE - 1)));
+            Coordinates startCoordinates = getRandomCoordinates();
 
             // Make sure no two players start in the same position
-            // TODO: make this fair in case of 2+ players, etc
-            while (!universe.getCell(coordinates).isEmpty()) {
-                coordinates = new CoordinatesImpl(Math.round((float) Math.random() * (GameConstants.UNIVERSE_SIZE - 1)),
-                    Math.round((float) Math.random() * (GameConstants.UNIVERSE_SIZE - 1)));
+            while (!universe.getCell(startCoordinates).isEmpty()) {
+                startCoordinates = getRandomCoordinates();
             }
 
-            universe.getCell(coordinates).moveIn(player, GameConstants.STARTING_POPULATION);
-
+            universe.getCell(startCoordinates).moveIn(player, GameConstants.STARTING_POPULATION);
         }
+
         currentTurn = 1;
+    }
+
+    private Coordinates getRandomCoordinates() {
+        return CoordinatesImpl.of(
+            random.nextInt(GameConstants.UNIVERSE_SIZE),
+            random.nextInt(GameConstants.UNIVERSE_SIZE)
+        );
     }
 
     /**
      * Computes 1 turn for the "next player". If this completes a turn round, also increases populations
      */
     public void nextTurn() {
-        boolean increasePopulation = false;
-
         if (!playerIterator.hasNext()) {
             throw new RuntimeException("Bad stuff");
         }
@@ -157,7 +166,7 @@ public class Game {
 
         playerThread.start();
         try {
-            playerThread.join(debugMode ? 0 : GameConstants.TURN_TIMEOUT_DURATION_MS);
+            playerThread.join(debugMode ? 0 : GameConstants.TURN_TIMEOUT_MS);
         } catch (InterruptedException e) {
             // Bad stuff!
         }
@@ -178,7 +187,7 @@ public class Game {
             // Arrays.copyOf).
         }
 
-        final ArrayList<MovementCommand> cleanMovementCommands = new ArrayList<MovementCommand>(movementCommands);
+        final ArrayList<MovementCommand> cleanMovementCommands = new ArrayList<>(movementCommands);
 
         if (validateCommands(player, cleanMovementCommands)) {
             for (MovementCommand movementCommand : cleanMovementCommands) {
@@ -191,10 +200,10 @@ public class Game {
         // Battle resolution & clean-up
         for (Cell cell : universe.getAllCells()) {
             if (!cell.isEmpty()) {
-                if (!playerIterator.hasNext() || increasePopulation) {
-                    cell.increasePopulation();
+                if (!playerIterator.hasNext()) {
+                    cell.growPopulation();
                 } else {
-                    cell.populationCutOff();
+                    cell.truncatePopulation();
                 }
             }
         }
@@ -213,12 +222,12 @@ public class Game {
     }
 
     private boolean validateCommands(Player player, List<MovementCommand> movementCommands) {
-        HashMap<Coordinates, Long> totalMoveOut = new HashMap<Coordinates, Long>();
+        HashMap<Coordinates, Integer> totalMoveOut = new HashMap<>();
         for (MovementCommand movementCommand : movementCommands) {
             if (!validateCommand(player, movementCommand)) {
                 return false;
             }
-            Long currentValue = 0L;
+            int currentValue = 0;
             if (totalMoveOut.containsKey(movementCommand.getCoordinatesFrom())) {
                 currentValue = totalMoveOut.get(movementCommand.getCoordinatesFrom());
             }
@@ -226,7 +235,7 @@ public class Game {
             totalMoveOut.put(movementCommand.getCoordinatesFrom(), currentValue);
         }
 
-        for (Map.Entry<Coordinates, Long> entry : totalMoveOut.entrySet()) {
+        for (Map.Entry<Coordinates, Integer> entry : totalMoveOut.entrySet()) {
             if (entry.getValue() > universe.getCell(entry.getKey()).getPopulation()) {
                 System.out.println("Command validation failed: Total sum of movements out of a position is higher than population ("
                     + entry.getKey().getX() + ", " + entry.getKey().getY() + ")");
@@ -257,7 +266,7 @@ public class Game {
         return true;
     }
 
-    public void executeMovement(Player player, MovementCommand movementCommand) {
+    private void executeMovement(Player player, MovementCommand movementCommand) {
         if (movementCommand == null)
             return;
 
@@ -270,15 +279,15 @@ public class Game {
             .moveIn(player, movementCommand.getAmount());
     }
 
-    public ByteBuffer getBinaryGameStatus() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE * 4);
+    private ByteBuffer getBinaryGameStatus() {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(UNIVERSE_STATE_BYTE_SIZE);
 
         for (int y = 0; y < GameConstants.UNIVERSE_SIZE; y++) {
             for (int x = 0; x < GameConstants.UNIVERSE_SIZE; x++) {
                 Cell currentCell = getUniverse().getCell(x, y);
 
                 if (currentCell.isEmpty()) {
-                    byteBuffer.put(emptyPixel);
+                    byteBuffer.put(EMPTY_PIXEL);
                 } else {
                     // Red, Green, Blue
                     byteBuffer.put(GameConstants.PLAYER_COLORS[currentCell.getOwner().getColorIndex()]);
@@ -290,25 +299,5 @@ public class Game {
         }
 
         return byteBuffer;
-    }
-
-    @Override
-    public String toString() {
-        String result = "Game status:\n";
-        char[] symbols = {'x', 'o', '+', '/', '*'};
-
-        for (int y = GameConstants.UNIVERSE_SIZE - 1; y >= 0; y--) {
-            for (int x = 0; x < GameConstants.UNIVERSE_SIZE; x++) {
-                final Cell cell = universe.getCell(new CoordinatesImpl(x, y));
-                result += (cell.isEmpty()) ? "  " : symbols[cell.getOwner().getColorIndex()] + " ";
-            }
-            result += '\n';
-        }
-
-        return result;
-    }
-
-    public interface TurnCallback {
-        void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus);
     }
 }

@@ -15,8 +15,8 @@ public final class GameConstants {
     public static final double GROWTH_RATE = 1.10;
     public static final int MAXIMUM_POPULATION = 100;
     public static final int STARTING_POPULATION = 100;
-    public static final int TURN_TIMEOUT_DURATION_MS = 50;
-    public static final int BOT_INSTANTIATION_TIMEOUT_DURATION_MS = 5000;
+    public static final int TURN_TIMEOUT_MS = 50;
+    public static final int BOT_INSTANTIATION_TIMEOUT_MS = 5000;
     public static final int TURN_LIMIT = 2000;
 
     public static final byte[][] PLAYER_COLORS = {

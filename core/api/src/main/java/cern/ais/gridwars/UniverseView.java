@@ -65,7 +65,7 @@ public interface UniverseView {
     /**
      * @return Time-out value in ms for each PlayerBot.getNextCommands call. Commands added to the parameter list before the time-out are considered as valid.
      */
-    int getTimeOutInMilliseconds();
+    int getTurnTimeOutInMilliseconds();
 
     /**
      * @return Maximum number of turns that the game will run. If this value is reached, the player with the highest population sum over the board wins.

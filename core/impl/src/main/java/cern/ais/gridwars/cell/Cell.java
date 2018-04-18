@@ -12,21 +12,21 @@ import cern.ais.gridwars.Coordinates;
 import cern.ais.gridwars.GameConstants;
 import cern.ais.gridwars.Player;
 
+import java.util.Objects;
 
-public class Cell {
 
-    protected final Coordinates coordinates;
-    protected int population;
-    protected Player player;
+public final class Cell {
 
-    public Cell(Coordinates coordinates) {
-        this(null, 0, coordinates);
+    private final Coordinates coordinates;
+    private int population = 0;
+    private Player owner;
+
+    public static Cell of(Coordinates coordinates) {
+        return new Cell(coordinates);
     }
 
-    public Cell(Player player, int population, Coordinates coordinates) {
-        this.coordinates = coordinates;
-        this.population = population;
-        this.player = player;
+    private Cell(Coordinates coordinates) {
+        this.coordinates = Objects.requireNonNull(coordinates);
     }
 
     public Coordinates getCoordinates() {
@@ -38,7 +38,11 @@ public class Cell {
     }
 
     public Player getOwner() {
-        return player;
+        return owner;
+    }
+
+    public boolean isOwner(Player owner) {
+        return (this.owner != null) && this.owner.equals(owner);
     }
 
     public int getPopulation() {
@@ -46,14 +50,14 @@ public class Cell {
     }
 
     public void moveIn(Player player, int amount) {
-        if (player.equals(getOwner())) {
+        if (isOwner(player)) {
             // Add
             population += amount;
         } else {
             // Battle!
             if (amount > population) {
                 population = amount - population;
-                this.player = player;
+                this.owner = player;
             } else {
                 decreasePopulation(amount);
             }
@@ -61,8 +65,8 @@ public class Cell {
     }
 
     public void moveOut(Player player, int amount) {
-        if (!player.equals(getOwner())) {
-            throw new IllegalStateException("moveOut called for a player that doesn't own the cell");
+        if (!isOwner(player)) {
+            throw new IllegalArgumentException("moveOut called for a player that doesn't own the cell");
         }
 
         decreasePopulation(amount);
@@ -70,26 +74,26 @@ public class Cell {
 
     private void decreasePopulation(int amount) {
         if (population < amount) {
-            throw new IllegalStateException("decreasePopulation called on a cell with amount > population");
+            throw new IllegalArgumentException("decreasePopulation called on a cell with amount > population");
         }
 
         population -= amount;
         if (population == 0) {
-            player = null;
+            owner = null;
         }
     }
 
-    public void increasePopulation() {
-        population = (int) Math.min(Math.round(population * GameConstants.GROWTH_RATE), GameConstants.MAXIMUM_POPULATION);
+    public void growPopulation() {
+        population = Math.min((int) Math.round(population * GameConstants.GROWTH_RATE), GameConstants.MAXIMUM_POPULATION);
+    }
+
+    public void truncatePopulation() {
+        population = Math.min(population, GameConstants.MAXIMUM_POPULATION);
     }
 
     @Override
     public String toString() {
-        return "[" + coordinates + ": " + player + " - " + population + ']';
-    }
-
-    public void populationCutOff() {
-        population = Math.min(population, GameConstants.MAXIMUM_POPULATION);
+        return "[" + coordinates + ": " + owner + " - " + population + ']';
     }
 }
 

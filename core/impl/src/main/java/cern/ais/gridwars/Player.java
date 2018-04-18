@@ -17,19 +17,19 @@ import java.io.FileOutputStream;
 
 public class Player {
 
-    private final long id;
+    private final int id;
     private final PlayerBot playerBot;
     private final FileOutputStream outputStream;
     private final int colorIndex;
 
-    public Player(long id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
+    public Player(int id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
         this.id = id;
         this.playerBot = playerBot;
         this.outputStream = (outputFile != null) ? new FileOutputStream(outputFile) : null;
         this.colorIndex = colorIndex;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -57,7 +57,7 @@ public class Player {
 
     @Override
     public int hashCode() {
-        return Long.valueOf(id).hashCode();
+        return id;
     }
 
     @Override

@@ -147,7 +147,7 @@ public class MatchRuntime {
         try {
             game.startUp();
 
-            while (!game.done()) {
+            while (!game.isFinished()) {
                 if ((System.currentTimeMillis() - matchStartTimeMillis) > MATCH_TIME_OUT_MILLIS) {
                     throw new TimeoutException();
                 }

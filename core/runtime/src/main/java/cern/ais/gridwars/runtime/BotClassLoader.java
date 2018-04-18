@@ -57,6 +57,7 @@ class BotClassLoader {
         final ExecutorService executorService = Executors.newCachedThreadPool();
         final CompletableFuture<PlayerBot> instantiatorFuture = new CompletableFuture<>();
 
+        // TODO redirect stdout and stderr to player output file
         executorService.submit(() -> {
             try {
                 instantiatorFuture.complete((PlayerBot) botClass.newInstance());
@@ -66,10 +67,10 @@ class BotClassLoader {
         });
 
         try {
-            return instantiatorFuture.get(GameConstants.BOT_INSTANTIATION_TIMEOUT_DURATION_MS, TimeUnit.MILLISECONDS);
+            return instantiatorFuture.get(GameConstants.BOT_INSTANTIATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         } catch (TimeoutException | InterruptedException te) {
             throw new BotClassLoaderException("Bot failed to initialise within the allowed timeout of " +
-                GameConstants.BOT_INSTANTIATION_TIMEOUT_DURATION_MS + " ms: " + botClass.getName());
+                GameConstants.BOT_INSTANTIATION_TIMEOUT_MS + " ms: " + botClass.getName());
         } catch (ExecutionException ee) {
             throw new BotClassLoaderException("Failed to instantiate bot class: " + botClass.getName(), ee.getCause());
         } finally {
