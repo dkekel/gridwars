@@ -105,7 +105,7 @@ public class Visualizer {
             }
             delta[0] = 0;
 
-            if (!game.done()) {
+            if (!game.isFinished()) {
                 game.nextTurn();
             }
         }).start();

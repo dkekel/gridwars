@@ -31,10 +31,10 @@ public class JaegerBot implements PlayerBot {
 	public void getNextCommands(UniverseView universeView, List<MovementCommand> commandList) {
 		List<Coordinates> myCells = universeView.getMyCells();
 
-		Long minPrePop = Math.round(1 / (universeView.getGrowthRate() - 1));
+		int minPrePop = (int) Math.round(1 / (universeView.getGrowthRate() - 1));
 
 		for (Coordinates current : myCells) {
-			Long currentPopulation = universeView.getPopulation(current);
+			int currentPopulation = universeView.getPopulation(current);
 
 			if (currentPopulation > minPrePop) {
 				for (int distance = 1; distance < universeView.getUniverseSize(); distance++) {

@@ -13,11 +13,11 @@ public class GinTonicBot implements PlayerBot {
 		System.out.println("Static init block was called on: cern.ais.gridwars.GinTonicBot");
 	}
 
-	private static final long MIN_POPULATION = 15;
+	private static final int MIN_POPULATION = 15;
 
 	private boolean firstRound = true;
 	private int universeSize;
-	private long minPopulation;
+	private int minPopulation;
 	private UniverseView universeView;
 	private List<MovementCommand.Direction> directions;
 	private Coordinates myOriginCell;
@@ -40,7 +40,7 @@ public class GinTonicBot implements PlayerBot {
 		initializeCurrentRoundData();
 
 		for (Coordinates currentCell : myCurrentCells) {
-			Long currentPopulation = universeView.getPopulation(currentCell);
+			int currentPopulation = universeView.getPopulation(currentCell);
 
 			if (currentPopulation > minPopulation) {
 				for (int distance = 1; distance < universeSize; distance++) {

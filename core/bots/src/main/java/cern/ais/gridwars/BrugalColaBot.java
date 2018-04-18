@@ -13,12 +13,12 @@ public class BrugalColaBot implements PlayerBot {
         System.out.println("Static init block was called on: cern.ais.gridwars.BrugalColaBot");
     }
 
-    private static final Long ROUND_THRESHOLD = 5L;
-    private static final Long ROUND_MODULUS = 10L;
+    private static final int ROUND_THRESHOLD = 5;
+    private static final int ROUND_MODULUS = 10;
 
     private UniverseView universeView;
-    private long enemySize;
-    private long alliesSize;
+    private int enemySize;
+    private int alliesSize;
     private final List<Strategy> strategies = Arrays.asList(new FastExpansion(), new AttackStrategy());
 
     public BrugalColaBot() {
@@ -91,7 +91,7 @@ public class BrugalColaBot implements PlayerBot {
         List<Cell> myCells = new ArrayList<Cell>(myCoordinates.size());
         for (int x = 0; x < universeView.getUniverseSize(); x++) {
             for (int y = 0; y < universeView.getUniverseSize(); y++) {
-                Coordinates coordinates = new CoordinatesImpl(x, y);
+                Coordinates coordinates = universeView.getCoordinates(x, y);
                 if (universeView.belongsToMe(coordinates)) {
                     myCells.add(getCell(coordinates, universeView, temp));
                     alliesSize += universeView.getPopulation(coordinates);
@@ -150,7 +150,7 @@ public class BrugalColaBot implements PlayerBot {
     }
 
     private class Cell implements Comparable<Cell> {
-        long population;
+        int population;
         boolean underAttack;
         boolean mine;
         boolean done = false;
@@ -162,7 +162,7 @@ public class BrugalColaBot implements PlayerBot {
         Long weight = null;
         List<Command> commands = null;
 
-        Cell(long population, Coordinates coordinates, boolean mine) {
+        Cell(int population, Coordinates coordinates, boolean mine) {
             this.originalPopulation = population;
             this.population = population;
             this.coordinates = coordinates;
@@ -196,7 +196,7 @@ public class BrugalColaBot implements PlayerBot {
 
         @Override
         public int compareTo(NeighborCell o) {
-            return Long.valueOf(cell.population).compareTo(o.cell.population);
+            return Integer.compare(cell.population, o.cell.population);
         }
     }
 
@@ -215,16 +215,16 @@ public class BrugalColaBot implements PlayerBot {
 
         @Override
         public void apply(Cell cell) {
-            Map<NeighborCell, Long> commands = new LinkedHashMap<NeighborCell, Long>();
-            long populationToMove = cell.originalPopulation - ROUND_THRESHOLD;
+            Map<NeighborCell, Integer> commands = new LinkedHashMap<>();
+            int populationToMove = cell.originalPopulation - ROUND_THRESHOLD;
             populationToMove = distributeRoundingGarbage(cell, commands, populationToMove);
             expandPopulation(cell, commands, populationToMove);
             removeOriginalCellRoundingGarbage(cell, commands);
 
             List<Command> list = new LinkedList<Command>();
-            for (Map.Entry<NeighborCell, Long> entry : commands.entrySet()) {
+            for (Map.Entry<NeighborCell, Integer> entry : commands.entrySet()) {
                 NeighborCell neighbor = entry.getKey();
-                Long amount = entry.getValue();
+                int amount = entry.getValue();
                 if (amount > 0) {
                     list.add(new ExpandCommand(cell, neighbor.direction, amount));
                 }
@@ -232,14 +232,14 @@ public class BrugalColaBot implements PlayerBot {
             cell.commands = list.isEmpty() ? null : list;
         }
 
-        private long distributeRoundingGarbage(Cell cell, Map<NeighborCell, Long> commands, Long populationToMove) {
+        private int distributeRoundingGarbage(Cell cell, Map<NeighborCell, Integer> commands, int populationToMove) {
             Collections.sort(cell.neighbours);
             for (NeighborCell neighbor : cell.neighbours) {
-                commands.put(neighbor, 0L);
+                commands.put(neighbor, 0);
                 if (neighbor.cell.population < universeView.getMaximumPopulation()) {
-                    long remainder = neighbor.cell.population % ROUND_MODULUS;
+                    int remainder = neighbor.cell.population % ROUND_MODULUS;
                     if (remainder < ROUND_THRESHOLD) {
-                        Long amount = ROUND_THRESHOLD - remainder;
+                        int amount = ROUND_THRESHOLD - remainder;
                         if (amount <= populationToMove) {
                             commands.put(neighbor, commands.get(neighbor) + amount);
                             neighbor.cell.population += amount;
@@ -252,7 +252,7 @@ public class BrugalColaBot implements PlayerBot {
             return populationToMove;
         }
 
-        private void expandPopulation(Cell cell, Map<NeighborCell, Long> commands, Long populationToMove) {
+        private void expandPopulation(Cell cell, Map<NeighborCell, Integer> commands, int populationToMove) {
             Collections.sort(cell.neighbours);
             List<NeighborCell> cells = new LinkedList<NeighborCell>(cell.neighbours);
             int buckets = (int) Math.floor(populationToMove / (double) ROUND_MODULUS);
@@ -270,19 +270,19 @@ public class BrugalColaBot implements PlayerBot {
             }
         }
 
-        private void removeOriginalCellRoundingGarbage(Cell cell, Map<NeighborCell, Long> commands) {
+        private void removeOriginalCellRoundingGarbage(Cell cell, Map<NeighborCell, Integer> commands) {
             if (cell.population >= ROUND_MODULUS) {
-                long remainder = cell.population % ROUND_MODULUS;
+                int remainder = cell.population % ROUND_MODULUS;
                 if (remainder < ROUND_THRESHOLD) {
                     long toRemove = remainder + 1;
                     List<NeighborCell> neighbors = new LinkedList<NeighborCell>(commands.keySet());
                     Collections.sort(neighbors);
                     for (NeighborCell neighbor : neighbors) {
-                        Long amount = commands.get(neighbor);
-                        long population = neighbor.cell.population;
-                        long neighborRemainder = population % ROUND_MODULUS;
-                        if (neighborRemainder >= ROUND_THRESHOLD && neighborRemainder < ROUND_MODULUS) {
-                            long toAdd = Math.min(toRemove, ROUND_MODULUS - neighborRemainder);
+                        int amount = commands.get(neighbor);
+                        int population = neighbor.cell.population;
+                        int neighborRemainder = population % ROUND_MODULUS;
+                        if (neighborRemainder >= ROUND_THRESHOLD) {
+                            int toAdd = (int) Math.min(toRemove, ROUND_MODULUS - neighborRemainder);
                             commands.put(neighbor, amount + toAdd);
                             toRemove -= toAdd;
                             cell.population -= toAdd;
@@ -308,22 +308,22 @@ public class BrugalColaBot implements PlayerBot {
         public void apply(Cell cell) {
             List<NeighborCell> allies = new LinkedList<NeighborCell>();
             List<NeighborCell> enemies = new LinkedList<NeighborCell>();
-            Map<NeighborCell, Long> defenseCommands = new LinkedHashMap<NeighborCell, Long>();
+            Map<NeighborCell, Integer> defenseCommands = new LinkedHashMap<>();
             for (NeighborCell neighbor : cell.neighbours) {
                 if (!neighbor.cell.mine) {
                     enemies.add(neighbor);
                 } else if (!neighbor.cell.underAttack && neighbor.cell.commands == null) {
                     allies.add(neighbor);
-                    defenseCommands.put(neighbor, 0L);
+                    defenseCommands.put(neighbor, 0);
                 }
             }
 
             attack(cell, enemies);
             helpAttackedCell(cell, allies, defenseCommands);
 
-            for (Map.Entry<NeighborCell, Long> entry : defenseCommands.entrySet()) {
+            for (Map.Entry<NeighborCell, Integer> entry : defenseCommands.entrySet()) {
                 NeighborCell neighbor = entry.getKey();
-                Long amount = entry.getValue();
+                int amount = entry.getValue();
                 if (amount > 0) {
                     List<Command> defenses = new LinkedList<Command>();
                     defenses.add(new DefenseCommand(neighbor.cell, invert(neighbor.direction), amount));
@@ -344,7 +344,7 @@ public class BrugalColaBot implements PlayerBot {
         }
 
         private void helpAttackedCell(Cell cell, List<NeighborCell> neightborAllies,
-                Map<NeighborCell, Long> defenseCommands) {
+                Map<NeighborCell, Integer> defenseCommands) {
             LinkedList<NeighborCell> allies = new LinkedList<NeighborCell>(neightborAllies);
             while (cell.population < universeView.getMaximumPopulation() && !allies.isEmpty()) {
                 Collections.sort(allies);
@@ -353,14 +353,14 @@ public class BrugalColaBot implements PlayerBot {
                 if (neighbor.cell.population <= ROUND_MODULUS) {
                     allies.removeFirst();
                 } else {
-                    long remainder = neighbor.cell.population % ROUND_MODULUS;
-                    long toRemove;
+                    int remainder = neighbor.cell.population % ROUND_MODULUS;
+                    int toRemove;
                     if (remainder < ROUND_THRESHOLD) {
                         toRemove = remainder + 1;
                     } else {
                         toRemove = ROUND_MODULUS;
                     }
-                    Long newHelp = defenseCommands.get(neighbor) + toRemove;
+                    int newHelp = defenseCommands.get(neighbor) + toRemove;
                     defenseCommands.put(neighbor, newHelp);
                     neighbor.cell.population -= toRemove;
                     cell.population += toRemove;

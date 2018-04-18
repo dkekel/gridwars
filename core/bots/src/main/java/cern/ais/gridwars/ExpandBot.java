@@ -21,7 +21,7 @@ public class ExpandBot implements PlayerBot
 
 		for (Coordinates current : myCells)
 		{
-			Long currentPopulation = universeView.getPopulation(current);
+			int currentPopulation = universeView.getPopulation(current);
 			if (currentPopulation > (4.0 / (universeView.getGrowthRate() - 1)))
 			{
 				int split = 1;

@@ -20,7 +20,7 @@ public class MoveBot implements PlayerBot
 
 	@Override public void getNextCommands(UniverseView universeView, List<MovementCommand> movementCommands)
 	{
-		long population = universeView.getPopulation(m_Head.coords);
+		int population = universeView.getPopulation(m_Head.coords);
 		if (population > 0)
 		{
 			movementCommands.add(new MovementCommand(m_Head.coords, m_Direction, population));

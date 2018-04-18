@@ -106,7 +106,7 @@ public class FastExpandBot implements PlayerBot
 				Cell c = neighbours[i];
 				if (c.movedFlag == -1 || c.movedFlag != (turn & 1))
 				{
-					long amount = (long) (costs[i] / distanceSumm * available);
+					int amount = (int) (costs[i] / distanceSumm * available);
 					if (amount == 0)
 						continue;
 					from.wasMovedFrom += amount;

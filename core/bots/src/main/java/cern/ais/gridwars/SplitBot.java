@@ -48,7 +48,7 @@ public class SplitBot implements PlayerBot {
 		}
 
 		private MoveBot startMove(Cell center, Direction direction, List<MovementCommand> movementCommands) {
-			movementCommands.add(new MovementCommand(center.coords, direction, 25L));
+			movementCommands.add(new MovementCommand(center.coords, direction, 25));
 			return new MoveBot(center.getRelative(direction), direction);
 		}
 	}
