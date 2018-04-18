@@ -25,7 +25,6 @@ Admin UI:
 - Could be implemented using actuator to change config properties??
 
 API & Impl:
-- Clean up and reformat code
 - Re-implement turn threads using completeable futures to enforce timeout
 - Also redirect sysout/syserr to the bot output files during class initialisation and instantiation
 - How can I limit the output size of sysout/syserr?
