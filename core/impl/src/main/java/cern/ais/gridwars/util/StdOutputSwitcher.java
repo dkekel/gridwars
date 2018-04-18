@@ -5,6 +5,7 @@ import java.io.PrintStream;
 
 // Enums are the elite way to implement a singleton in Java. Watch in awe and learn! ;)
 public enum StdOutputSwitcher {
+
     INSTANCE;
 
     private final PrintStream oldOut = System.out;

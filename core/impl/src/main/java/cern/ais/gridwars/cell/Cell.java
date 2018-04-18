@@ -51,10 +51,10 @@ public final class Cell {
 
     public void moveIn(Player player, int amount) {
         if (isOwner(player)) {
-            // Add
+            // Move in and get comfy
             population += amount;
         } else {
-            // Battle!
+            // Fight and stand your ground!
             if (amount > population) {
                 population = amount - population;
                 this.owner = player;

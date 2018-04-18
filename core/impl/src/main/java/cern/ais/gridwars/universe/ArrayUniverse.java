@@ -79,7 +79,7 @@ public class ArrayUniverse implements Universe {
                 }
 
                 // Optimisation to return early when we already found the expected number of alive player. We don't
-                // need to continue running through the whole universe.
+                // need to continue hitchhiking through the whole galaxy.
                 if (alreadyCountedPlayers.size() == initialPlayerNumber) {
                     return alreadyCountedPlayers.size();
                 }

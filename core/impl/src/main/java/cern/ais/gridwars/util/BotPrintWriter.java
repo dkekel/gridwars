@@ -49,7 +49,7 @@ public class BotPrintWriter extends PrintStream {
 
         @Override
         public void write(int b) throws IOException {
-            onlyWriteIfAllowed(() -> {
+            onlyWriteIfAllowed(1, () -> {
                 super.write(b);
                 increaseWrittenByCount(1);
             });
@@ -57,7 +57,7 @@ public class BotPrintWriter extends PrintStream {
 
         @Override
         public void write(byte[] b) throws IOException {
-            onlyWriteIfAllowed(() -> {
+            onlyWriteIfAllowed(b.length, () -> {
                 super.write(b);
                 increaseWrittenByCount(b.length);
             });
@@ -65,14 +65,14 @@ public class BotPrintWriter extends PrintStream {
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            onlyWriteIfAllowed(() -> {
+            onlyWriteIfAllowed(len, () -> {
                 super.write(b, off, len);
                 increaseWrittenByCount(len);
             });
         }
 
-        private void onlyWriteIfAllowed(DeferredWriteAction writeAction) throws IOException {
-            if (hasReachedLimit() && !enforceWritingToOutput) {
+        private void onlyWriteIfAllowed(int bytesAboutToBeWritten, DeferredWriteAction writeAction) throws IOException {
+            if ((hasReachedLimit() || willReachLimit(bytesAboutToBeWritten)) && !enforceWritingToOutput) {
                 if (!printedLimitReachedWarning) {
                     String warningMessage = "Print output has exceeded the allowed maximum of " + writtenBytesLimit +
                         " bytes. All further output will be discarded.";
@@ -88,6 +88,10 @@ public class BotPrintWriter extends PrintStream {
 
         private boolean hasReachedLimit() {
             return writtenByteCount >= writtenBytesLimit;
+        }
+
+        private boolean willReachLimit(int bytesAboutToBeWritten) {
+            return (writtenByteCount + bytesAboutToBeWritten) > writtenBytesLimit;
         }
 
         private void increaseWrittenByCount(int writtenBytes) {

@@ -123,7 +123,7 @@ public class Game {
     }
 
     /**
-     * Computes 1 turn for the "next player". If this completes a turn round, also increases populations
+     * Computes one turn for the "next player". If this completes a turn round, also increases populations
      */
     public void nextTurn() {
         if (!playerIterator.hasNext()) {
