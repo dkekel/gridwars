@@ -7,6 +7,9 @@ A: Sorry, but no. It's just you, your brain, your team and the standard Java API
 Q: Is there a size limit for the bot jar upload?
 A: Yes, it's 5 MB. This is way more than enough when not using 3rd party libs. The size of your jar file is typically just a few KBs.
 
+Q: Is there a memory limitation for the execution of a match?
+A: Yes, the match JVM processes are running with 256 MB of heap space, shared by both bots and the execution engine.
+
 Q: Is there a timeout on bot initialisation?
 A: Yes, it's 5 seconds.
 
