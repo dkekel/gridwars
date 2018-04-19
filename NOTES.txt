@@ -1,15 +1,23 @@
 TODO:
 ========================================================================================================================
-Match runtime process:
-- Treat SecurityException in a special way in the game implementation to see which bot cheated
-    - Introduce a "wall of shame" table that records which bot (team) cheated when
-    - At the end we can show a page that lists the teams with the most cheating entries, should contain the famous "shame! shame!" gif ;))
-- Tweak the stack size -Xss
-
 UI:
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
+- Fix layout of match view, when the bot or team names have different lengths, then the full view is not centered anymore
+    - have the areas left and right from the match view only fill the available space, thus centering the match view canvas
+
+GridWars starter:
+- Configure the main build.gradle to also ship the source code in the jar file. This allows us (the admins) to
+  check if the code does something dodgy, if the bot causes endless loops etc.
+
+Matches:
+- Think about a fair scoring system for the ranking
+    - Maybe an elo based system like in football or so with points?
+
+Production deployment:
+- When running as jar, have the application.yml file externalised in the folder
+    - Should be configurable with a start parameter
 
 Admin UI:
 - Simple actions for
@@ -24,15 +32,18 @@ Admin UI:
     - Reset all matches (cancel) and generate new matches...
 - Could be implemented using actuator to change config properties??
 
+Matchmaking:
+- When resetting all matches and generating new matches, I need to do the correct calculation to create all the match
+  pairings:
+    - Shuffle the teams before to get a random order in which they play
+
 API & Impl:
-- Re-implement turn threads using completeable futures to enforce timeout
-- Also redirect sysout/syserr to the bot output files during class initialisation and instantiation
 - Do not expose Impl classes to bot code
     - the starter project will need a dependency to the emulator, which uses the Impl classes, which also makes them
       visible in the bot class path. The packages should be rearranged that the bot class don't see the Impl classes.
-- How can I limit the output size of sysout/syserr?
-    - Maybe own implementation or wrapper of PrintWriter that counts the characters and stops the output when limit was reached...?
-    - Some bots may easily fill it with hundreds of MBs...
+
+Match runtime process:
+- Tweak the stack size -Xss
 
 Bots:
 - Clean up rubbish in core/bots and add new example bots
@@ -47,10 +58,6 @@ DB:
 - add a password when using in production file mode
 - if the performance is too slow when using a file-based H2 db, then add a second level cache (EHCache)
 
-Matches:
-- Think about a fair scoring system for the ranking
-    - Maybe an elo based system like in football or so with points?
-
 Server Deployment:
 - Create an HTTPS certificate using: https://www.sslforfree.com/
 
@@ -63,9 +70,6 @@ Web access log:
 - Simple web access log
     - Could simply use the trace actuator?
 - Tag requests with unique id and show this id in log output to find the matching requests
-
-Mailing:
-- Switch to HTML e-mails with templates rendered by Thymeleaf (bonus)
 
 Misc:
 - Create a new "gridwars-starter" package that has a basic gridwars setup with a main class and two example bots that
@@ -110,6 +114,10 @@ Enable/disable local firewall:
 Enable/disable puppet agent:
 # puppet agent --disable
 # puppet agent --enable
+
+Redirect 80/443 -> 8080/8443 ports:
+# iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80 -m comment --comment "101 redirect for gridwars 80" -j REDIRECT --to-ports 8080
+# iptables -t nat -A PREROUTING -p tcp -m multiport --dports 443 -m comment --comment "102 redirect for gridwars 443" -j REDIRECT --to-ports 8443
 
 
 External firewall opening request: https://landb.cern.ch/landb/portal/firewallRequest/newRequest?interface=gridwars.CERN.CH

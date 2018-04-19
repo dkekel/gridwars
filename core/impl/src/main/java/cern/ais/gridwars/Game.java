@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 
-public class Game {
+public final class Game {
 
     public interface TurnCallback {
         void onPlayerResponse(Player player, int turn, Supplier<ByteBuffer> binaryGameStatusSupplier);
