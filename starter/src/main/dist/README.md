@@ -1,3 +1,4 @@
+<pre>
          .    .        .      .             . .     .        .          .          .
   .    .          .                 .                    .                .    .
            .               A long time ago in a galaxy far, far away...   .
@@ -58,6 +59,7 @@
                                          Episode VII
 
                                  B A T T L E   F O R   R I G A
+</pre>
 
 ## Distribution Content:
 
@@ -109,9 +111,11 @@ You can modify Visualizer's main method or create your own class calling aforeme
 Play fair and…
 May the code be with you!
 
+<pre>
                                     _.=+._
  \::::::::::::::::::::::::::.\`--._/[_/~|;\_.--'/.:::::::::\
   \::::::::::::::::::::::::::.`.  ` __`\.-.(  .'.:::::::::::\
   /::::::::::::::::::::::::::::.`-:.`'..`-'/\'.:::::::::::::/
  /::::::::::::::::::::::::::::::::.\ `--')/  ) ::::::::::::/
                                      `--'
+</pre>

@@ -14,6 +14,6 @@ public class EmulatorRunner {
         MovingBot blueBot = new MovingBot();
         ExpandBot redBot = new ExpandBot();
 
-        new Emulator().runGame(blueBot, redBot);
+        Emulator.playMatch(blueBot, redBot);
     }
 }

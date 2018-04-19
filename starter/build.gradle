@@ -12,7 +12,6 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'application'
-apply plugin: 'distribution'
 
 group = gridwarsGroup
 version = gridwarsVersion
@@ -29,13 +28,21 @@ jar {
 distributions {
     main {
         contents {
-            from { 'dist' }
-            into('src') {
-                from { 'src' }
+            from('src/main/java') {
+                into('src/main/java')
             }
         }
     }
 }
+
+distZip.archiveName = 'gridwars-starter.zip'
+
+// We don't want to have the starter jar file shipped with the dist zip file, as
+// we already ship the source code.
+distZip.exclude "**/${jar.archiveName}"
+
+// We don't need the starter scripts automatically created in the "bin" folder.
+startScripts.enabled = false
 
 dependencies {
     compile project(':core:emulator')
