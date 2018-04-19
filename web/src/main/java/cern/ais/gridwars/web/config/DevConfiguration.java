@@ -43,6 +43,8 @@ public class DevConfiguration {
 
     @PostConstruct
     public void initTestData() {
+        // TODO Ensure that this here is never executed in production!! Could this class be excluded when building the runnable jar?
+
         final long MEGA_BYTE_FACTOR = 1024 * 1024;
         final Runtime runtime = Runtime.getRuntime();
         final long usedMemoryMb = (runtime.totalMemory() - runtime.freeMemory()) / MEGA_BYTE_FACTOR;
@@ -77,18 +79,18 @@ public class DevConfiguration {
         // =====================================================================
         File sharedBotFile = Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), "gridwars-bots.jar").toFile();
 
-        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.ExpandBot", testUsers.get(0), Instant.now());
+        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.ExpandBot", testUsers.get(0), Instant.now());
 
-        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.JaegerBot", testUsers.get(1), Instant.now());
+        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.JaegerBot", testUsers.get(1), Instant.now());
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.GinTonicBot", testUsers.get(2), Instant.now());
+        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.GinTonicBot", testUsers.get(2), Instant.now());
         matchService.generateMatches(bot3);
 
-        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.BrugalColaBot", testUsers.get(3), Instant.now());
+        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.BrugalColaBot", testUsers.get(3), Instant.now());
         matchService.generateMatches(bot4);
 
-        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.PermissionCheckerBot", testUsers.get(4), Instant.now());
+        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.PermissionCheckerBot", testUsers.get(4), Instant.now());
         matchService.generateMatches(bot5);
 
         matchWorkerService.wakeUpAllMatchWorkers();

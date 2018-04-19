@@ -8,22 +8,18 @@
  */
 package cern.ais.gridwars;
 
-import cern.ais.gridwars.cell.Cell;
-import cern.ais.gridwars.command.MovementCommand;
-import cern.ais.gridwars.coordinates.CoordinatesImpl;
-import cern.ais.gridwars.universe.ArrayUniverse;
-import cern.ais.gridwars.universe.Universe;
-import cern.ais.gridwars.universe.UniverseViewImpl;
-import cern.ais.gridwars.util.StdOutputSwitcher;
+import cern.ais.gridwars.api.Coordinates;
+import cern.ais.gridwars.api.UniverseView;
+import cern.ais.gridwars.api.command.MovementCommand;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Supplier;
 
 
-public final class Game {
+final class Game {
 
-    public interface TurnCallback {
+    interface TurnCallback {
         void onPlayerResponse(Player player, int turn, Supplier<ByteBuffer> binaryGameStatusSupplier);
     }
 
@@ -38,11 +34,11 @@ public final class Game {
     private Iterator<Player> playerIterator;
     private int currentTurn;
 
-    public Game(List<Player> playerList, TurnCallback turnCallback) {
+    Game(List<Player> playerList, TurnCallback turnCallback) {
         this(playerList, turnCallback, false);
     }
 
-    public Game(List<Player> playerList, TurnCallback turnCallback, boolean debugMode) {
+    Game(List<Player> playerList, TurnCallback turnCallback, boolean debugMode) {
         this.playerList.addAll(Objects.requireNonNull(playerList));
         this.playerIterator = this.playerList.iterator();
         this.turnCallback = turnCallback;
@@ -55,55 +51,11 @@ public final class Game {
 
     // TODO get rid of this method, we don't want to give away the keys to the universe!!
     @Deprecated
-    public Universe getUniverse() {
+    Universe getUniverse() {
         return universe;
     }
 
-    public boolean isFinished() {
-        return maxTurnLimitReached() || onlyOneOrLessPlayerLeft();
-    }
-
-    private boolean maxTurnLimitReached() {
-        return (currentTurn > GameConstants.TURN_LIMIT);
-    }
-
-    private boolean onlyOneOrLessPlayerLeft() {
-        return (universe.getNumberOfAlivePlayers(playerList.size()) <= 1);
-    }
-
-    public Player getWinner() {
-        assertThatIsFinished();
-        boolean potentialDraw = false;
-        Player winner = null;
-        int winnerPopulation = -1;
-
-        for (Player player : playerList) {
-            int count = 0;
-
-            // TODO [optimisation] would a parallel stream reduce operation here be faster?
-            for (Coordinates coordinates : universe.getCellCoordinatesForPlayer(player)) {
-                count += universe.getCell(coordinates).getPopulation();
-            }
-
-            if (count > winnerPopulation) {
-                winnerPopulation = count;
-                winner = player;
-                potentialDraw = false;
-            } else if (count == winnerPopulation) {
-                potentialDraw = true;
-            }
-        }
-
-        return potentialDraw ? null : winner;
-    }
-
-    private void assertThatIsFinished() {
-        if (!isFinished()) {
-            throw new IllegalStateException("Game not finished");
-        }
-    }
-
-    public void startUp() {
+    void startUp() {
         for (Player player : playerList) {
             Coordinates startCoordinates = getRandomCoordinates();
 
@@ -263,6 +215,50 @@ public final class Game {
         }
 
         return byteBuffer;
+    }
+
+    Player getWinner() {
+        assertThatIsFinished();
+        boolean potentialDraw = false;
+        Player winner = null;
+        int winnerPopulation = -1;
+
+        for (Player player : playerList) {
+            int count = 0;
+
+            // TODO [optimisation] would a parallel stream reduce operation here be faster?
+            for (Coordinates coordinates : universe.getCellCoordinatesForPlayer(player)) {
+                count += universe.getCell(coordinates).getPopulation();
+            }
+
+            if (count > winnerPopulation) {
+                winnerPopulation = count;
+                winner = player;
+                potentialDraw = false;
+            } else if (count == winnerPopulation) {
+                potentialDraw = true;
+            }
+        }
+
+        return potentialDraw ? null : winner;
+    }
+
+    private void assertThatIsFinished() {
+        if (!isFinished()) {
+            throw new IllegalStateException("Game not finished");
+        }
+    }
+
+    boolean isFinished() {
+        return maxTurnLimitReached() || onlyOneOrLessPlayerLeft();
+    }
+
+    private boolean maxTurnLimitReached() {
+        return (currentTurn > GameConstants.TURN_LIMIT);
+    }
+
+    private boolean onlyOneOrLessPlayerLeft() {
+        return (universe.getNumberOfAlivePlayers(playerList.size()) <= 1);
     }
 
     /**

@@ -1,8 +1,8 @@
 package cern.ais.gridwars.web.worker;
 
-import cern.ais.gridwars.runtime.MatchFile;
-import cern.ais.gridwars.runtime.MatchResult;
-import cern.ais.gridwars.runtime.MatchRuntimeConstants;
+import cern.ais.gridwars.MatchFile;
+import cern.ais.gridwars.MatchResult;
+import cern.ais.gridwars.MatchRuntimeConstants;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.Match;

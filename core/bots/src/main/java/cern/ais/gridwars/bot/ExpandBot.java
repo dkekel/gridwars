@@ -1,0 +1,50 @@
+package cern.ais.gridwars.bot;
+/*
+ * Copyright (C) CERN 2013 - European Laboratory for Particle Physics
+ * All Rights Reserved.
+ *
+ * Authors:
+ *   Dmitry Kekelidze (dmitry.kekelidze@cern.ch)
+ *   Gerardo Lastra (gerardo.lastra@cern.ch)
+ */
+
+import cern.ais.gridwars.api.Coordinates;
+import cern.ais.gridwars.api.UniverseView;
+import cern.ais.gridwars.api.bot.PlayerBot;
+import cern.ais.gridwars.api.command.MovementCommand;
+
+import java.util.List;
+
+public class ExpandBot implements PlayerBot
+{
+	public void getNextCommands(UniverseView universeView, List<MovementCommand> commandList)
+	{
+		List<Coordinates> myCells = universeView.getMyCells();
+
+		for (Coordinates current : myCells)
+		{
+			int currentPopulation = universeView.getPopulation(current);
+			if (currentPopulation > (4.0 / (universeView.getGrowthRate() - 1)))
+			{
+				int split = 1;
+				// Check left, right, up, down for own cells
+				for (MovementCommand.Direction direction : MovementCommand.Direction.values())
+				{
+					if (!universeView.belongsToMe(current.getRelative(1, direction)))
+					{
+						split++;
+					}
+				}
+
+				// Expand
+				for (MovementCommand.Direction direction : MovementCommand.Direction.values())
+				{
+					if (!universeView.belongsToMe(current.getRelative(1, direction)))
+					{
+						commandList.add(new MovementCommand(current, direction, currentPopulation / split));
+					}
+				}
+			}
+		}
+	}
+}

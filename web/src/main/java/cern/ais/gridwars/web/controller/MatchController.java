@@ -1,7 +1,7 @@
 package cern.ais.gridwars.web.controller;
 
-import cern.ais.gridwars.runtime.MatchFile;
-import cern.ais.gridwars.runtime.MatchTurnDataSerializer;
+import cern.ais.gridwars.MatchFile;
+import cern.ais.gridwars.MatchTurnDataSerializer;
 import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.domain.Match;

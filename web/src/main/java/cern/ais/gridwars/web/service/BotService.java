@@ -1,6 +1,6 @@
 package cern.ais.gridwars.web.service;
 
-import cern.ais.gridwars.bot.PlayerBot;
+import cern.ais.gridwars.api.bot.PlayerBot;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;

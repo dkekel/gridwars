@@ -46,7 +46,7 @@ public class GridWarsProperties {
         private String matchesDir;
         private String runtimeDir;
 
-        protected void initDirs() {
+        private void initDirs() {
             botJarDir = Paths.get(baseWorkDir, "bots").toString();
             matchesDir = Paths.get(baseWorkDir, "matches").toString();
             runtimeDir = Paths.get(baseWorkDir, "runtime").toString();

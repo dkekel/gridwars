@@ -1,13 +1,13 @@
 apply plugin: 'application'
 
-mainClassName = 'cern.ais.gridwars.App'
+mainClassName = 'cern.ais.gridwars.bot.App'
 
 jar {
     manifest {
         attributes(
-		        'Bot-Class-Name': 'cern.ais.gridwars.JaegerBot'
-//                'Bot-Class-Name': 'cern.ais.gridwars.GinTonicBot'
-//                'Bot-Class-Name': 'cern.ais.gridwars.BrugalColaBot'
+		        'Bot-Class-Name': 'cern.ais.gridwars.bot.JaegerBot'
+//                'Bot-Class-Name': 'cern.ais.gridwars.bot.GinTonicBot'
+//                'Bot-Class-Name': 'cern.ais.gridwars.bot.BrugalColaBot'
         )
     }
 }

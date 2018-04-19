@@ -8,22 +8,21 @@
  */
 package cern.ais.gridwars;
 
-import cern.ais.gridwars.bot.PlayerBot;
-import cern.ais.gridwars.util.BotPrintWriter;
+import cern.ais.gridwars.api.bot.PlayerBot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Objects;
 
 
-public class Player {
+final class Player {
 
     private final int id;
     private final PlayerBot playerBot;
     private final BotPrintWriter botOutputPrintWriter;
     private final int colorIndex;
 
-    public Player(int id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
+    Player(int id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
         this.id = id;
         this.playerBot = Objects.requireNonNull(playerBot);
         this.botOutputPrintWriter = createBotPrintWriter(outputFile);
@@ -32,31 +31,31 @@ public class Player {
 
     private BotPrintWriter createBotPrintWriter(File outputFile) throws FileNotFoundException {
         return (outputFile != null)
-            ? new BotPrintWriter(outputFile, GameConstants.BOT_PRINT_OUPUT_BYTE_LIMIT, true)
+            ? new BotPrintWriter(outputFile, GameConstants.BOT_PRINT_OUTPUT_BYTE_LIMIT, true)
             : null;
     }
 
-    public int getId() {
+    int getId() {
         return id;
     }
 
-    public PlayerBot getPlayerBot() {
+    PlayerBot getPlayerBot() {
         return playerBot;
     }
 
-    public BotPrintWriter getBotOutputPrintWriter() {
+    BotPrintWriter getBotOutputPrintWriter() {
         return botOutputPrintWriter;
     }
 
-    public boolean hasBotOutputPrintWriter() {
+    boolean hasBotOutputPrintWriter() {
         return botOutputPrintWriter != null;
     }
 
-    public int getColorIndex() {
+    int getColorIndex() {
         return colorIndex;
     }
 
-    public void dispose() {
+    void dispose() {
         if (hasBotOutputPrintWriter()) {
             botOutputPrintWriter.close();
         }

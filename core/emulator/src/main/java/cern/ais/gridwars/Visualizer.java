@@ -1,8 +1,6 @@
 package cern.ais.gridwars;
 
-import cern.ais.gridwars.bot.PlayerBot;
-import cern.ais.gridwars.cell.Cell;
-import cern.ais.gridwars.universe.Universe;
+import cern.ais.gridwars.api.bot.PlayerBot;
 
 import javax.swing.*;
 import javax.swing.Timer;

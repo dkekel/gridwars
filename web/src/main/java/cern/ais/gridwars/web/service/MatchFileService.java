@@ -1,6 +1,6 @@
 package cern.ais.gridwars.web.service;
 
-import cern.ais.gridwars.runtime.MatchFile;
+import cern.ais.gridwars.MatchFile;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.domain.Match;
 import cern.ais.gridwars.web.domain.User;

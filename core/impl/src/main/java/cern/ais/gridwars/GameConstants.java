@@ -11,19 +11,20 @@ package cern.ais.gridwars;
 import java.util.concurrent.TimeUnit;
 
 
-public final class GameConstants {
+final class GameConstants {
 
-    public static final int UNIVERSE_SIZE = 50;
-    public static final double GROWTH_RATE = 1.10;
-    public static final int MAXIMUM_POPULATION = 100;
-    public static final int STARTING_POPULATION = 100;
-    public static final int TURN_TIMEOUT_MS = 50;
-    public static final long BOT_INSTANTIATION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
-    public static final int TURN_LIMIT = 2000;
-    public static final long MATCH_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(60);
-    public static final int BOT_PRINT_OUPUT_BYTE_LIMIT = 1024 * 1024 * 5; // 5 MB
+    static final long MATCH_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(60);
+    static final int UNIVERSE_SIZE = 50;
+    static final double GROWTH_RATE = 1.10;
+    static final int MAXIMUM_POPULATION = 100;
+    static final int STARTING_POPULATION = 100;
+    static final int TURN_TIMEOUT_MS = 50;
+    static final long BOT_INSTANTIATION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
+    static final int TURN_LIMIT = 2000;
 
-    public static final byte[][] PLAYER_COLORS = {
+    static final int BOT_PRINT_OUTPUT_BYTE_LIMIT = 1024 * 1024 * 5; // 5 MB
+
+    static final byte[][] PLAYER_COLORS = {
         {(byte) 255, 0, 0}, // Red
         {0, 0, (byte) 255}, // Blue
         {0, (byte) 255, 0}, // Green
