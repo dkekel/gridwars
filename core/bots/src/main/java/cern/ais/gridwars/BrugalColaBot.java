@@ -9,10 +9,6 @@ import java.util.*;
 
 public class BrugalColaBot implements PlayerBot {
 
-    static {
-        System.out.println("Static init block was called on: cern.ais.gridwars.BrugalColaBot");
-    }
-
     private static final int ROUND_THRESHOLD = 5;
     private static final int ROUND_MODULUS = 10;
 
@@ -20,10 +16,6 @@ public class BrugalColaBot implements PlayerBot {
     private int enemySize;
     private int alliesSize;
     private final List<Strategy> strategies = Arrays.asList(new FastExpansion(), new AttackStrategy());
-
-    public BrugalColaBot() {
-        System.out.println("Constructor called on: " + getClass().getName());
-    }
 
     @Override
     public void getNextCommands(UniverseView universeView, List<MovementCommand> list) {
