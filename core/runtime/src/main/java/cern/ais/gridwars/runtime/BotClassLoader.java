@@ -58,6 +58,7 @@ class BotClassLoader {
         final CompletableFuture<PlayerBot> instantiatorFuture = new CompletableFuture<>();
 
         // TODO use StdOutputSwitcher to redirect stdout and stderr to the player output file
+        // Alternatively, simply pipe the output to a no-op stream and have it effectively discarded...
         executorService.submit(() -> {
             try {
                 instantiatorFuture.complete((PlayerBot) botClass.newInstance());
@@ -68,11 +69,11 @@ class BotClassLoader {
 
         try {
             return instantiatorFuture.get(GameConstants.BOT_INSTANTIATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException | InterruptedException te) {
+        } catch (TimeoutException te) {
             throw new BotClassLoaderException("Bot failed to initialise within the allowed timeout of " +
                 GameConstants.BOT_INSTANTIATION_TIMEOUT_MS + " ms: " + botClass.getName());
-        } catch (ExecutionException ee) {
-            throw new BotClassLoaderException("Failed to instantiate bot class: " + botClass.getName(), ee.getCause());
+        } catch (ExecutionException | InterruptedException e) {
+            throw new BotClassLoaderException("Failed to instantiate bot class: " + botClass.getName(), e.getCause());
         } finally {
             executorService.shutdownNow();
         }

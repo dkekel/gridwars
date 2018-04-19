@@ -99,7 +99,6 @@ public class MatchRuntime {
             } catch (Exception e) {
                 error("Match execution failed: " + e.getMessage(), e);
                 populateErrorMatchResult(e.getMessage());
-                // TODO do we need to treat SecurityException here in a special way??
             }
 
             persistMatchResult();
@@ -121,7 +120,13 @@ public class MatchRuntime {
         info("Load and instantiate bot " + botNumber + " class \"" + botClassName +"\" from jar: " + botJarPath);
 
         try {
-            return botClassLoader.loadAndInstantiateBot(botJarPath, botClassName);
+            final long startMillis = System.currentTimeMillis();
+            PlayerBot bot = botClassLoader.loadAndInstantiateBot(botJarPath, botClassName);
+            final long durationMillis = System.currentTimeMillis() - startMillis;
+
+            info("Instantiation of " + botNumber + " class \"" + botClassName +"\" took [ms]: " + durationMillis);
+
+            return bot;
         } catch (Exception e) {
             throw new MatchExecutionException("Failed to load and instantiate bot  " + botNumber + ": " + botClassName, e);
         }
