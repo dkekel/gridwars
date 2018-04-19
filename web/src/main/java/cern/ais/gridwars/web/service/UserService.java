@@ -148,6 +148,7 @@ public class UserService implements UserDetailsService {
        userRepository.findById(updateUserDto.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(updateUserDto.getEmail());
            existingUser.setTeamName(updateUserDto.getTeamName());
+           existingUser.setModified(Instant.now());
 
            if (StringUtils.hasLength(updateUserDto.getPassword())) {
                existingUser.setPassword(encodePassword(updateUserDto.getPassword()));
@@ -155,8 +156,6 @@ public class UserService implements UserDetailsService {
 
            userRepository.saveAndFlush(existingUser);
        });
-
-       // TODO Throw exception if user not found??
     }
 
     private String encodePassword(String password) {

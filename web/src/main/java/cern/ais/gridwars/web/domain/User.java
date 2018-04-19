@@ -47,6 +47,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Instant created;
 
+    private Instant modified;
+
     @Column(unique = true)
     private String confirmationId;
 
@@ -103,6 +105,15 @@ public class User implements UserDetails {
 
     public User setCreated(Instant created) {
         this.created = created;
+        return this;
+    }
+
+    public Instant getModified() {
+        return modified;
+    }
+
+    public User setModified(Instant modified) {
+        this.modified = modified;
         return this;
     }
 

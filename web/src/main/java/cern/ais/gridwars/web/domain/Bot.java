@@ -132,7 +132,6 @@ public class Bot {
         return getUser().isAdmin();
     }
 
-
     public String getName() {
         if ((botClassName != null) && !botClassName.isEmpty()) {
             String[] classNameParts = botClassName.split("\\.");
