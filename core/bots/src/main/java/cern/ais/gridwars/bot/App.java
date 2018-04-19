@@ -11,6 +11,6 @@ public class App {
 		Main bot2 = new Main();
 		bot2.setBot(new SplitBot(bot2));
 
-		new Emulator().runGame(bot1, bot2);
+		Emulator.playMatch(bot1, bot2);
 	}
 }

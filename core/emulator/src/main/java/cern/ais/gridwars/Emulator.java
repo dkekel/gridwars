@@ -22,8 +22,15 @@ public final class Emulator {
 	private Timer timer;
     private volatile boolean running = true;
 
-    public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
-        createGame(bot1, bot2);
+    public static void playMatch(PlayerBot blueBot, PlayerBot redBot) throws FileNotFoundException {
+        new Emulator().runGame(blueBot, redBot);
+    }
+
+    private Emulator() {
+    }
+
+    private void runGame(PlayerBot blueBot, PlayerBot redBot) throws FileNotFoundException {
+        createGame(blueBot, redBot);
         createAndShowGUI();
     }
 
