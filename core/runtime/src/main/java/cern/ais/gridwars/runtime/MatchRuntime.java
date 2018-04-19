@@ -137,7 +137,7 @@ public class MatchRuntime {
         players.add(createPlayer(1, bot2, MatchFile.BOT_2_OUTPUT.fileName));
 
         Game game = new Game(players, (player, turn, binaryGameStatus) ->
-            turnStates.add(binaryGameStatus.array())
+            turnStates.add(binaryGameStatus.get().array())
         );
 
         long matchStartTimeMillis = System.currentTimeMillis();

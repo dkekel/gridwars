@@ -39,7 +39,7 @@ public class Visualizer {
             new Player(1, bot2, new File("bot2.log"), 1)
         );
 
-		game = new Game(players, (player, turn, movementCommands, binaryGameStatus) -> {
+		game = new Game(players, (player, turn, binaryGameStatus) -> {
             frame.setTitle("Turn " + turn);
             frame.repaint();
         }, true);
@@ -82,7 +82,11 @@ public class Visualizer {
 
 		final JToggleButton pauseButton = new JToggleButton("Pause");
 		pauseButton.setSelected(false);
-		pauseButton.addItemListener(itemEvent -> running = itemEvent.getStateChange() != ItemEvent.SELECTED);
+		pauseButton.addItemListener(itemEvent -> {
+		    boolean shouldBeRunning = itemEvent.getStateChange() != ItemEvent.SELECTED;
+		    running = shouldBeRunning;
+		    pauseButton.setText(shouldBeRunning ? "Pause" : "Play");
+        });
 
 		controlPanel.add(pauseButton);
 		controlPanel.add(createSpeedControlButton("+"), BorderLayout.EAST);

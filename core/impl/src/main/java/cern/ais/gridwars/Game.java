@@ -18,13 +18,13 @@ import cern.ais.gridwars.util.StdOutputSwitcher;
 
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.function.Supplier;
 
 
 public class Game {
 
-    // TODO Refactor this callback to pass in a lazy binary game state Supplier<T>
     public interface TurnCallback {
-        void onPlayerResponse(Player player, int turn, ByteBuffer binaryGameStatus);
+        void onPlayerResponse(Player player, int turn, Supplier<ByteBuffer> binaryGameStatusSupplier);
     }
 
     private static final int UNIVERSE_STATE_BYTE_SIZE = GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE * 4;
@@ -166,7 +166,7 @@ public class Game {
         }
 
         if (turnCallback != null) {
-            turnCallback.onPlayerResponse(player, currentTurn, getBinaryGameStatus());
+            turnCallback.onPlayerResponse(player, currentTurn, this::getBinaryGameStatus);
         }
 
         currentTurn++;
@@ -315,9 +315,10 @@ public class Game {
                 try {
                     player.getPlayerBot().getNextCommands(universeView, movementCommands);
                 } catch (Exception e) {
-                    // TODO we need to catch any exception that might escape the getNextCommands method and log is as a warning to the output
-                    // TODO Handle SecurityException is a special way
-                    throw e;
+                    System.out.println("[ERROR] Getting moves for turn " + turn + " failed with unhandled exception \"" +
+                        e.getClass().getName() + "\": " + e.getMessage());
+                    // TODO Is there an exception that should fail the match?
+                    // TODO Handle SecurityException is a special way to detect cheaters
                 }
             });
         }
