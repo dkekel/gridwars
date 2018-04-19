@@ -1,5 +1,7 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
+import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.BotFileService;
@@ -38,12 +40,15 @@ public class BotController {
     private final BotService botService;
     private final BotUploadService botUploadService;
     private final BotFileService botFileService;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
-    public BotController(BotService botService, BotUploadService botUploadService, BotFileService botFileService) {
+    public BotController(BotService botService, BotUploadService botUploadService, BotFileService botFileService,
+                         GridWarsProperties gridWarsProperties) {
         this.botService = Objects.requireNonNull(botService);
         this.botUploadService = Objects.requireNonNull(botUploadService);
         this.botFileService = Objects.requireNonNull(botFileService);
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     @GetMapping("/download/{botId}")
@@ -88,6 +93,10 @@ public class BotController {
                 botJarFile.getName(), botJarFile.getOriginalFilename(), botJarFile.getContentType(),
                 botJarFile.getSize(), currentUser.getUsername());
 
+        if (botUploadDisabled() && !currentUser.isAdmin()) {
+            throw new AccessDeniedException();
+        }
+
         try {
             Bot newBot = botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now());
             redirectAttributes.addFlashAttribute("success", newBot.getName());
@@ -96,5 +105,9 @@ public class BotController {
         }
 
         return ModelAndViewBuilder.forRedirect("/team").toModelAndView();
+    }
+
+    private boolean botUploadDisabled() {
+        return !gridWarsProperties.getMatches().getBotUploadEnabled();
     }
 }

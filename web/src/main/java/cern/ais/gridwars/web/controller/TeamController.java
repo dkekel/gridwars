@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.Match;
@@ -31,14 +32,16 @@ public class TeamController {
     private final BotService botService;
     private final MatchService matchService;
     private final RankingService rankingService;
+    private final GridWarsProperties gridWarsProperties;
 
     @Autowired
     public TeamController(UserService userService, BotService botService, MatchService matchService,
-                          RankingService rankingService) {
+                          RankingService rankingService, GridWarsProperties gridWarsProperties) {
         this.userService = Objects.requireNonNull(userService);
         this.botService = Objects.requireNonNull(botService);
         this.matchService = Objects.requireNonNull(matchService);
         this.rankingService = Objects.requireNonNull(rankingService);
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
     @GetMapping // empty path parameter here maps is it to "" as well as "/"
@@ -55,10 +58,16 @@ public class TeamController {
                 boolean isCurrentUserTheUserToShow = userToShow.equals(currentUser);
                 mavBuilder.addAttribute("userToShow", userToShow);
                 mavBuilder.addAttribute("isCurrentUserTheUserToShow", isCurrentUserTheUserToShow);
+                mavBuilder.addAttribute("botUploadEnabled", isBotUploadEnabled());
                 addActiveBotInfos(mavBuilder, userToShow, isCurrentUserTheUserToShow);
                 return mavBuilder.toModelAndView();
             })
             .orElseThrow(NotFoundException::new);
+    }
+
+    private boolean isBotUploadEnabled() {
+        // TODO override it for admin?
+        return gridWarsProperties.getMatches().getBotUploadEnabled();
     }
 
     private void addActiveBotInfos(ModelAndViewBuilder mavBuilder, User userToShow, boolean isCurrentUserTheUserToShow) {
