@@ -22,7 +22,7 @@ gridwars:
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bccRecipient: 'benjamin.wolff@cern.ch'
         toRecipientOverride: 'benjamin.wolff@cern.ch'
-        baseUrl: 'http://localhost:8080'
+        baseUrl: 'http://localhost:8080' # TODO adjust when deployed
 
 # ==================================================================================================
 # Spring Profiles Configuration
@@ -39,9 +39,9 @@ spring:
 # ==================================================================================================
 ---
 spring:
+    profiles: dev
     datasource:
         url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
-
 
 # ==================================================================================================
 # JPA Configuration
@@ -50,7 +50,7 @@ spring:
 spring:
     jpa:
         open-in-view: true # TODO check what the effect on the transactions is during view rendering
-        # Enable for debugging
+        # Can be enabled for debugging
         show-sql: false
 
 # ==================================================================================================
@@ -81,7 +81,6 @@ spring:
         multipart:
             # Maximum file upload size
             max-file-size: 5MB
-            #max-file-size: 3KB
             max-request-size: 8MB
 
 # ==================================================================================================
@@ -89,8 +88,8 @@ spring:
 # ==================================================================================================
 ---
 spring:
+    profiles: dev
     thymeleaf:
-        # TODO disable caching only in dev mode...
         cache: false
 
 # ==================================================================================================
