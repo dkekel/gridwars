@@ -3,9 +3,13 @@ package cern.ais.gridwars.util;
 import java.io.PrintStream;
 
 
-// Enums are the elite way to implement a singleton in Java. Watch in awe and learn! ;)
+/**
+ * Redirects the default stdout and stderr stream to the specified BotPrintWriter. After the bot
+ * output is done, the original output streams should be restored.
+ */
 public enum StdOutputSwitcher {
 
+    // Enums are the elite way to implement a singleton in Java. Watch in awe and learn! ;)
     INSTANCE;
 
     private final PrintStream oldOut = System.out;
@@ -16,7 +20,7 @@ public enum StdOutputSwitcher {
         System.setErr(newOut);
     }
 
-    public void restoreInitial() {
+    public void restoreOriginal() {
         System.setOut(oldOut);
         System.setErr(oldErr);
     }

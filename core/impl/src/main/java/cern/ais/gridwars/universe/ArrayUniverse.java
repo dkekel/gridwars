@@ -15,7 +15,6 @@ import cern.ais.gridwars.Player;
 import cern.ais.gridwars.cell.Cell;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,8 +49,8 @@ public class ArrayUniverse implements Universe {
 
     @Override
     public List<Coordinates> getCellCoordinatesForPlayer(Player player) {
-        // TODO check if this is really faster than a sequential stream for a list of only 2500 cells
-        return cells.parallelStream()
+        // TODO [optimisation] would a parallel stream be faster here??
+        return cells.stream()
             .filter(cell -> cell.isOwner(player))
             .map(Cell::getCoordinates)
             .collect(Collectors.toList());
@@ -62,8 +61,14 @@ public class ArrayUniverse implements Universe {
     }
 
     @Override
-    public Collection<Cell> getAllCells() {
+    public List<Cell> getAllCells() {
+        // TODO better to return a copy?
         return cells;
+    }
+
+    @Override
+    public List<Cell> getAllNonEmptyCells() {
+        return cells.stream().filter(Cell::isNotEmpty).collect(Collectors.toList());
     }
 
     @Override

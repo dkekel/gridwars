@@ -46,14 +46,17 @@ public class MatchService {
             .forEach(otherBot -> createMatches(bot, otherBot));
     }
 
+    // TODO add matchmaking method that generates new matches for a given list of bots, or for all currently
+    // active bots...
+
     private void createMatches(Bot bot1, Bot bot2) {
         int numberOfMatches = gridWarsProperties.getMatches().getMatchCountPerOpponent();
 
         for (int n = 0; n < numberOfMatches; n++) {
             // When generating the matches, shuffle around bot 1 and 2 to introduce a bit more
             // randomness and thus fairness. Otherwise, one bot will always get the first turn,
-            // which may have a small influence on the result.
-            if (random.nextInt() % 2 == 0) {
+            // which can be an advantage for the first bot.
+            if (random.nextBoolean()) {
                 createSingleMatch(bot1, bot2);
             } else {
                 createSingleMatch(bot2, bot1);
@@ -94,6 +97,8 @@ public class MatchService {
         match.setCancelled(Instant.now());
         matchRepository.save(match);
     }
+
+    // TODO Implement method for cancelling all pending matches
 
     // IMPORTANT: This method is a critical join point of several worker threads and must ensure to
     // never hand out the same match twice, even if it's called in parallel by several worker threads. This is

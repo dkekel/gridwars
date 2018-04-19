@@ -1,6 +1,7 @@
 package cern.ais.gridwars.runtime;
 
 import cern.ais.gridwars.Game;
+import cern.ais.gridwars.GameConstants;
 import cern.ais.gridwars.Player;
 import cern.ais.gridwars.bot.PlayerBot;
 
@@ -30,9 +31,6 @@ import static cern.ais.gridwars.runtime.LogUtils.*;
  */
 public class MatchRuntime {
 
-    // TODO determine adequate match timeout
-    // TODO should I make this configurable via sys prop??
-    private static final long MATCH_TIME_OUT_MILLIS = 60 * 1000; // 60 seconds
     private static final long MEGA_BYTE_FACTOR = 1024 * 1024;
 
     private final BotClassLoader botClassLoader = new BotClassLoader();
@@ -138,7 +136,7 @@ public class MatchRuntime {
         players.add(createPlayer(0, bot1, MatchFile.BOT_1_OUTPUT.fileName));
         players.add(createPlayer(1, bot2, MatchFile.BOT_2_OUTPUT.fileName));
 
-        Game game = new Game(players, (player, turn, movementCommands, binaryGameStatus) ->
+        Game game = new Game(players, (player, turn, binaryGameStatus) ->
             turnStates.add(binaryGameStatus.array())
         );
 
@@ -147,7 +145,7 @@ public class MatchRuntime {
             game.startUp();
 
             while (!game.isFinished()) {
-                if ((System.currentTimeMillis() - matchStartTimeMillis) > MATCH_TIME_OUT_MILLIS) {
+                if ((System.currentTimeMillis() - matchStartTimeMillis) > GameConstants.MATCH_TIMEOUT_MS) {
                     throw new TimeoutException();
                 }
                 game.nextTurn();
@@ -155,7 +153,7 @@ public class MatchRuntime {
 
             populateSuccessfulMatchResult(game.getWinner());
         } catch (TimeoutException ignored) {
-            String errorMessage = "Match execution timed out after " + MATCH_TIME_OUT_MILLIS + " ms";
+            String errorMessage = "Match execution timed out after " + GameConstants.MATCH_TIMEOUT_MS + " ms";
             error(errorMessage);
             populateErrorMatchResult(errorMessage);
         }

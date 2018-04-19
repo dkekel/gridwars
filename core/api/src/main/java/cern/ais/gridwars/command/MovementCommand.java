@@ -2,6 +2,8 @@ package cern.ais.gridwars.command;
 
 import cern.ais.gridwars.Coordinates;
 
+import java.util.Objects;
+
 
 /**
  * Encapsulates a movement command.
@@ -17,13 +19,13 @@ public final class MovementCommand {
     private final int amount;
 
     public MovementCommand(Coordinates coordinatesFrom, Direction direction, int amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Negative amount in movement command: " + amount);
-        }
-
-        this.coordinatesFrom = coordinatesFrom;
-        this.direction = direction;
+        this.coordinatesFrom = Objects.requireNonNull(coordinatesFrom);
+        this.direction = Objects.requireNonNull(direction);
         this.amount = amount;
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Invalid amount, you must at least move 1 troop: " + amount);
+        }
     }
 
     public final Coordinates getCoordinatesFrom() {

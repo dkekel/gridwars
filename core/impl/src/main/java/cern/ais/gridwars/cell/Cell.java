@@ -37,6 +37,10 @@ public final class Cell {
         return population == 0;
     }
 
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     public Player getOwner() {
         return owner;
     }

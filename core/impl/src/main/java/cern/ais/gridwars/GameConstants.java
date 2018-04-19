@@ -8,6 +8,8 @@
  */
 package cern.ais.gridwars;
 
+import java.util.concurrent.TimeUnit;
+
 
 public final class GameConstants {
 
@@ -16,8 +18,9 @@ public final class GameConstants {
     public static final int MAXIMUM_POPULATION = 100;
     public static final int STARTING_POPULATION = 100;
     public static final int TURN_TIMEOUT_MS = 50;
-    public static final int BOT_INSTANTIATION_TIMEOUT_MS = 5000;
+    public static final long BOT_INSTANTIATION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
     public static final int TURN_LIMIT = 2000;
+    public static final long MATCH_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(60);
     public static final int BOT_PRINT_OUPUT_BYTE_LIMIT = 1024 * 1024 * 5; // 5 MB
 
     public static final byte[][] PLAYER_COLORS = {

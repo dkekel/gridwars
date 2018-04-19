@@ -62,6 +62,11 @@ public class CoordinatesImpl implements Coordinates {
         }
     }
 
+    @Override
+    public Coordinates getNeighbour(MovementCommand.Direction direction) {
+        return getRelative(1, direction);
+    }
+
     public CoordinatesImpl getLeft(int distance) {
         return new CoordinatesImpl(x - distance, y);
     }

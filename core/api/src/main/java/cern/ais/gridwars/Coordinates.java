@@ -15,11 +15,9 @@ public interface Coordinates {
 
     int getY();
 
-    /**
-     * Used to get a coordinate object placed in a relative distance to this one.
-     * Returns the relative coordinates in the direction and the distance.
-     */
     Coordinates getRelative(int distance, MovementCommand.Direction direction);
+
+    Coordinates getNeighbour(MovementCommand.Direction direction);
 
     Coordinates getLeft(int distance);
 

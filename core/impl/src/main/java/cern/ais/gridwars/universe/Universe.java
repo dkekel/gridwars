@@ -12,7 +12,6 @@ import cern.ais.gridwars.Coordinates;
 import cern.ais.gridwars.Player;
 import cern.ais.gridwars.cell.Cell;
 
-import java.util.Collection;
 import java.util.List;
 
 
@@ -24,7 +23,9 @@ public interface Universe {
 
     List<Coordinates> getCellCoordinatesForPlayer(Player player);
 
-    Collection<Cell> getAllCells();
+    List<Cell> getAllCells();
+
+    List<Cell> getAllNonEmptyCells();
 
     int getNumberOfAlivePlayers(int initialPlayerNumber);
 }

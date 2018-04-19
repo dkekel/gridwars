@@ -17,6 +17,7 @@ import cern.ais.gridwars.cell.Cell;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UniverseViewImpl implements UniverseView {
@@ -27,8 +28,8 @@ public class UniverseViewImpl implements UniverseView {
     private final int turn;
 
     public UniverseViewImpl(Universe universe, Player player, int turn) {
-        this.universe = universe;
-        this.player = player;
+        this.universe = Objects.requireNonNull(universe);
+        this.player = Objects.requireNonNull(player);
         this.turn = turn;
         // TODO [optimisation] the list of player cells is eagerly initialised here, could it be lazily initialised
         // in the getter method?

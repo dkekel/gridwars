@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BotPrintWriterTests {
 
+    private static final String TEXT_OUTPUT = "dakfjasdlkfjasdkljfölkasdjfölkasdjfölkasdjfölasdkf";
     private File outputFile;
 
     @BeforeEach
@@ -23,43 +24,42 @@ public class BotPrintWriterTests {
 
     @AfterEach
     void tearDown() {
-        outputFile.delete();
-        outputFile = null;
+        if (outputFile != null) {
+            outputFile.delete();
+            outputFile = null;
+        }
     }
 
     @Test
-    public void writingOneLongOutputBelowLimitShouldWork() throws IOException {
-        final String expectedString = "dakfjasdlkfjasdkljfölkasdjfölkasdjfölkasdjfölasdkf";
-        final int maxBytes = expectedString.getBytes().length + 1;
+    public void writingSingleOutputBelowLimitShouldWork() throws IOException {
+        final int maxBytes = TEXT_OUTPUT.getBytes().length + 1;
         BotPrintWriter botPrintWriter = new BotPrintWriter(outputFile, maxBytes, false);
 
-        botPrintWriter.print(expectedString);
+        botPrintWriter.print(TEXT_OUTPUT);
         botPrintWriter.flush();
         final String actualFileContent = getFileTextContent(outputFile);
 
-        assertEquals(expectedString, actualFileContent);
+        assertEquals(TEXT_OUTPUT, actualFileContent);
     }
 
     @Test
-    public void writingOneLongOutputOfExactLimitShouldWork() throws IOException {
-        final String expectedString = "dakfjasdlkfjasdkljfölkasdjfölkasdjfölkasdjfölasdkf";
-        final int maxBytes = expectedString.getBytes().length;
+    public void writingSingleOutputOfExactLimitShouldWork() throws IOException {
+        final int maxBytes = TEXT_OUTPUT.getBytes().length;
         BotPrintWriter botPrintWriter = new BotPrintWriter(outputFile, maxBytes, false);
 
-        botPrintWriter.print(expectedString);
+        botPrintWriter.print(TEXT_OUTPUT);
         botPrintWriter.flush();
         final String actualFileContent = getFileTextContent(outputFile);
 
-        assertEquals(expectedString, actualFileContent);
+        assertEquals(TEXT_OUTPUT, actualFileContent);
     }
 
     @Test
-    public void writingOverLimitShouldCauseWarning() throws IOException {
-        final String expectedString = "dakfjasdlkfjasdkljfölkasdjfölkasdjfölkasdjfölasdkf";
-        final int maxBytes = expectedString.getBytes().length - 1;
+    public void writingSingleOutputOverLimitShouldCauseWarning() throws IOException {
+        final int maxBytes = TEXT_OUTPUT.getBytes().length - 1;
         BotPrintWriter botPrintWriter = new BotPrintWriter(outputFile, maxBytes, false);
 
-        botPrintWriter.print(expectedString);
+        botPrintWriter.print(TEXT_OUTPUT);
         botPrintWriter.flush();
 
         final String expectedWarning = "Print output has exceeded the allowed maximum of " + maxBytes +

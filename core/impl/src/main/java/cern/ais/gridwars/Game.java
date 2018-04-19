@@ -22,19 +22,20 @@ import java.util.*;
 
 public class Game {
 
+    // TODO Refactor this callback to pass in a lazy binary game state Supplier<T>
     public interface TurnCallback {
-        void onPlayerResponse(Player player, int turn, List<MovementCommand> movementCommands, ByteBuffer binaryGameStatus);
+        void onPlayerResponse(Player player, int turn, ByteBuffer binaryGameStatus);
     }
 
     private static final int UNIVERSE_STATE_BYTE_SIZE = GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE * 4;
     private static final byte[] EMPTY_PIXEL = { 0, 0, 0, 0 };
 
     private final List<Player> playerList = new LinkedList<>();
-    private Iterator<Player> playerIterator;
     private final Universe universe = new ArrayUniverse();
     private final Random random = new Random();
     private final TurnCallback turnCallback;
     private final boolean debugMode;
+    private Iterator<Player> playerIterator;
     private int currentTurn;
 
     public Game(List<Player> playerList, TurnCallback turnCallback) {
@@ -44,7 +45,7 @@ public class Game {
     public Game(List<Player> playerList, TurnCallback turnCallback, boolean debugMode) {
         this.playerList.addAll(Objects.requireNonNull(playerList));
         this.playerIterator = this.playerList.iterator();
-        this.turnCallback = Objects.requireNonNull(turnCallback);
+        this.turnCallback = turnCallback;
         this.debugMode = debugMode;
 
         if (playerList.size() < 2) {
@@ -52,6 +53,8 @@ public class Game {
         }
     }
 
+    // TODO get rid of this method, we don't want to give away the keys to the universe!!
+    @Deprecated
     public Universe getUniverse() {
         return universe;
     }
@@ -69,7 +72,7 @@ public class Game {
     }
 
     public Player getWinner() {
-        assertIsFinished();
+        assertThatIsFinished();
         boolean potentialDraw = false;
         Player winner = null;
         int winnerPopulation = -1;
@@ -77,7 +80,7 @@ public class Game {
         for (Player player : playerList) {
             int count = 0;
 
-            // TODO [optimisation] use a parallel stream reduce operation here
+            // TODO [optimisation] would a parallel stream reduce operation here be faster?
             for (Coordinates coordinates : universe.getCellCoordinatesForPlayer(player)) {
                 count += universe.getCell(coordinates).getPopulation();
             }
@@ -94,7 +97,7 @@ public class Game {
         return potentialDraw ? null : winner;
     }
 
-    private void assertIsFinished() {
+    private void assertThatIsFinished() {
         if (!isFinished()) {
             throw new IllegalStateException("Game not finished");
         }
@@ -127,123 +130,80 @@ public class Game {
      */
     public void nextTurn() {
         if (!playerIterator.hasNext()) {
-            throw new RuntimeException("Bad stuff");
+            throw new IllegalStateException("nextTurn() was called but no next player available");
         }
 
         final Player player = playerIterator.next();
-
-        // Check if player has lost already
-    /*while (universe.getCellsForPlayer(player).isEmpty())
-    {
-      if (!playerIterator.hasNext())
-      {
-        playerIterator = playerList.iterator();
-        increasePopulation = true;
-      }
-      player = playerIterator.next();
-    }*/
-
         final UniverseView universeView = new UniverseViewImpl(universe, player, currentTurn);
+        final PlayerTurnThread playerTurnThread = new PlayerTurnThread(player, universeView, currentTurn,
+            debugMode ? 0 : GameConstants.TURN_TIMEOUT_MS);
+        final boolean currentTurnEndsRound = !playerIterator.hasNext();
 
-        final List<MovementCommand> movementCommands = new ArrayList<MovementCommand>();
-
-        // Set our own security manager to stop bots from doing nasty stuff
-    /*if (!(System.getSecurityManager() instanceof GridWarsSecurityManager))
-    {
-      System.setSecurityManager(new GridWarsSecurityManager());
-    }*/
-
-        // TODO Refactor the code below do to it in the proper way using an Executor and completable futures
-        // TODO Handle SecurityException in a special way to find out which bot cheated
-        Thread playerThread = new Thread() {
-            @Override
-            public void run() {
-                if (player.getPlayerBot() != null) {
-                    player.getPlayerBot().getNextCommands(universeView, movementCommands);
-                }
-            }
-        };
-
-        if (player.hasBotOutputPrintWriter()) {
-            StdOutputSwitcher.INSTANCE.switchToBotPrintWriter(player.getBotOutputPrintWriter());
-        }
-
-        playerThread.start();
         try {
-            playerThread.join(debugMode ? 0 : GameConstants.TURN_TIMEOUT_MS);
-        } catch (InterruptedException e) {
-            // Bad stuff!
-        }
-
-        if (playerThread.isAlive()) {
-            // The gods of deprecation will smite us in the ass, but... well, we have no control
-            // over what's in the player thread. It could be a while(true){} for all we know, and
-            // this is not interruptible in any of the clean non-deprecated ways.
-
-            //System.out.println("Calling Thread.stop() on player " + player.getName());
-            playerThread.stop();
-
-            // There is a "critical" moment where stopping the thread can leave the movementCommands
-            // list in an inconsistent state: when the element count has been increased but the
-            // elements themselves have not been set (see ArrayList.add() and variants). We will
-            // get rid of problems by creating a copy of the list further down, that calls .toArray().
-            // In the worst case, we will simply have the last "ghost" elements set as null (see
-            // Arrays.copyOf).
-        }
-
-        final ArrayList<MovementCommand> cleanMovementCommands = new ArrayList<>(movementCommands);
-
-        if (validateCommands(player, cleanMovementCommands)) {
-            for (MovementCommand movementCommand : cleanMovementCommands) {
-                executeMovement(player, movementCommand);
+            if (player.hasBotOutputPrintWriter()) {
+                StdOutputSwitcher.INSTANCE.switchToBotPrintWriter(player.getBotOutputPrintWriter());
             }
-        }
 
-        // TODO do we need to flush or close anything??
-        StdOutputSwitcher.INSTANCE.restoreInitial();
+            final List<MovementCommand> movementCommands = playerTurnThread.getNextMovementCommands();
 
-        // Battle resolution & clean-up
-        for (Cell cell : universe.getAllCells()) {
-            if (!cell.isEmpty()) {
-                if (!playerIterator.hasNext()) {
-                    cell.growPopulation();
-                } else {
-                    cell.truncatePopulation();
+            if (validateAllMoves(player, movementCommands)) {
+                for (MovementCommand movementCommand : movementCommands) {
+                    executeMovement(player, movementCommand);
                 }
             }
+        } finally {
+            if (player.hasBotOutputPrintWriter()) {
+                player.getBotOutputPrintWriter().flush();
+                StdOutputSwitcher.INSTANCE.restoreOriginal();
+            }
         }
 
-        turnCallback.onPlayerResponse(player, currentTurn, cleanMovementCommands, getBinaryGameStatus());
+        if (currentTurnEndsRound) {
+            growAllCellPopulations();
+            playerIterator = playerList.iterator(); // start again with first player in the next call
+        } else {
+            truncateAllCellPopulations();
+        }
 
-        // Increase turn counter
+        if (turnCallback != null) {
+            turnCallback.onPlayerResponse(player, currentTurn, getBinaryGameStatus());
+        }
+
         currentTurn++;
-
-        // Circular iteration
-        if (!playerIterator.hasNext()) {
-
-            // Restart the iterator
-            playerIterator = playerList.iterator();
-        }
     }
 
-    private boolean validateCommands(Player player, List<MovementCommand> movementCommands) {
-        HashMap<Coordinates, Integer> totalMoveOut = new HashMap<>();
+    private void growAllCellPopulations() {
+        universe.getAllNonEmptyCells().forEach(Cell::growPopulation);
+    }
+
+    private void truncateAllCellPopulations() {
+        universe.getAllNonEmptyCells().forEach(Cell::truncatePopulation);
+    }
+
+    private boolean validateAllMoves(Player player, List<MovementCommand> movementCommands) {
+        final HashMap<Coordinates, Integer> totalMoveOutAmounts = new HashMap<>();
+
         for (MovementCommand movementCommand : movementCommands) {
-            if (!validateCommand(player, movementCommand)) {
-                return false;
+            if (movementCommand != null) {
+                if (!validateMove(player, movementCommand)) {
+                    return false;
+                }
+
+                int currentValue = 0;
+
+                if (totalMoveOutAmounts.containsKey(movementCommand.getCoordinatesFrom())) {
+                    currentValue = totalMoveOutAmounts.get(movementCommand.getCoordinatesFrom());
+                }
+
+                currentValue += movementCommand.getAmount();
+                totalMoveOutAmounts.put(movementCommand.getCoordinatesFrom(), currentValue);
             }
-            int currentValue = 0;
-            if (totalMoveOut.containsKey(movementCommand.getCoordinatesFrom())) {
-                currentValue = totalMoveOut.get(movementCommand.getCoordinatesFrom());
-            }
-            currentValue += movementCommand.getAmount();
-            totalMoveOut.put(movementCommand.getCoordinatesFrom(), currentValue);
         }
 
-        for (Map.Entry<Coordinates, Integer> entry : totalMoveOut.entrySet()) {
+        for (Map.Entry<Coordinates, Integer> entry : totalMoveOutAmounts.entrySet()) {
             if (entry.getValue() > universe.getCell(entry.getKey()).getPopulation()) {
-                System.out.println("Command validation failed: Total sum of movements out of a position is higher than population ("
-                    + entry.getKey().getX() + ", " + entry.getKey().getY() + ")");
+                logMoveValidationFailed("Total sum of troops moved out of a cell is higher than the cell population: " +
+                    entry.getKey());
                 return false;
             }
         }
@@ -251,36 +211,35 @@ public class Game {
         return true;
     }
 
-    private boolean validateCommand(Player player, MovementCommand movementCommand) {
-        if (movementCommand == null || movementCommand.getCoordinatesFrom() == null || movementCommand.getDirection() == null) {
-            System.out.println("Command failed validation: Null pointers in command." + movementCommand);
+    private boolean validateMove(Player player, MovementCommand movementCommand) {
+        if (!universe.getCell(movementCommand.getCoordinatesFrom()).isOwner(player)) {
+            logMoveValidationFailed("Moving troops from a cell not owned by you: " + movementCommand.getCoordinatesFrom());
             return false;
         }
-        if (!player.equals(universe.getCell(movementCommand.getCoordinatesFrom()).getOwner())) {
-            System.out.println("Command failed validation: Moving cells from a cell not owned by you " + movementCommand.getCoordinatesFrom());
-            return false;
-        }
+
         if (universe.getCell(movementCommand.getCoordinatesFrom()).getPopulation() < movementCommand.getAmount()) {
-            System.out.println("Command failed validation: Moving more cells than you have " + movementCommand.getCoordinatesFrom());
+            logMoveValidationFailed("Moving more troops from a cell than you have: " + movementCommand.getCoordinatesFrom());
             return false;
         }
-        if (movementCommand.getAmount() <= 0L) {
-            System.out.println("Command failed validation: Negative or zero amount in command");
-            return false;
-        }
+
         return true;
+    }
+
+    private void logMoveValidationFailed(String validationErrorMessage) {
+        System.out.println("[WARNING] Move validation failed, all moves of turn " + currentTurn + " are ignored: " +
+            validationErrorMessage);
     }
 
     private void executeMovement(Player player, MovementCommand movementCommand) {
-        if (movementCommand == null)
+        if (movementCommand == null) {
             return;
+        }
 
         // Move from origin...
-        universe.getCell(movementCommand.getCoordinatesFrom())
-            .moveOut(player, movementCommand.getAmount());
+        universe.getCell(movementCommand.getCoordinatesFrom()).moveOut(player, movementCommand.getAmount());
 
         // ... into destination
-        universe.getCell(movementCommand.getCoordinatesFrom().getRelative(1, movementCommand.getDirection()))
+        universe.getCell(movementCommand.getCoordinatesFrom().getNeighbour(movementCommand.getDirection()))
             .moveIn(player, movementCommand.getAmount());
     }
 
@@ -289,7 +248,7 @@ public class Game {
 
         for (int y = 0; y < GameConstants.UNIVERSE_SIZE; y++) {
             for (int x = 0; x < GameConstants.UNIVERSE_SIZE; x++) {
-                Cell currentCell = getUniverse().getCell(x, y);
+                Cell currentCell = universe.getCell(x, y);
 
                 if (currentCell.isEmpty()) {
                     byteBuffer.put(EMPTY_PIXEL);
@@ -304,5 +263,97 @@ public class Game {
         }
 
         return byteBuffer;
+    }
+
+    /**
+     * Helper class that encapsulates the thread logic for getting the next moves of a bot
+     * while enforcing the timeout limits. The logic must also be able to deal with rouge
+     * bot code that causes exception or infinite loops.
+     */
+    private static final class PlayerTurnThread {
+
+        private final Player player;
+        private final UniverseView universeView;
+        private final int turn;
+        private final int turnTimeoutMillis;
+        private final ArrayList<MovementCommand> movementCommands;
+        private Thread turnThread;
+
+
+        private PlayerTurnThread(Player player, UniverseView universeView, int turn, int turnTimeoutMillis) {
+            this.player = Objects.requireNonNull(player);
+            this.universeView = Objects.requireNonNull(universeView);
+            this.turn = turn;
+            this.turnTimeoutMillis = turnTimeoutMillis;
+            this.movementCommands = new ArrayList<>();
+        }
+
+        private List<MovementCommand> getNextMovementCommands() {
+            initialiseTurnThread();
+            startTurnThread();
+            waitForTurnThreadToFinish();
+
+            if (hasTurnThreadTimedOut()) {
+                forciblyTerminateThread();
+
+                System.out.println("[WARNING] Getting moves for turn " + turn + " timed out after " +
+                    turnTimeoutMillis + " ms . All further moves are ignored.");
+
+                // There is a "critical" moment where terminating the thread can leave the movementCommands
+                // list in an inconsistent state: when the element count has been increased but the
+                // elements themselves have not been set (see ArrayList.add() and variants). We will
+                // get rid of problems by creating a copy of the list further down, that calls .toArray().
+                // In the worst case, we will simply have the last "ghost" elements set as null (see
+                // Arrays.copyOf).
+            }
+
+            return Arrays.asList(movementCommands.toArray(new MovementCommand[0]));
+        }
+
+        private void initialiseTurnThread() {
+            turnThread = new Thread(() -> {
+                try {
+                    player.getPlayerBot().getNextCommands(universeView, movementCommands);
+                } catch (Exception e) {
+                    // TODO we need to catch any exception that might escape the getNextCommands method and log is as a warning to the output
+                    // TODO Handle SecurityException is a special way
+                    throw e;
+                }
+            });
+        }
+
+        private void startTurnThread() {
+            turnThread.start();
+        }
+
+        private void waitForTurnThreadToFinish() {
+            try {
+                turnThread.join(turnTimeoutMillis);
+            } catch (InterruptedException ignore) {
+            }
+        }
+
+        private boolean hasTurnThreadTimedOut() {
+            // If the thread is still alive when calling this method, it means that it didn't finish in time and
+            // is considered to be a timeout.
+            return turnThread.isAlive();
+        }
+
+        @SuppressWarnings("deprecation")
+        private void forciblyTerminateThread() {
+            if (turnThread.isAlive()) {
+                // The gods of deprecation will smite us, but... well, we have no control over what's going
+                // on in the bot code. It could be a while(true){} for all we know, and this is neither
+                // interruptable, nor can it be handled in any of the clean non-deprecated ways that involve
+                // e.g. the ExecutorService or using an boolean flag in a loop.
+                //
+                // We have no choice then to deal with bare threads and to issue a forcible stop on it.
+                // Otherwise we risk that the threads keep running in the background and eventually cause
+                // the resource to deplete. We need to protect ourselves from bot code that goes haywire.
+
+                turnThread.stop();
+                turnThread = null;
+            }
+        }
     }
 }

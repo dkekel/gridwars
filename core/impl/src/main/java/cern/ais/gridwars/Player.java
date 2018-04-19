@@ -13,6 +13,7 @@ import cern.ais.gridwars.util.BotPrintWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 
 
 public class Player {
@@ -24,7 +25,7 @@ public class Player {
 
     public Player(int id, PlayerBot playerBot, File outputFile, int colorIndex) throws FileNotFoundException {
         this.id = id;
-        this.playerBot = playerBot;
+        this.playerBot = Objects.requireNonNull(playerBot);
         this.botOutputPrintWriter = createBotPrintWriter(outputFile);
         this.colorIndex = colorIndex;
     }
@@ -78,6 +79,6 @@ public class Player {
 
     @Override
     public String toString() {
-        return String.valueOf(id);
+        return "Player[" + id + "]";
     }
 }
