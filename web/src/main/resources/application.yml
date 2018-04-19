@@ -13,7 +13,10 @@ gridwars:
         matchCountPerOpponent: 1
         workerCount: 2
         workerHeapSize: 256m
-        executionTimeoutSeconds: 70 # TODO adjust the value below to a more realistic value
+        # Give it a few more seconds than the general match timeout defined in the implementation
+        # package. Just to be a bit more tolerant over the match execution overhead and bot
+        # initialisation.
+        executionTimeoutSeconds: 80
     mail:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'

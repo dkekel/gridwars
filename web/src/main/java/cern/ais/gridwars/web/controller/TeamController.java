@@ -41,7 +41,7 @@ public class TeamController {
         this.rankingService = Objects.requireNonNull(rankingService);
     }
 
-    @GetMapping
+    @GetMapping // empty path parameter here maps is it to "" as well as "/"
     public ModelAndView showCurrentTeam(@AuthenticationPrincipal User currentUser) {
         return showTeam(currentUser.getId(), currentUser);
     }

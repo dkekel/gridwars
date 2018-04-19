@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
-    <title th:text="#{page.scores.title}"></title>
+    <title th:text="#{page.match.scores.title}"></title>
 
     <style>
         .score-table > tbody > tr:nth-child(1) {
@@ -23,16 +23,16 @@
 </head>
 <body>
     <main layout:fragment="content" class="container">
-        <h2 th:text="#{page.scores.title}" class="text-center"></h2>
+        <h2 th:text="#{page.match.scores.title}" class="text-center"></h2>
         <table class="table table-sm score-table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col" class="text-center" th:text="#{page.scores.rank}"></th>
-                    <th scope="col" th:text="#{page.scores.team}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.scores.wins}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.scores.draws}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.scores.losses}"></th>
-                    <th scope="col" class="text-center" th:text="#{page.scores.total}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.rank}"></th>
+                    <th scope="col" th:text="#{page.match.scores.team}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.wins}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.draws}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.losses}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.total}"></th>
                 </tr>
             </thead>
             <tbody>

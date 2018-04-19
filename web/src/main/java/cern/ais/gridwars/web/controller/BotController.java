@@ -95,6 +95,6 @@ public class BotController {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());
         }
 
-        return ModelAndViewBuilder.forRedirect("/team/show").toModelAndView();
+        return ModelAndViewBuilder.forRedirect("/team").toModelAndView();
     }
 }
