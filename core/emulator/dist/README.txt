@@ -57,7 +57,7 @@
 
                                          Episode VII
 
-                            B A T T L E   F O R   R I G A
+                                 B A T T L E   F O R   R I G A
 
 ## Distribution Content:
 

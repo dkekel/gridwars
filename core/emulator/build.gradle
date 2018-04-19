@@ -1,12 +1,10 @@
-apply plugin: 'application'
 apply plugin: 'distribution'
-
-mainClassName = 'cern.ais.gridwars.Visualizer'
 
 dependencies {
 	compile project(':core:impl')
 }
 
+// TODO remove and put into starter...
 distributions {
 	main {
 		contents {

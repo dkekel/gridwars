@@ -2,7 +2,6 @@ package cern.ais.gridwars;
 
 import cern.ais.gridwars.bot.PlayerBot;
 import cern.ais.gridwars.cell.Cell;
-import cern.ais.gridwars.command.MovementCommand;
 import cern.ais.gridwars.universe.Universe;
 
 import javax.swing.*;
@@ -16,17 +15,14 @@ import java.util.List;
 
 // TODO add a dispose handler that closes the player output streams...
 
-public class Visualizer {
+public final class Visualizer {
+
     private static final int[] SPEEDS = new int[] { 10, 20, 40, 80, 160, 320, 500, 1000 };
 
 	private JFrame frame;
-	private boolean running = true;
 	private int timerSpeedIndex = 3;
 	private Game game;
-
-    public static void main(String[] args) throws FileNotFoundException {
-        new Visualizer().runGame(new IdleBot(), new MovingBot(MovementCommand.Direction.RIGHT));
-    }
+    private volatile boolean running = true;
 
     public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
         createGame(bot1, bot2);
@@ -97,6 +93,8 @@ public class Visualizer {
 
 		frame.pack();
 		frame.setVisible(true);
+
+		// TODO Center on the screen
 
 		final int[] delta = { 0 };
 		new Timer(10, e -> {
