@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -88,10 +89,11 @@ public class BotController {
 
     @PostMapping("/upload")
     public ModelAndView upload(@RequestParam MultipartFile botJarFile, RedirectAttributes redirectAttributes,
-                               @AuthenticationPrincipal User currentUser) {
-        LOG.info("Received bot jar upload - name: {}, original name: {}, content type: {}, size: {}, upload user: {}",
+                               @AuthenticationPrincipal User currentUser, HttpServletRequest request) {
+        LOG.info("Received bot jar upload - name: {}, original name: {}, content type: {}, size: {}, " +
+                "upload user: {}, ip: {}",
                 botJarFile.getName(), botJarFile.getOriginalFilename(), botJarFile.getContentType(),
-                botJarFile.getSize(), currentUser.getUsername());
+                botJarFile.getSize(), currentUser.getUsername(), request.getRemoteAddr());
 
         if (botUploadDisabled() && !currentUser.isAdmin()) {
             throw new AccessDeniedException();
