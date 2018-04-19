@@ -8,10 +8,11 @@ import java.util.List;
 
 
 public class MovingBot implements PlayerBot {
-	private MovementCommand.Direction direction;
+
+	private final MovementCommand.Direction direction;
 
 	public MovingBot() {
-		this(MovementCommand.Direction.DOWN);
+		this(MovementCommand.Direction.RIGHT);
 	}
 
 	public MovingBot(MovementCommand.Direction direction) {
@@ -20,14 +21,19 @@ public class MovingBot implements PlayerBot {
 
 	@Override
     public void getNextCommands(UniverseView universeView, List<MovementCommand> movementCommands) {
-		for (int my = 0; my < universeView.getUniverseSize(); my++)
-			for (int mx = 0; mx < universeView.getUniverseSize(); mx++) {
-				if (universeView.belongsToMe(mx, my)) {
-					int population = universeView.getPopulation(mx, my);
-					if (population > 1) {
-						movementCommands.add(new MovementCommand(universeView.getCoordinates(mx, my), direction, population / 2));
-					}
-				}
-			}
+		for (int y = 0; y < universeView.getUniverseSize(); y++) {
+            for (int x = 0; x < universeView.getUniverseSize(); x++) {
+
+                if (universeView.belongsToMe(x, y)) {
+                    int population = universeView.getPopulation(x, y);
+
+                    if (population > 1) {
+                        MovementCommand movementCommand = new MovementCommand(universeView.getCoordinates(x, y),
+                            direction, population / 2);
+                        movementCommands.add(movementCommand);
+                    }
+                }
+            }
+        }
 	}
 }

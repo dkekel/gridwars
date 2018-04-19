@@ -4,7 +4,7 @@ import java.util.List;
 
 
 /**
- * Provides an omnipotent view on the universe where the match is played.
+ * Provides an omnipotent view on the game universe and provides other information of the current game state.
  */
 public interface UniverseView {
 

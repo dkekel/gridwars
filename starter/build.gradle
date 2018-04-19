@@ -1,0 +1,42 @@
+description = 'GridWars - Starter Project'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+repositories {
+    addAll(buildscript.repositories)
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'distribution'
+
+group = gridwarsGroup
+version = gridwarsVersion
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+mainClassName = "gridwars.starter.EmulatorRunner"
+
+jar {
+    archiveName = "gridwars-${project.name}.jar"
+}
+
+distributions {
+    main {
+        contents {
+            from { 'dist' }
+            into('src') {
+                from { 'src' }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile project(':core:emulator')
+}

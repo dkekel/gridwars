@@ -32,6 +32,12 @@ repositories {
 
 bootJar {
     archiveName = "gridwars-${project.name}.jar"
+
+    // We assume that if we build the runnable jar, it is for production. So the DevConfiguration class
+    // will be excluded to not be executed by mistake. Don't want to rely merely on the profile guard
+    // in the class itself. In could potentially mess us the production db in the worst case.
+    // TODO exclude doesn't work...
+    exclude('**/DevConfiguration.class')
 }
 
 bootRun {

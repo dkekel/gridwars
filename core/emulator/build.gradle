@@ -1,17 +1,3 @@
-apply plugin: 'distribution'
-
 dependencies {
 	compile project(':core:impl')
-}
-
-// TODO remove and put into starter...
-distributions {
-	main {
-		contents {
-			from { 'dist' }
-			into('src') {
-				from { 'src' }
-			}
-		}
-	}
 }

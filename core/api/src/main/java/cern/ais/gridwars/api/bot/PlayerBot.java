@@ -7,14 +7,17 @@ import java.util.List;
 
 
 /**
- * Must be implemented by the main bot class.
+ * Interface that must be implemented by all bot classes.
  */
 public interface PlayerBot {
+
     /**
-     * Called on every turn to get the next movement commands.
+     * Called on every turn to get the next movement commands of the bot.
      *
-     * @param universeView     Provides information about the current status of the game.
-     * @param movementCommands Empty list to which the player is expected to add his movements.
+     * TODO improve documentation, timeout etc.
+     *
+     * @param universeView provides information about the current status of the game universe
+     * @param movementCommands empty list to which the bot is expected to add the movements
      */
     void getNextCommands(UniverseView universeView, List<MovementCommand> movementCommands);
 }
