@@ -31,7 +31,7 @@
         <div th:unless="${error}" id="gameView" class="d-flex justify-content-center" hidden>
             <div class="text-center mr-3">
                 <div class="d-flex justify-content-center align-items-end h-50">
-                    <i th:if="${match.bot1Winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                    <i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
                 </div>
                 <div class="h-50">
                     <h4 class="team-1-label font-weight-bold text-truncate" th:text="${match.bot1.user.teamName}"></h4>
@@ -61,7 +61,7 @@
 
             <div class="text-center ml-3">
                 <div class="d-flex justify-content-center align-items-end h-50">
-                    <i th:if="${match.bot2Winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                    <i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
                 </div>
                 <div class="h-50">
                     <h4 class="team-2-label font-weight-bold text-truncate" th:text="${match.bot2.user.teamName}"></h4>
