@@ -15,11 +15,12 @@ import java.util.List;
 
 public final class Emulator {
 
-    private static final int[] SPEEDS = new int[] { 10, 20, 40, 80, 160, 320, 500, 1000 };
+    private static final int[] SPEEDS = new int[] { 0, 5, 10, 20, 40, 80, 160, 320 };
 
 	private JFrame frame;
 	private int timerSpeedIndex = 3;
 	private Game game;
+	private Timer timer;
     private volatile boolean running = true;
 
     public void runGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
@@ -50,9 +51,9 @@ public final class Emulator {
 			@Override
             public void paint(Graphics graphics) {
 				Universe universe = game.getUniverse();
-				for (int my = 0; my < GameConstants.UNIVERSE_SIZE; my++) {
-                    for (int mx = 0; mx < GameConstants.UNIVERSE_SIZE; mx++) {
-                        Cell cell = universe.getCell(mx, my);
+				for (int y = 0; y < GameConstants.UNIVERSE_SIZE; y++) {
+                    for (int x = 0; x < GameConstants.UNIVERSE_SIZE; x++) {
+                        Cell cell = universe.getCell(x, y);
                         long population = cell.getPopulation();
                         if (population == 0) {
                             continue;
@@ -63,7 +64,7 @@ public final class Emulator {
                         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
                         graphics.setColor(color);
-                        graphics.fillRect(mx * 10, 50 + my * 10, 10, 10);
+                        graphics.fillRect(x * 10, 50 + y * 10, 10, 10);
                     }
                 }
 			}
@@ -86,7 +87,7 @@ public final class Emulator {
 		controlPanel.add(createSpeedControlButton("+"), BorderLayout.EAST);
 		controlPanel.add(createSpeedControlButton("-"), BorderLayout.WEST);
 
-		frame.setPreferredSize(new Dimension(500, 600));
+		frame.setPreferredSize(new Dimension(520, 620));
 		frame.getContentPane().add(mainPanel);
 
 		frame.pack();
@@ -95,21 +96,26 @@ public final class Emulator {
 		// TODO Center on the screen
 
 		final int[] delta = { 0 };
-		new Timer(10, e -> {
+		timer = new Timer(5, e -> {
             if (!running) {
                 return;
             }
 
             if (delta[0] < SPEEDS[timerSpeedIndex]) {
-                delta[0] += 10;
+                delta[0] += 5;
                 return;
             }
             delta[0] = 0;
 
             if (!game.isFinished()) {
                 game.nextTurn();
+            } else {
+                timer.stop();
+                showWinnerInTitle();
             }
-        }).start();
+        });
+
+		timer.start();
 	}
 
 	private Component createSpeedControlButton(final String caption) {
@@ -125,4 +131,20 @@ public final class Emulator {
         });
 		return control;
 	}
+
+	private void showWinnerInTitle() {
+        if (game.isFinished()) {
+            Player winner = game.getWinner();
+
+            String titleSuffix = "DRAW";
+            if (winner != null) {
+                if (winner.getId() == 0) {
+                    titleSuffix = "Bot 1 (blue) wins";
+                } else {
+                    titleSuffix = "Bot 2 (red) wins";
+                }
+            }
+            frame.setTitle(frame.getTitle() + " - " + titleSuffix);
+        }
+    }
 }
