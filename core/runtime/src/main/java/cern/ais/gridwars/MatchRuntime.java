@@ -137,7 +137,7 @@ final class MatchRuntime {
         players.add(createPlayer(0, bot1, MatchFile.BOT_1_OUTPUT.fileName));
         players.add(createPlayer(1, bot2, MatchFile.BOT_2_OUTPUT.fileName));
 
-        Game game = new Game(players, (player, turn, binaryGameStatus) ->
+        final Game game = new Game(players, (player, turn, binaryGameStatus) ->
             turnStates.add(binaryGameStatus.get().array())
         );
 
@@ -157,6 +157,8 @@ final class MatchRuntime {
             String errorMessage = "Match execution timed out after " + GameConstants.MATCH_TIMEOUT_MS + " ms";
             error(errorMessage);
             populateErrorMatchResult(errorMessage);
+        } finally {
+            game.cleanUp();
         }
         matchDurationMillis = System.currentTimeMillis() - matchStartTimeMillis;
 
@@ -208,10 +210,6 @@ final class MatchRuntime {
     private void cleanUp() {
         matchResult.clear();
         turnStates.clear();
-
-        for (Player player : players) {
-            player.dispose();
-        }
         players.clear();
     }
 

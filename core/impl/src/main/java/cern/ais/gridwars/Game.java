@@ -49,8 +49,7 @@ final class Game {
         }
     }
 
-    // TODO get rid of this method, we don't want to give away the keys to the universe!!
-    @Deprecated
+    // TODO can we get rid of this method? We don't want to give out the keys to the universe!!
     Universe getUniverse() {
         return universe;
     }
@@ -259,6 +258,10 @@ final class Game {
 
     private boolean onlyOneOrLessPlayerLeft() {
         return (universe.getNumberOfAlivePlayers(playerList.size()) <= 1);
+    }
+
+    void cleanUp() {
+        playerList.forEach(Player::dispose);
     }
 
     /**

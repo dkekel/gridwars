@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO add a dispose handler that closes the player output streams...
 
 public final class Emulator {
 
@@ -112,6 +111,7 @@ public final class Emulator {
             } else {
                 timer.stop();
                 showWinnerInTitle();
+                game.cleanUp();
             }
         });
 
