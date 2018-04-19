@@ -13,7 +13,7 @@ import java.util.List;
 
 // TODO add a dispose handler that closes the player output streams...
 
-public final class Visualizer {
+public final class Emulator {
 
     private static final int[] SPEEDS = new int[] { 10, 20, 40, 80, 160, 320, 500, 1000 };
 

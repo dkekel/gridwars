@@ -1,6 +1,6 @@
 package cern.ais.gridwars.bot;
 
-import cern.ais.gridwars.Visualizer;
+import cern.ais.gridwars.Emulator;
 
 import java.io.FileNotFoundException;
 
@@ -11,6 +11,6 @@ public class App {
 		Main bot2 = new Main();
 		bot2.setBot(new SplitBot(bot2));
 
-		new Visualizer().runGame(bot1, bot2);
+		new Emulator().runGame(bot1, bot2);
 	}
 }
