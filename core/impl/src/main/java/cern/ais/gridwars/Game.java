@@ -79,16 +79,16 @@ final class Game {
     /**
      * Computes one turn for the "next player". If this completes a turn round, also increases populations
      */
-    public void nextTurn() {
+    void nextTurn() {
         if (!playerIterator.hasNext()) {
             throw new IllegalStateException("nextTurn() was called but no next player available");
         }
 
         final Player player = playerIterator.next();
+        final boolean currentTurnEndsRound = !playerIterator.hasNext();
         final UniverseView universeView = new UniverseViewImpl(universe, player, currentTurn);
         final PlayerTurnThread playerTurnThread = new PlayerTurnThread(player, universeView, currentTurn,
             debugMode ? 0 : GameConstants.TURN_TIMEOUT_MS);
-        final boolean currentTurnEndsRound = !playerIterator.hasNext();
 
         try {
             if (player.hasBotOutputPrintWriter()) {

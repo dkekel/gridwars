@@ -21,7 +21,9 @@ import java.util.concurrent.TimeoutException;
  * fully qualified class name.
  *
  * When instantiating a bot class, a timeout is enforced in order to prevent the bot
- * to block the execution of the match process for too long.
+ * to block the execution of the match process for too long. If the bot fails to
+ * initialise in time, an idle bot implementation will be return, which will (probably)
+ * lose the match.
  */
 final class BotClassLoader {
 
@@ -50,7 +52,8 @@ final class BotClassLoader {
 
     /**
      * Instantiates (and thus initialises) an instance of the given bot class. The instantiation in done
-     * in an asynchronous task in order to enforce the instantiation timeout.
+     * in an asynchronous task in order to enforce the instantiation timeout. If the bot fails to
+     * instantiate and initialise in the allowed time, an idle bot implementation will be returned.
      */
     private PlayerBot instantiateBotClass(final Class botClass) {
         final ExecutorService executorService = Executors.newCachedThreadPool();
@@ -69,8 +72,9 @@ final class BotClassLoader {
         try {
             return instantiatorFuture.get(GameConstants.BOT_INSTANTIATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            throw new BotClassLoaderException("Bot failed to initialise within the allowed timeout of " +
+            LogUtils.error("Bot failed to initialise within the allowed timeout of " +
                 GameConstants.BOT_INSTANTIATION_TIMEOUT_MS + " ms: " + botClass.getName());
+            return new InitTimeoutIdleBot(botClass.getName(), GameConstants.BOT_INSTANTIATION_TIMEOUT_MS);
         } catch (ExecutionException | InterruptedException e) {
             throw new BotClassLoaderException("Failed to instantiate bot class: " + botClass.getName(), e.getCause());
         } finally {

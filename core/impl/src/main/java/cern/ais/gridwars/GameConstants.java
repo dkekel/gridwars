@@ -13,13 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 final class GameConstants {
 
-    static final long MATCH_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(60);
+    static final int MATCH_TIMEOUT_MS = (int) TimeUnit.SECONDS.toMillis(60);
     static final int UNIVERSE_SIZE = 50;
     static final double GROWTH_RATE = 1.10;
     static final int MAXIMUM_POPULATION = 100;
     static final int STARTING_POPULATION = 100;
     static final int TURN_TIMEOUT_MS = 50;
-    static final long BOT_INSTANTIATION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
+    static final int BOT_INSTANTIATION_TIMEOUT_MS = (int) TimeUnit.SECONDS.toMillis(3);
     static final int TURN_LIMIT = 2000;
 
     static final int BOT_PRINT_OUTPUT_BYTE_LIMIT = 1024 * 1024 * 5; // 5 MB
