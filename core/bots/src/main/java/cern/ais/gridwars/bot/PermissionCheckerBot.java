@@ -17,20 +17,24 @@ import java.util.List;
  */
 public class PermissionCheckerBot implements PlayerBot {
 
-    private boolean printedOutput = false;
+    private boolean printedOutputDuringTurn = false;
     private SecurityManager secMgr = System.getSecurityManager();
+
+    public PermissionCheckerBot() {
+        logAvailablePermissions();
+    }
 
 	@Override
     public void getNextCommands(UniverseView universeView, List<MovementCommand> movementCommands) {
 		// Stand your ground and die like a man!
-        if (printedOutput) {
+        if (printedOutputDuringTurn) {
             return;
         }
 
         try {
             logAvailablePermissions();
         } finally {
-            printedOutput = true;
+            printedOutputDuringTurn = true;
         }
 	}
 
