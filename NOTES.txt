@@ -11,8 +11,11 @@ Matches:
     - If tie, then who has more wins, more draws, less losses, direct comparison?
 
 Production deployment:
+- Create a shell script that starts the app and sets the correct start parameters using $(pwd)
 - When running as jar, have the application.yml file externalised in the folder
     - Should be configurable with a start parameter
+- Can we use the distribution Gradle plugin to install the resulting jar file into a folder?
+    - Otherwise, this can also be done by hand, a cp command is not that much typing...
 - Create .sh script that sets the required parameters accordingly
 - Create shell script that backs up the whole work folder
     - At least the DB file should be backed up
@@ -24,6 +27,7 @@ Admin UI:
         - Disable/delete bots
         - List all matches of bots, also failed ones
     - block bot upload and user registration
+        - Can be changed by directly modifying GridWarsProperties bean in the controller
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
     - Match queue, cancel or reset matches by hand
@@ -35,6 +39,7 @@ API:
 UI:
 - Fix layout of match view, when the bot or team names have different lengths, then the full view is not centered anymore
     - have the areas left and right from the match view only fill the available space, thus centering the match view canvas
+- Add Imperial FontAwesome logo to admin bots in the match lists?
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
@@ -91,9 +96,11 @@ Setup:
 - Accessing gridwars repo on Bitbucket: use "ForwardAgent yes" when using ssh to forward to the local cert when pulling
 
 Running GridWars app:
-- Running from ssh shell without being closed on disconnect (output will be written to separate log file):
+- Running app from standalone jar from ssh shell without being closed on disconnect (output will be written to separate log file):
 $ nohup /ais/gridwars/gradlew :web:bootRun &
 $ nohup /ais/gridwars/gradlew :web:bootRun > "gridwars-$(date +'%d-%m-%Y-%H%M%S').log" &
+
+$ nohup java -Dspring.profiles.active=prod -Dgridwars.directories.baseWorkDir=/ais/deployed/work -jar gridwars-web.jar > "gridwars-$(date +'%d-%m-%Y-%H%M%S').log" &
 
 Enable/disable local firewall:
 # service iptables stop
@@ -122,6 +129,15 @@ The students will create self developed bots in Java and will upload the jar fil
 
 Maintenance:
 The machine is managed by the AIS Puppet hostgroups and regularly kept up-to-date. The web app behind is based on Spring Boot 2.0 with a fully configured Spring MVC web security environment, using many many web security best-practices, making it a very secure web application (which is running as a non-root user). It's also and self-contained application that does not make use of any other CERN services whatsoever. The ports will be closed again not so long after the Spring Campus event, thus further minimising the risks. And after all, the developer who created this pearl (me, CERN whitehat) knows what he is doing. :)
+
+
+Using Let's Encrypt Certificate for HTTPS
+========================================================================================================================
+- sslforfree.com gives you: certificate.crt, private.key, ca_bundle.crt
+
+1) Create the p12 file that can be directly used for the embedded Tomcat in Spring Boot:
+$ openssl pkcs12 -export -out gridwars.p12 -inkey private.key -in certificate.crt -certfile ca_bundle.crt
+    - Use "changeit" or so as password, must be configured in application.yml.
 
 
 Useful links:
@@ -161,3 +177,5 @@ Useful links:
     - ClassLoading and threads: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#RuntimePermission
     - File access: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#FilePermission
     - Socket permissions: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#SocketPermission
+
+- Creating a pkcs12 keystore from Let's Encrpyt certificates: https://www.namecheap.com/support/knowledgebase/article.aspx/9441/0/tomcat-using-keytool

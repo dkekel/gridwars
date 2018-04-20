@@ -4,7 +4,7 @@
 gridwars:
     directories:
         # Default value, should be provided upon start by a system property.
-        baseWorkDir: 'work'
+        baseWorkDir: "${project.baseDir}/work"
     registration:
         enabled: true
         registrationPassword: '123'
@@ -37,7 +37,7 @@ spring:
 
 gridwars:
     mail:
-        baseUrl: 'http://gridwars.cern.ch'
+        baseUrl: 'https://gridwars.cern.ch'
 
 # ==================================================================================================
 # Spring Profile Configuration
@@ -54,10 +54,24 @@ spring:
 # ==================================================================================================
 ---
 spring:
-    #profiles: dev
+    profiles: dev
     datasource:
-        url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
-    # TODO enable a file-based db for prod environment
+        url: jdbc:h2:mem:gridwars;DB_CLOSE_ON_EXIT=FALSE
+    jpa:
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create-drop
+
+---
+spring:
+    profiles: prod
+    datasource:
+        url: jdbc:h2:${gridwars.directories.baseWorkDir}/db/gridwars;DB_CLOSE_ON_EXIT=FALSE
+    jpa:
+        # TODO Disable generated DDL for production deployment when the db is stable!!
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create-drop
 
 # ==================================================================================================
 # JPA Configuration
@@ -125,11 +139,33 @@ spring:
 # ==================================================================================================
 ---
 server:
+    servlet:
+        session:
+            persistent: false
     compression:
         enabled: true
     tomcat:
         accesslog:
             enabled: true
+        basedir: "${gridwars.directories.baseWorkDir}/server"
+
+# In prod mode we enforce https
+---
+spring:
+    profiles: prod
+
+server:
+    port: 8443
+    servlet:
+        session:
+            cookie:
+                secure: true
+    ssl:
+        enabled: true
+        key-store: classpath:gridwars.p12
+        key-store-password: changeit
+        key-store-type: PKCS12
+
 
 # ==================================================================================================
 # Mail Configuration
