@@ -1,115 +1,54 @@
-<pre>
-         .    .        .      .             . .     .        .          .          .
-  .    .          .                 .                    .                .    .
-           .               A long time ago in a galaxy far, far away...   .
-    *         .               .           .               .        .             .
-              .      .            .                 .                         +      .
-      .   .      .         .         .   . :::::+::::...      .          .         .
-   .          .         .      .    ..::.:::+++++:::+++++:+::.    .     .
-                                 .:.  ..:+:..+|||+..::|+|+||++|:.             .     .
-                     .   .    :::....:::::::::++||||O||O#OO|OOO|+|:.    .
-     .   .      .      .    .:..:..::+||OO#|#|OOO+|O||####OO###O+:+|+               .
-                          .:...:+||O####O##||+|OO|||O#####O#O||OO|++||:     .    .
-.          .             ..::||+++|+++++|+::|+++++O#O|OO|||+++..:OOOOO|+  .         .
-   .   .      .   .     +++||++:.:++:..+#|. ::::++|+++||++O##O+:.++|||#O+    .
-         .           . ++++++++...:+:+:.:+: ::..+|OO++O|########|++++||##+            .
-.          .       .  :::+++|O+||+::++++:::+:::+++::+|+O###########OO|:+OO       .  .
-              .       +:+++|OO+|||O:+:::::.. .||O#OOO||O||#@###@######:+|O|  .
-          .          ::+:++|+|O+|||++|++|:::+O#######O######O@############O
-     +             . ++++: .+OO###O++++++|OO++|O#@@@####@##################+         .
-               .     ::::::::::::::::::::++|O+..+#|O@@@@#@###O|O#O##@#OO####     .
-          .        . :. .:.:. .:.:.: +.::::::::  . +#:#@:#@@@#O||O#O@:###:#| .      .
-                                    `. .:.:.:.:. . :.:.:%::%%%:::::%::::%:::
-         .      .                                      `.:.:.:.:   :.:.:.:.  .   .
-                    .                                                                .
-  .            .
-         .          .                                                       .   .
- .                                                                                    .
-             .        .                                                           .
-             .     .                                                           .    *  .
-    .      .     .                                                        .
-                       .   A terrible civil war burns throughout the  .        .     .
-                          galaxy: a rag-tag group of freedom fighters   .  .
-              .       .  has risen from beneath the dark shadow of the            .
-         .        .     evil monster the Galactic Empire has become.                  .
-  .        .             Imperial  forces  have  instituted  a reign of   .      .
-        *             terror,  and every  weapon in its arsenal has  been
-   .               . turned upon the Rebels  and  their  allies:  tyranny, .   .
-            .       oppression, vast fleets, overwhelming armies, and fear.        .  .
-      .  .      .  Fear  keeps  the  individual systems in line,  and is the   .
-                  prime motivator of the New Order.             .
-   .        .      Outnumbered and outgunned,  the Rebellion burns across the   .    .
-         .      vast reaches of space and a thousand-thousand worlds, with only     .
-             . their great courage - and the mystical power known as the Force -
-   .         flaming a fire of hope.        .          .    .    .            .      .
-               .               ..       .       .   .             .           +          .
-                     .              .       .              +     .      .    .          .
-.        .               .       .     .            .        .                 .          .
-   .           .        .                     .        .            .          .     .      .
-             .               .    .          .              .   .         .
-    _______ .______       __   _______     ____    __    ____  ___      .______      +   _______.
-   /  _____||   _  \   . |  | |       \    \   \ ./  \  /   / /   \     |   _  \        /       |
-  |  |  __  |  |_)  |    |  | |  .--.  |  . \   \/    \/   / /  ^  \  . |  |_)  |      |   (----`
-  |  | |_ | |      / .   |  | |  |  |  |     \            / /  /_\  \   |      /   .    \   \
-  |  |__| | |  |\  \----.|  | |  '--'  |      \    /\    / /  _____  \  |  |\  \----.----)   | .
-   \______| | _| `._____||__| |_______/   .    \__/  \__/ /__/     \__\ | _| `._____|_______/    .
-     .             .             .         .               .                 .
-.        .               .       .     .            .    .       *        .        .        .
+### Introduction
+---
 
-                                         Episode VII
+TODO
 
-                                 B A T T L E   F O R   R I G A
-</pre>
+### Prerequisites
+---
 
-## Distribution Content:
+#### Java
 
-/build.gradle (build file. See Build section for details.)
-/src/** (Example source code)
-/bin/emulator (run script for Mac/Linux)
-/bin/emulator.bat (run script for Windows)
-/gradlew (build script runner script for Mac/Linux)
-/gradlew.bat (build script runner script for Windows)
-/gradle/** (technical files. Do not touch)
-/lib/** (necessary dependencies. Do not touch)
+TODO
 
-## Build
+#### IDE
 
-There are two ways to work with sources given. With or without IDE.
-Although IDE work is recommended as it facilitates all operations, fully command-line build is also possible
-(for people w/o IDE, small HDD and console/notepad maniacs).
+TODO
 
-This section will first explain importing project in IDE, and then console build.
+### GridWars Starter Package
+---
 
-### Eclipse / IntelliJ IDEA
+TODO
 
-1. Open project in your favorite IDE (IntelliJ idea recommended, Eclipse - tested)
-1.1. IntelliJ IDEA:  File -> Open -> (Select build.gradle file) -> Click Ok for default settings -> enjoy.
-1.1. Eclipse:        File -> Import -> Gradle -> Gradle Project -> Browse -> (navigate to the root folder of your project, then click Build Model).
-2. All necessary project dependencies are bundled, but Gradle will spend some time for downloading distribution (~60MB)
-   and configuring project for first run. It should happen only once.
-3. Check JDK version. If necessary - download and install JDK 1.7 and specify it in File -> Project Structure -> SDK
-JDK 1.8 will not work!
+#### Setting up the IDE
 
-### Console build
-1. Given project can be built and run from command line.
-You have to have JDK 1.7+ and JAVA_HOME environmental variable set. Or you can have JDK bin dir in your PATH.
-Consult web if you have problems at this step, there are plenty of guides and tutorials how to setup Java environment on your operating system.
-2. First run of gradlew scripts **will** take some time! Something around 60MB will be downloaded.
-3. After download you will have following commands.
-  1. To build jar file: ./gradlew jar
-  2. To clean build directory: ./gradlew clean
-  3. To run emulator tool: ./gradlew run
-  4. To list all tasks available: ./gradlew tasks
-4. All build results goes under build directory.
+TODO
 
-## Example sources
-You have 3 simple Java bots and one Groovy bot as an example. They all implement PlayerBot API.
-You can use "Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally.
-You can modify Visualizer's main method or create your own class calling aforementioned method.
+#### Run from the IDE
 
+TODO
 
-Play fair and…
-May the code be with you!
+#### Run from the console
+
+TODO
+
+### Create your own bot
+---
+
+TODO
+
+#### Build the bot jar from the IDE
+
+TODO
+
+#### Build the bot jar from the console
+
+TODO
+
+#### Upload your bot
+
+TODO
+
+Play fair... and may the code be with you!
 
 <pre>
                                     _.=+._
@@ -119,3 +58,53 @@ May the code be with you!
  /::::::::::::::::::::::::::::::::.\ `--')/  ) ::::::::::::/
                                      `--'
 </pre>
+
+### FAQ
+---
+
+<dl>
+<dt>Q: Can I use other programming languages?</dt>
+<dd>A: No, you have to use Java 8.</dd>
+
+<dt>Q: Can I use 3rd party Java libs?</dt>
+<dd>A: Sorry, no. It's just you, your brain, your team and the standard Java API.</dd>
+
+<dt>Q: Is there a size limit for the bot jar upload?</dt>
+<dd>A: Yes, it's 5 MB. This is way more than enough when not using 3rd party libs. The size of your jar file is typically just a few kilobytes.</dd>
+
+<dt>Q: Is there a memory limitation for the execution of a match?</dt>
+<dd>A: Yes, the match JVM processes are running with 256 MB of heap space, shared by both bots and the execution engine.</dd>
+
+<dt>Q: Is there a timeout per turn?</dt>
+<dd>A: Yes, it's 50 milliseconds, which is plenty of time. All move commands that you add to the list within this time will be considered. After the timeout, no move commands will be accepted anymore, so it's good to make sure you add your move commands to the list asap.</dd>
+
+<dt>Q: Is there a timeout for the bot initialisation?</dt>
+<dd>A: Yes, it's 5 seconds.</dd>
+
+<dt>Q: Is there a timout for the whole match?</dt>
+<dd>A: Yes, it's 60 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
+
+<dt>Q: Can I output logs for my bot?</dt>
+<dd>A: Yes, you can simply write to stdout and/or stderr (<code>System.out.println()</code>, <code>System.err.println()</code>). The output will be redirected to a file that you can download from the match view page. You can only download the output file of your own bot. Please note that the maximal total text that you are allowed to output is 5 MB. If you try to print more, any further output will simply be discarded.</dd>
+
+<dt>Q: Can I use additional threads?</dt>
+<dd>A: No.</dd>
+
+<dt>Q: Can I read or write files on the file system?</dt>
+<dd>A: Negative.</dd>
+
+<dt>Q: Can I use reflections?</dt>
+<dd>A: No. If you are getting caught trying, you will lose your current turn.</dd>
+
+<dt>Q: Can I use threads?</dt>
+<dd>A: Niet.</dd>
+
+<dt>Q: Can I open network sockets or access external network resources?</dt>
+<dd>A: Nein.</dd>
+
+<dt>Q: Can I read system properties?</dt>
+<dd>A: Non.</dd>
+
+<dt>Q: Can I...</dt>
+<dd>A: Probably not! ;)</dd>
+</dl>

@@ -88,7 +88,7 @@ task createWorkDir(dependsOn: processResources) {
 }
 
 task cleanWorkDir(type: Delete, dependsOn: createWorkDir) {
-    ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
+    ['bots', 'db', 'matches', 'runtime'/*, 'server'*/].each { subWorkDir ->
         def workSubDir = project.file("${workDirName}/${subWorkDir}")
 
         if (workSubDir && workSubDir.exists()) {
