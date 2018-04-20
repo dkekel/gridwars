@@ -6,4 +6,7 @@ echo "Work dir: ${WORKDIR}"
 echo
 echo "Starting up GridWars in the background..."
 
-nohup java -Dspring.profiles.active=prod -Dgridwars.directories.baseWorkDir="${WORKDIR}" -jar gridwars-web.jar > "${WORKDIR}/logs/gridwars-$(date +'%d-%m-%Y-%H%M%S').log" &
+readonly JVM_ARGS="-Xms2048m -Xmx2048m"
+readonly SYS_PROP_ARGS="-Dspring.profiles.active=prod -Dgridwars.directories.baseWorkDir=${WORKDIR}"
+
+nohup java ${JVM_ARGS} ${SYS_PROP_ARGS} -jar gridwars-web.jar > "${WORKDIR}/logs/gridwars-$(date +'%d-%m-%Y-%H%M%S').log" &
