@@ -1,7 +1,7 @@
 TODO:
 ========================================================================================================================
-GridWars starter:
-- Improve documentation
+GridWars starter & API:
+- Improve documentation and JavaDocs of API classes
 
 Matches:
 - Think about a fair scoring system for the ranking
@@ -13,9 +13,8 @@ Production deployment:
 - Create shell script that backs up the whole work folder
     - At least the DB file should be backed up
 - When running as jar, have the application.yml file externalised in the folder
-    - Should be configurable with a start parameter
-- Can we use the distribution Gradle plugin to install the resulting jar file into a folder?
-    - Otherwise, this can also be done by hand, a cp command is not that much typing...
+    - Should be configurable with a start parameter:
+        - https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files
 
 Admin UI:
 - Simple actions for
@@ -30,10 +29,10 @@ Admin UI:
     - Match queue, cancel or reset matches by hand
     - Reset all matches (cancel) and generate new matches...
 
-API:
-- Improve the JavaDocs of the API classes
-
 UI:
+- Feedback from Bas:
+    - Change row highlighting to usage of icons instead, could use FontAwesome
+        - Win: fa-smile, Loss: fa-frown, Draw: fa-meh, Failure: exclamation-triangle, Pending: hourglass-half
 - Fix layout of match view, when the bot or team names have different lengths, then the full view is not centered anymore
     - have the areas left and right from the match view only fill the available space, thus centering the match view canvas
 - Add Imperial FontAwesome logo to admin bots in the match lists?
@@ -50,9 +49,7 @@ Match runtime process:
 - Tweak the stack size -Xss
 
 DB:
-- Check how to use a file for H2 db
-- add a password when using in production file mode
-- if the performance is too slow when using a file-based H2 db, then add a second level cache (EHCache)
+- if the performance is too slow when using a file-based H2 db in production, consider adding a second level JPA cache (EHCache)
 
 Error handling:
 - Do not render error html pages on ajax request errors in controller methods
@@ -100,7 +97,6 @@ Enable/disable puppet agent:
 Redirect 80/443 -> 8080/8443 ports:
 # iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80 -m comment --comment "101 redirect for gridwars 80" -j REDIRECT --to-ports 8080
 # iptables -t nat -A PREROUTING -p tcp -m multiport --dports 443 -m comment --comment "102 redirect for gridwars 443" -j REDIRECT --to-ports 8443
-
 
 External firewall opening request: https://landb.cern.ch/landb/portal/firewallRequest/newRequest?interface=gridwars.CERN.CH
 
