@@ -32,7 +32,13 @@ public class TomcatConnectorConfiguration {
         connector.setScheme("http");
         connector.setPort(8080);
         connector.setSecure(false);
-        connector.setRedirectPort(8443);
+        // We set the default HTTPS redirect port here instead that of the actual HTTPS connector port 8443.
+        // When deployed to prod, the server will run behind 80<->8080 and 443<->8443 port forwarding rules,
+        // so if we would use 8443 as port here, the server would respond with a redirect location header
+        // containing port 8443, but it should be 443 for outside. This won't work locally when not sitting
+        // behind nat port forwarding rules, but the prod environment should only be used when running as
+        // standalone jar on the gridwars machine anyway.
+        connector.setRedirectPort(443);
         return connector;
     }
 
