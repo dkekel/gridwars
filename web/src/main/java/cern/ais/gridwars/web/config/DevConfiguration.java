@@ -46,12 +46,6 @@ public class DevConfiguration {
         // TODO Ensure that this here is never executed in production!! Could this class be excluded when building the runnable jar?
         // See: https://stackoverflow.com/questions/19575474/gradle-how-to-exclude-a-particular-package-from-a-jar
 
-        final long MEGA_BYTE_FACTOR = 1024 * 1024;
-        final Runtime runtime = Runtime.getRuntime();
-        final long usedMemoryMb = (runtime.totalMemory() - runtime.freeMemory()) / MEGA_BYTE_FACTOR;
-        final long maxMemoryMb = runtime.maxMemory() / MEGA_BYTE_FACTOR;
-        System.out.println("#### Memory usage [MB}: " + usedMemoryMb + " / " + maxMemoryMb);
-
         // =====================================================================
         // Users
         // =====================================================================
