@@ -100,7 +100,7 @@ public class BotController {
         }
 
         try {
-            Bot newBot = botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now());
+            Bot newBot = botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now(), request.getRemoteAddr());
             redirectAttributes.addFlashAttribute("success", newBot.getName());
         } catch (BotService.BotException bue) {
             redirectAttributes.addFlashAttribute("error", bue.getMessage());

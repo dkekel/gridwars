@@ -43,6 +43,8 @@ public class Bot {
     @ManyToOne(optional = false)
     private User user;
 
+    private String uploadIp;
+
     public String getId() {
         return id;
     }
@@ -125,6 +127,15 @@ public class Bot {
 
     public Bot setUser(User user) {
         this.user = user;
+        return this;
+    }
+
+    public String getUploadIp() {
+        return uploadIp;
+    }
+
+    public Bot setUploadIp(String uploadIp) {
+        this.uploadIp = uploadIp;
         return this;
     }
 

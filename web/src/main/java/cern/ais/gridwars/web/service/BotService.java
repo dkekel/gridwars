@@ -69,12 +69,12 @@ public class BotService {
     }
 
     @Transactional
-    public Bot validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime) {
+    public Bot validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime, String uploadIp) {
         File storedBotJarFile = null;
         try {
             storedBotJarFile = storeUploadedBotJarFile(uploadedBotJarFile, user, uploadTime);
             String botClassName = validateBotJarFileAndExtractBotClassName(storedBotJarFile);
-            return createNewBotRecord(storedBotJarFile, botClassName, user, uploadTime);
+            return createNewBotRecord(storedBotJarFile, botClassName, user, uploadTime, uploadIp);
         } catch (Exception e) {
             LOG.error("Failed to validate and persist bot uploaded by user '{}': {}", user.getUsername(), e.getMessage());
             FileUtils.deleteFile(storedBotJarFile);
@@ -166,7 +166,7 @@ public class BotService {
     }
 
     @Transactional
-    public Bot createNewBotRecord(File jarFile, String botClassName, User user, Instant uploadTime) {
+    public Bot createNewBotRecord(File jarFile, String botClassName, User user, Instant uploadTime, String uploadIp) {
         Bot newBot = new Bot()
             .setId(DomainUtils.generateId())
             .setUser(user)
@@ -175,6 +175,7 @@ public class BotService {
             .setJarFileSize(jarFile.length())
             .setBotClassName(botClassName)
             .setUploaded(uploadTime)
+            .setUploadIp(uploadIp)
             .setActive(true);
 
         botRepository.saveAndFlush(newBot);
