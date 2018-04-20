@@ -12,8 +12,8 @@
         <h1 th:text="#{page.welcome.titleLabel}"></h1>
 
         <div th:unless="${currentUser}">
-            <p>Please <a th:href="@{/user/signin}">sign in</a></p>
-            <p>No account yet? <a th:href="@{/user/signup}">Sign up here</a> to get started.</p>
+            <p>Please <a th:href="@{/user/signin}">log in</a></p>
+            <p>No account yet? <a th:href="@{/user/signup}">Register here</a> to get started.</p>
         </div>
         <div th:if="${currentUser}">
             <p th:text="#{page.welcome.greeting(${currentUser.teamName})}"></p>
