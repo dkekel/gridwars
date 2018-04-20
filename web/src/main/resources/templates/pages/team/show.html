@@ -37,7 +37,6 @@
                                 <input id="botJarFile" name="botJarFile" type="file" required accept=".jar" class="jar-input">
                                 <button type="submit" th:text="#{page.team.upload.submit}"></button>
                             </form>
-                            <small class="text-muted" th:text="#{page.team.uploadLimit}"></small>
                         </td>
                         <td th:unless="${botUploadEnabled}">
                             <span th:text="#{page.team.botUploadDisable}" class="text-danger font-weight-bold"></span>
@@ -78,7 +77,6 @@
                             <input id="botJarFile" name="botJarFile" type="file" required accept=".jar" class="jar-input">
                             <button type="submit" th:text="#{page.team.upload.submit}"></button>
                         </form>
-                        <small class="text-muted" th:text="#{page.team.uploadLimit}"></small>
                     </td>
                     <td th:unless="${botUploadEnabled}">
                         <span th:text="#{page.team.botUploadDisable}" class="text-danger font-weight-bold"></span>
