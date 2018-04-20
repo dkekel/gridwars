@@ -313,11 +313,12 @@ final class Game {
             turnThread = new Thread(() -> {
                 try {
                     player.getPlayerBot().getNextCommands(universeView, movementCommands);
+                }  catch (SecurityException se) {
+                    System.out.println("You were caught in turn " + turn + " trying to do something that is not " +
+                        "allowed. *ding ding ding* Shame! Shame! - " + se.getMessage());
                 } catch (Exception e) {
-                    System.out.println("[ERROR] Getting moves for turn " + turn + " failed with unhandled exception \"" +
-                        e.getClass().getName() + "\": " + e.getMessage());
-                    // TODO Is there an exception that should fail the match?
-                    // TODO Handle SecurityException is a special way to detect cheaters
+                    System.out.println("[ERROR] Getting moves for turn " + turn + " failed with unhandled " +
+                        "exception \"" + e.getClass().getName() + "\": " + e.getMessage());
                 }
             });
         }
