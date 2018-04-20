@@ -21,11 +21,26 @@ gridwars:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bccRecipient: 'benjamin.wolff@cern.ch'
+
+---
+spring:
+    profiles: dev
+
+gridwars:
+    mail:
         toRecipientOverride: 'benjamin.wolff@cern.ch'
-        baseUrl: 'http://localhost:8080' # TODO adjust when deployed
+        baseUrl: 'http://localhost:8080'
+
+---
+spring:
+    profiles: prod
+
+gridwars:
+    mail:
+        baseUrl: 'http://gridwars.cern.ch'
 
 # ==================================================================================================
-# Spring Profiles Configuration
+# Spring Profile Configuration
 # ==================================================================================================
 ---
 spring:
@@ -39,9 +54,10 @@ spring:
 # ==================================================================================================
 ---
 spring:
-    profiles: dev
+    #profiles: dev
     datasource:
         url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+    # TODO enable a file-based db for prod environment
 
 # ==================================================================================================
 # JPA Configuration

@@ -20,7 +20,7 @@ import java.util.List;
  * Provides some mock data for development when using in in-memory database.
  */
 @Configuration
-@Profile("dev")
+//@Profile("dev") // TODO re-enable to only do this in dev!!!
 public class DevConfiguration {
 
     @Autowired
