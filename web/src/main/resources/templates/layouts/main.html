@@ -33,7 +33,7 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul th:if="${currentUser}" class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:text="#{layout.main.gettingStarted}" th:classappend="${#request.getRequestURI().contains('/docs') ? 'active' : ''}"></a>
+                    <a class="nav-link" th:href="@{/docs/getting-started}" th:text="#{layout.main.gettingStarted}" th:classappend="${#request.getRequestURI().contains('/docs') ? 'active' : ''}"></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/match/scores}" th:text="#{layout.main.scores}" th:classappend="${#request.getRequestURI().contains('/match/scores') ? 'active' : ''}"></a>

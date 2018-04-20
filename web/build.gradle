@@ -2,17 +2,21 @@ buildscript {
     buildscript {
         repositories {
             jcenter()
+            maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
         }
     }
 
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath('org.kordamp:markdown-gradle-plugin:1.1.0')
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.kordamp.markdown.convert'
+
 
 group = gridwarsGroup
 version = gridwarsVersion
@@ -48,6 +52,9 @@ bootRun {
     // the -Dgridwars.directories.baseWorkDir system property.
     systemProperties['gridwars.directories.baseWorkDir'] = project.file(workDirName).absolutePath
 }
+
+// See: https://github.com/aalmiray/markdown-gradle-plugin
+markdownToHtml.outputDir = project.file('src/main/resources/templates/pages/docs')
 
 dependencies {
     compile project(':core:api')
