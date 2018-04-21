@@ -3,7 +3,7 @@
 
 GridWars is a turn based game AI coding competition that takes place on a two-dimensional grid on which two bots fight to gain the upper hand.
 
-The following guide helps you to get started developing your own bot and have it compete against other players. To learn more about the game mechanics and rules, you can download the [slides of the introduction session](todo).
+The following guide helps you to get started developing your own bot and have it compete against other players. To learn more about the game mechanics and rules, you can download the [slides of the introduction session](/files/gridwars-intro-2018.pdf).
 
 ### Prerequisites
 ---
@@ -25,7 +25,7 @@ You are also free to use your favourite IDE or editor (Eclipse, Xcode, VS Code, 
 ### GridWars Starter Project
 ---
 
-TODO
+To get started you download the [GridWars starter project](/files/gridwars-starter.zip).
 
 #### Setting up the IDE
 

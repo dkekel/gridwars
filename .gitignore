@@ -17,6 +17,3 @@ target/
 *.zip
 *.log
 *.gz
-
-# Web app files
-web/work/**

@@ -1,0 +1,8 @@
+# Web worker folder
+work/**
+
+# Don't ignore certificate zip files
+!certificate/*.zip
+
+# Don't ignore gridwars starter file
+!src/main/resources/files/*.zip
