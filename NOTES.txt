@@ -1,7 +1,7 @@
 TODO:
 ========================================================================================================================
-Intro session slides:
-- When finished, put the slides in the web/src/main/resources/public/ and starter/src/main/dist/ folders
+Starter Project:
+- Bundle the API JavaDocs in the starter projects and also at them to
 
 Matches:
 - Think about a fair scoring system for the ranking
