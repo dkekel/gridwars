@@ -79,7 +79,7 @@ class UniverseViewImpl implements UniverseView {
     }
 
     @Override
-    public long getMaximumPopulation() {
+    public int getMaximumPopulation() {
         return GameConstants.MAXIMUM_POPULATION;
     }
 
