@@ -9,7 +9,7 @@ import java.util.List;
 
 
 /**
- * Simple bot that expands into all directions
+ * Simple bot that expands into all directions if there is a cell that does not belong to the bot
  */
 public class ExpandBot implements PlayerBot {
 

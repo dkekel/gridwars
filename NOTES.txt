@@ -1,13 +1,14 @@
 TODO:
 ========================================================================================================================
-GridWars starter & API:
-- Improve documentation and JavaDocs of API classes
+Intro session slides:
+- When finished, put the slides in the web/src/main/resources/public/ and starter/src/main/dist/ folders
 
 Matches:
 - Think about a fair scoring system for the ranking
     - Maybe an elo based system like in football or so with points?
     - Win 3 points, draw 1 point, loss 0 points
     - If tie, then who has more wins, more draws, less losses, direct comparison?
+    - Update the FAQ in the getting-started guide accordingly
 
 Production deployment:
 - Create shell script that backs up the whole work folder
@@ -30,6 +31,12 @@ Admin UI:
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
     - Reset all matches (cancel) and generate new matches...
+    - System status overview:
+        - Heap usage
+        - CPU load
+        - Filesystem
+    - Display logs in the "work/logs/" folder
+- Integrate Spring Actuators??
 
 UI:
 - Feedback from Bas:
@@ -56,20 +63,13 @@ Match runtime process:
 DB:
 - if the performance is too slow when using a file-based H2 db in production, consider adding a second level JPA cache (EHCache)
 
-Error handling:
-- Do not render error html pages on ajax request errors in controller methods
-- Modify GlobalErrorController to show better message when upload size is too big
-    - See also: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
-
 Misc:
 - Create a main admin account for me and then 1-7 admin accounts (according to bot level) that will be used to upload new bots
 
+- Create a simple test user
+
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
     - List suspiciously large match output log files
-
-- Add Spring Actuators for features like adjust logging etc: http://www.baeldung.com/spring-boot-actuators
-
-- If there is time, add an admin controller that allows to read the server logs directly in the browser...
 
 
 Info:

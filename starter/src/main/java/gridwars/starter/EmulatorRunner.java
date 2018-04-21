@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 
 
 /**
- * Instantiates the example bots and starts the visual game emulator.
+ * Instantiates the example bots and starts the game emulator.
  */
 public class EmulatorRunner {
 

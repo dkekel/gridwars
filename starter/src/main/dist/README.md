@@ -56,60 +56,65 @@
      .             .             .         .               .                 .
 .        .               .       .     .            .    .       *        .        .        .
 
-                                         Episode VII
+                                         Episode V
 
                                  B A T T L E   F O R   R I G A
 </pre>
 
-## Distribution Content:
+## GridWars Starter Project
+---
+This starter project provides everything to get you going with the development of your own bot for the GridWars coding competition.
 
-/build.gradle (build file. See Build section for details.)
-/src/** (Example source code)
-/bin/emulator (run script for Mac/Linux)
-/bin/emulator.bat (run script for Windows)
-/gradlew (build script runner script for Mac/Linux)
-/gradlew.bat (build script runner script for Windows)
-/gradle/** (technical files. Do not touch)
-/lib/** (necessary dependencies. Do not touch)
+Please refer to the [getting started page](https://gridwars.cern.ch/docs/getting-started) available online for a comprehensive guide. You can also refer to the PDF slides shipped in this starter project that explains the game mechanics and some rules.
 
-## Build
+### Project Content
 
-There are two ways to work with sources given. With or without IDE.
-Although IDE work is recommended as it facilitates all operations, fully command-line build is also possible
-(for people w/o IDE, small HDD and console/notepad maniacs).
+| Content                   | Description |
+|---------------------------|-------------|
+| `build.gradle`            | The Gradle build config file. You need to configure the class name of your bot here. |
+| `gridwars-intro-2018.pdf` | The slides of the GridWars intro session. |
+| `/src/**`                 | Contains the source code to run the emulator and two simple example bots. |
+| `/lib/**`                 | Contains the GridWars API and the emulator Java libs (no need to touch). |
+| `/build/**`               | Automatically generated, contains the build output and temporary files. |
+| `gradlew`                 | The Gradle wrapper executable for Linux and Mac (no need to touch). |
+| `gradlew.bat`             | The Gradle wrapper executable for Windows (no need to touch). |
+| `/gradle/**`              | The Gradle wrapper files (no need to touch). |
 
-This section will first explain importing project in IDE, and then console build.
+### Run the emulator
 
-### Eclipse / IntelliJ IDEA
+To run the GridWars emulator, execute the `run` Gradle task in the IDE. The output of the bots will be logged to the files `bot1.log` and `bot2.log`.
 
-1. Open project in your favorite IDE (IntelliJ idea recommended, Eclipse - tested)
-1.1. IntelliJ IDEA:  File -> Open -> (Select build.gradle file) -> Click Ok for default settings -> enjoy.
-1.1. Eclipse:        File -> Import -> Gradle -> Gradle Project -> Browse -> (navigate to the root folder of your project, then click Build Model).
-2. All necessary project dependencies are bundled, but Gradle will spend some time for downloading distribution (~60MB)
-   and configuring project for first run. It should happen only once.
-3. Check JDK version. If necessary - download and install JDK 1.7 and specify it in File -> Project Structure -> SDK
-JDK 1.8 will not work!
+Modify the `gridwars.starter.EmulatorRunner` class to define what bots classes are used.
 
-### Console build
-1. Given project can be built and run from command line.
-You have to have JDK 1.7+ and JAVA_HOME environmental variable set. Or you can have JDK bin dir in your PATH.
-Consult web if you have problems at this step, there are plenty of guides and tutorials how to setup Java environment on your operating system.
-2. First run of gradlew scripts **will** take some time! Something around 60MB will be downloaded.
-3. After download you will have following commands.
-  1. To build jar file: ./gradlew jar
-  2. To clean build directory: ./gradlew clean
-  3. To run emulator tool: ./gradlew run
-  4. To list all tasks available: ./gradlew tasks
-4. All build results goes under build directory.
+To run the emulator from the console, use:
 
-## Example sources
-You have 3 simple Java bots and one Groovy bot as an example. They all implement PlayerBot API.
-You can use "Visualizer.runGame(PlayerBot bot1, PlayerBot bot2)" method to test your bot locally.
-You can modify Visualizer's main method or create your own class calling aforementioned method.
+**Linux/Mac:** `./gradlew run`
 
+**Windows:** `gradlew.bat run`
 
-Play fair and…
-May the code be with you!
+### Create the uploadable bot jar file
+
+Once you have created your own bot, you first need to fill in the fully qualified class name of your bot in the `build.gradle` file to be used for the `Bot-Class-Name` manifest header. For example:
+
+```
+manifest {
+    attributes(
+        'Bot-Class-Name': 'gridwars.starter.MyAwesomeBot'
+    )
+}
+```
+
+The execute the `jar` Gradle task in the IDE. The resulting uploadable bot jar file will be located at `build/libs/gridwars-bot.jar`.
+
+To create the bot jar file from the console, use:
+
+**Linux/Mac:** `./gradlew jar`
+
+**Windows:** `gradlew.bat jar`
+
+Finally, visit your [team page](https://gridwars.cern.ch/team) and upload the bot and see how it competes. Good luck and have fun!
+
+Play fair... and may the code be with you ;)
 
 <pre>
                                     _.=+._
