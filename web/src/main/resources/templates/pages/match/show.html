@@ -70,8 +70,8 @@
             </div>
         </div>
 
-        <div class="available-files text-center mt-3">
-            <div th:unless="${availableFiles.isEmpty()}" class="btn-group dropright">
+        <div th:unless="${availableFiles.isEmpty()}" class="available-files text-center mt-3">
+            <div class="btn-group dropright">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" th:text="#{page.match.show.availableFiles}"></button>
                 <div class="dropdown-menu">
                     <a th:each="file : ${availableFiles}" th:href="${file.link}" th:text="${file.name}" target="_blank" class="dropdown-item"></a>

@@ -19,6 +19,9 @@ Production deployment:
 Admin UI:
 - Simple actions for
     - List users and allow to update/reset a user password
+    - Match queue, cancel or reset matches by hand
+        - Show all pending matches in order
+        - Show average match time on top and estimate when the queue will be empty
     - List all active bots
         - Disable/delete bots
         - List all matches of bots, also failed ones
@@ -26,7 +29,6 @@ Admin UI:
         - Can be changed by directly modifying GridWarsProperties bean in the controller
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
-    - Match queue, cancel or reset matches by hand
     - Reset all matches (cancel) and generate new matches...
 
 UI:
@@ -47,6 +49,8 @@ Matchmaking:
     - Shuffle the teams before to get a random order in which they play
 
 Match runtime process:
+- Currently threads are still allowed, should be forbidden.
+    - See: https://stackoverflow.com/questions/15868534/why-java-security-manager-doesnt-forbid-neither-creating-new-thread-nor-start?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 - Tweak the stack size -Xss
 
 DB:
