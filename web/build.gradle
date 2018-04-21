@@ -88,18 +88,19 @@ task createWorkDir(dependsOn: processResources) {
 }
 
 task cleanWorkDir(type: Delete, dependsOn: createWorkDir) {
-    ['bots', 'db', 'matches', 'runtime'/*, 'server'*/].each { subWorkDir ->
-        def workSubDir = project.file("${workDirName}/${subWorkDir}")
+    doLast {
+        ['bots', 'db', 'matches', 'runtime'/*, 'server'*/].each { subWorkDir ->
+            def workSubDir = project.file("${workDirName}/${subWorkDir}")
 
-        if (workSubDir && workSubDir.exists()) {
-            delete workSubDir.listFiles()
+            if (workSubDir && workSubDir.exists()) {
+                delete workSubDir.listFiles()
+            }
         }
     }
 }
 
 task setUpBotsWorkDir(type: Copy, dependsOn: cleanWorkDir) {
     from project(':core:bots').jar
-
     into project.file("${workDirName}/bots")
 }
 
