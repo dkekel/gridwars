@@ -7,7 +7,7 @@ gridwars:
         baseWorkDir: "${project.baseDir}/work"
     registration:
         enabled: true
-        registrationPassword: '123'
+        registrationPassword: '5pr1ngC4mpu52018!'
     matches:
         botUploadEnabled: true
         matchCountPerOpponent: 1
