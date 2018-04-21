@@ -1,12 +1,60 @@
 <h3>Content</h3>
 <ul>
+  <li><a href="#intro">Introduction</a></li>
+  <li><a href="#pre">Prerequisites</a></li>
   <li><a href="#starter">GridWars Starter Project</a></li>
+  <li><a href="#bot">Create and upload your own bot</a></li>
   <li><a href="#faq">FAQ</a></li>
-</ul><h3>Introduction</h3>
-<hr/><p>GridWars is a turn based game AI coding competition that takes place on a two-dimensional grid on which two bots fight to gain the upper hand.</p><p>The following guide helps you to get started developing your own bot and have it compete against other players. To learn more about the game mechanics and rules, you can download the <a href="/files/gridwars-intro-2018.pdf">slides of the introduction session</a>.</p><h3>Prerequisites</h3>
-<hr/><h4>Java</h4><p>The bots are developed in Java. You need to download and install the latest JDK 8 ( <em>Java SE Development Kit</em> ) on your machine.</p><p>You can download the installer for your operating system <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">here</a>. Choose the latest (64 bit) version, without the demos and samples.</p><p>All operating systems that run Java are supported for the bot development. You are free to use Windows, Linux, or Mac.</p><h4>IDE</h4><p>For the development it is strongly recommended to use a good IDE ( <em>Integrated Development Environment</em> ). We suggest to use the IntelliJ IDEA Community Edition that can be downloaded <a href="https://www.jetbrains.com/idea/download/">here</a>. It provides all the features that we need.</p><p>You are also free to use your favourite IDE or editor (Eclipse, Xcode, VS Code, Vim, Notepad, ...), but it's usually more convenient to use an IDE that has good support for Java and the <a href="https://gradle.org/">Gradle</a> build tool. </p><h3>GridWars Starter Project <a name="starter" class="anchor"></a></h3>
-<hr/><p>To get started you download the <a href="/files/gridwars-starter.zip">GridWars starter project</a>.</p><h4>Setting up the IDE</h4><p>TODO</p><h4>Run from the IDE</h4><p>TODO</p><h4>Run from the console</h4><p>TODO</p><h3>Create your own bot</h3>
-<hr/><p>TODO</p><h4>Build the bot jar from the IDE</h4><p>TODO</p><h4>Build the bot jar from the console</h4><p>TODO</p><h4>Upload your bot</h4><p>TODO</p><p>Play fair... and may the code be with you!</p>
+</ul><h3>Introduction <a name="intro" class="anchor"></a></h3>
+<hr/><p>GridWars is a turn based game AI coding competition that takes place on a two-dimensional grid, on which two bots fight to gain the upper hand. You are going to programm your own bot AI and upload it to a match server, where it will compete against the bots of other competitors.</p><p>The following guide helps you to get started developing your own bot. To learn more about the game mechanics and rules, you can download the <a href="/files/gridwars-intro-2018.pdf">slides of the introduction session</a>.</p><h3>Prerequisites <a name="pre" class="anchor"></a></h3>
+<hr/><h4>Java</h4><p>The bots are developed in Java. You need to download and install the latest JDK 8 ( <em>Java SE Development Kit</em> ) on your machine. You can download the installer for your operating system <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">here</a>. Choose the latest (64 bit) version for your OS, without the demos and samples. All operating systems that run Java are supported for the bot development. You are free to use Windows, Linux, or Mac.</p><p>The JDK installation should be straightforward, but you can also find installation help <a href="https://www.java.com/en/download/help/download_options.xml">here</a> and you can always ask Dr. Google.</p><h4>IDE</h4><p>We strongly recommended to use a good IDE ( <em>Integrated Development Environment</em> ) for the development. We suggest to use the IntelliJ IDEA Community Edition that can be downloaded for free <a href="https://www.jetbrains.com/idea/download/">here</a>. To install it, just follow the instructions of the installation wizard.</p><p>You are also free to use your favourite IDE or editor (Eclipse, Xcode, VS Code, Vim, Notepad, ...), but it's usually more convenient to use an IDE that has good support for Java and the <a href="https://gradle.org/">Gradle</a> build tool. </p><p>When running IntelliJ IDEA for the first time after the installation, you are prompted with a customization dialog. Just select the UI theme that you prefer and then click on <em>"Skip Remaining and Set Defaults"</em> in the lower left use the defaults and start using the IDE. From here you should continue with the <a href="#starter">GridWars Starter Project section</a> below.</p><h4>Using the console</h4><p>Some of you may also prefer to use the console on Linux or Mac system to build and run the sources. You can easily do this as well, but you should make sure that you have the <code>JAVA_HOME</code> environment variable set to the correct folder and that the <code>java</code> executable is visible in your path environment.</p><p>On the console you will use the <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:using_wrapper">Gradle wrapper</a> directly to execute the build tasks.</p><h3>GridWars Starter Project <a name="starter" class="anchor"></a></h3>
+<hr/><p>To get started you simply download the <a href="/files/gridwars-starter.zip">GridWars starter project file</a>. It contains two very simple example bots, an emulator that you can use to simulate the matches on your local computer, and all the tooling to produce the uploadable bot file.</p><p>After you downloaded the project file, unpack it into a folder on your disk that will be used as the project folder. You can also find some information about the content of the starter project in the <code>README.md</code> file in the root of the folder.</p><h4>Setting up the IDE</h4>
+<ol>
+  <li>When you start the IntelliJ IDE (which we installed above) you select <em>"Import Project"</em> and select the GridWars starter project folder that you have just unpacked.</li>
+  <li>On the next screen select <em>"Import project from external model"</em> and then <em>"Gradle"</em> below and click on "Next".</li>
+  <li>On the next screen tick the checkbox for <em>"Use auto-import"</em> and leave the rest on the default settings.
+  <ul>
+    <li>Make sure that the option <em>"Use default gradle wrapper (recommended)"</em> is selected.</li>
+    <li>Make sure that the <em>"Gradle JVM"</em> option is set to <em>"Use Project JDK"</em> and is pointing to the root folder of your JDK 8 installation. If not set, you might have to select the folder by yourself.</li>
+  </ul></li>
+  <li>Click on <em>"Finish"</em> to conclude the project import. The IDE will open and run a first build of the project. It needs to download to artefacts from the web, so it may take a few moments and you might be prompted by your firewall to allow network access to the Java executable, which you should grant.</li>
+</ol><h4>Run the emulator from the IDE</h4><p>To simulate matches between two bots on your local machine, you can use the GridWars emulator that is shipped with the starter project. You can use it to have different versions of your bot fight each other during development to see if the improvements you are making increases the strength of your bot AI.</p>
+<ol>
+  <li>In order to quickly execute the Gradle tasks, you should activate the Gradle tool window by selecting: <em>"View"</em> -&gt; <em>"Tool Windows"</em> -&gt; <em>"Gradle"</em>
+  <ul>
+    <li>This will open the Gradle task view on the right</li>
+  </ul></li>
+  <li>Execute the <em>"run"</em> task using the Gradle tool view by selecting: <em>"Tasks"</em> -&gt; <em>"application"</em> -&gt; double click on <em>"run"</em></li>
+  <li>After a short time you should see the emulator window appearing on your screen that shows two simple bots fight each other. You can pause the playback and increase/decrease the turn speed.</li>
+</ol><p>If the bots are writing output to <code>System.out</code> or <code>System.err</code>, it will be printed to the files <code>bot1.log</code> and <code>bot2.log</code> of the starter project folder.</p><h4>Run the emulator from the console</h4><p>As mentioned earlier, you can also execute the Gradle commands from the console. In this case you will use the <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:using_wrapper">Gradle wrapper</a> that is shipped with the starter project. You run the commands from the root of the starter project folder.</p><p>On Linux and Mac you need to make sure that the <code>gradlew</code> file has the execute flag (+x) set.</p><p>To run the GridWars emulator on Linux or Mac, simply execute the <em>"run"</em> task: <code>./gradlew run</code></p><p>On Windows, you need to use the <code>gradlew.bat</code> executable instead: <code>gradlew.bat run</code></p><h3>Create and upload your own bot <a name="bot" class="anchor"></a></h3>
+<hr/><p>After we have set up the starter project and saw two simple bots fighting each other, it's time to create your own bot:</p>
+<ol>
+  <li>Create a new Java class in the starter project. You can create it in the <code>gridwars.starter</code> package, or you may also choose a different package.
+  <ul>
+    <li>You can use one of the two example bots as a starting point. Just copy one of the classes and give it a new name.</li>
+    <li>The name of the class does not really matter, but the last part of the name will be shown in the web UI to identify your bot, so you may want to give it a fearsome name ;).</li>
+  </ul></li>
+  <li>The bot class must implement the <code>cern.ais.gridwars.bot.PlayerBot</code> interface, which is the only requirement for the bot class.</li>
+  <li>To have your bot fight in the emulator, you modify the code of the <code>gridwars.starter.EmulatorRunner</code> class to use your new bot class as one of the bots.</li>
+  <li>That's it. Now you come up with some nice algorithms and keep improving your bot until it becomes the strongest on the fighting grid ;).</li>
+</ol><p>You should also check out the JavaDocs of the classes in the <code>cern.ais.gridwars.api</code> package to get familiar with the (very basic) programming interfaces:</p>
+<ul>
+  <li><code>cern.ais.gridwars.api.bot.PlayerBot</code></li>
+  <li><code>cern.ais.gridwars.api.UniverseView</code></li>
+  <li><code>cern.ais.gridwars.api.command.MovementCommand</code></li>
+  <li><code>cern.ais.gridwars.api.Coordinates</code></li>
+</ul><h4>Build the bot jar file from the IDE</h4><p>When you are ready to upload your first bot to the match server, you create the uploadable jar file using the following steps:</p>
+<ol>
+  <li>Fill in the fully qualified class name (package + class name) of your bot class in the <code>build.gradle</code> file in the root of the starter project in the section for the manifest attributes for the <code>Bot-Class-Name</code> header:
+  <ul>
+    <li>For example: <code>&#39;Bot-Class-Name&#39;: &#39;gridwars.starter.MyAwesomeBot&#39;</code></li>
+    <li>This information is used by the match server to know which class in the jar file is your bot, as the jar file may contain multiple classes.</li>
+  </ul></li>
+  <li>Execute the <em>"jar"</em> Gradle task using the Gradle tool view: <em>"Tasks"</em> -&gt; <em>"build"</em> -&gt; double click on <em>"jar"</em>
+  <ul>
+    <li>The resulting uploadable bot jar file will be located at <code>build/libs/gridwars-bot.jar</code> in the starter project folder.</li>
+  </ul></li>
+</ol><h4>Build the bot jar file from the console</h4><p>To build the bot jar file from the console, you first need to follow step 1. above about configuring the fully qualified class name in the <code>build.gradle</code> file. After that, you run the <em>"jar"</em> task from the console:</p><p>Linux/Mac: <code>./gradlew jar</code></p><p>Windows: <code>gradlew.bat jar</code></p><p>The resulting uploadable bot jar file will be located at <code>build/libs/gridwars-bot.jar</code> in the starter project folder.</p><h4>Upload your bot</h4><p>Now that you have your bot jar file, go to the <a href="/team">team page</a> and use the upload function to upload the bot jar file that we created above. The match server will run a few validations on the jar file and your bot class. If everything looks fine, it will generate the matches against all other existing bots. You can refresh the team page to see the match results as they become available.</p><p>You can upload a new bot file as often as you want. It will replace your currently active bot and schedule new matches. At the end of the competition you will be informed about the time when the bot upload will be closed. Make sure to upload your final version of the bot before this time. The last bot you upload will be used in the final playoffs.</p><p>That's it! Have fun developing your bot and good luck!</p><p>Don't forget to play fair... and may the code be with you ;)</p>
 <pre>
                                     _.=+._
  \::::::::::::::::::::::::::.\`--._/[_/~|;\_.--'/.:::::::::\
@@ -38,11 +86,14 @@
 <dt>Q: Is there a timout for the whole match?</dt>
 <dd>A: Yes, it's 60 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
 
-<dt>Q: Can my bot be statelful?</dt>
-<dd>A: Yes, your bot will instantiated once and used for the time of the match. You can store state in class variables between the turns.</dd>
+<dt>Q: Can the bot be stateful?</dt>
+<dd>A: Yes, your bot will instantiated once and used during the whole match. You can store state in class variables between the turns.</dd>
 
-<dt>Q: Can I output logs for my bot?</dt>
+<dt>Q: Can the bot log output?</dt>
 <dd>A: Yes, you can simply write to stdout and/or stderr (<code>System.out.println()</code>, <code>System.err.println()</code>). The output will be redirected to a file that you can download from the match view page. You can only download the output file of your own bot. Please note that the maximal total text that you are allowed to output is 5 MB. If you try to print more, any further output will simply be discarded.</dd>
+
+<dt>Q: How is the bot ranking calculated?</dt>
+<dd>A: TODO explain...</dd>
 
 <dt>Q: Can I use 3rd party Java libs?</dt>
 <dd>A: Sorry, no. It's just you, your brain, your team and the standard Java API.</dd>
