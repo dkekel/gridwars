@@ -50,7 +50,8 @@ After you downloaded the project file, unpack it into a folder on your disk that
 1. On the next screen tick the checkbox for *"Use auto-import"* and leave the rest on the default settings.
     * Make sure that the option *"Use default gradle wrapper (recommended)"* is selected.
     * Make sure that the *"Gradle JVM"* option is set to *"Use Project JDK"* and is pointing to the root folder of your JDK 8 installation. If not set, you might have to select the folder by yourself.
-1. Click on *"Finish"* to conclude the project import. The IDE will open and run a first build of the project. It needs to download to artefacts from the web, so it may take a few moments and you might be prompted by your firewall to allow network access to the Java executable, which you should grant.
+1. Click on *"Finish"* to conclude the project import. The IDE will open and run a first build of the project.
+    * It is necessary to download some additional dependencies from the web, so it may take a few moments and you might be prompted by your firewall to allow network access to the Java executable, which you should grant.
 
 #### Run the emulator from the IDE
 
@@ -120,7 +121,7 @@ You can upload a new bot file as often as you want. It will replace your current
 
 That's it! Have fun developing your bot and good luck!
 
-Don't forget to play fair... and may the code be with you ;)
+Play fair... and may the code be with you ;)
 
 <pre>
                                     _.=+._
