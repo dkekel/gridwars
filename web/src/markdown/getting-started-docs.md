@@ -1,3 +1,8 @@
+### Content
+
+* <a href="#starter">GridWars Starter Project</a>
+* <a href="#faq">FAQ</a>
+
 ### Introduction
 ---
 
@@ -22,7 +27,7 @@ For the development it is strongly recommended to use a good IDE ( *Integrated D
 
 You are also free to use your favourite IDE or editor (Eclipse, Xcode, VS Code, Vim, Notepad, ...), but it's usually more convenient to use an IDE that has good support for Java and the [Gradle](https://gradle.org/) build tool. 
 
-### GridWars Starter Project
+### GridWars Starter Project <a name="starter" class="anchor"></a>
 ---
 
 To get started you download the [GridWars starter project](/files/gridwars-starter.zip).
@@ -67,7 +72,7 @@ Play fair... and may the code be with you!
                                      `--'
 </pre>
 
-### FAQ
+### FAQ <a name="faq" class="anchor"></a>
 ---
 
 <dl>
