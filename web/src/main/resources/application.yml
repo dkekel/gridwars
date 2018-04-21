@@ -84,23 +84,14 @@ spring:
         show-sql: false
 
 # ==================================================================================================
-# Spring MVC Configuration
-# ==================================================================================================
----
-spring:
-    mvc:
-        static-path-pattern: /static/**
-
-# ==================================================================================================
 # Static Resources Configuration
 # ==================================================================================================
 ---
 spring:
     resources:
-        static-locations: classpath:/static/
-        cache:
-            cachecontrol:
-                max-age: 1d
+        # Disable the default static resource mappings, we control this manually configuration
+        # class: cern.ais.gridwars.web.config.WebMvcConfiguration
+        add-mappings: false
 
 # ==================================================================================================
 # Spring Servlet Configuration
