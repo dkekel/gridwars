@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.controller;
+package cern.ais.gridwars.web.controller.user;
 
 import cern.ais.gridwars.web.util.validation.ValidEmail;
 
@@ -13,6 +13,8 @@ public class UpdateUserDto {
 
     private String username;
 
+    private String teamName;
+
     @Size(max = 32)
     private String password;
 
@@ -21,11 +23,6 @@ public class UpdateUserDto {
     @Size(max = 32)
     @ValidEmail
     private String email;
-
-    @NotNull
-    @NotEmpty
-    @Size(min = 4, max = 32)
-    private String teamName;
 
     public String getId() {
         return id;
@@ -45,6 +42,15 @@ public class UpdateUserDto {
         return this;
     }
 
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public UpdateUserDto setTeamName(String teamName) {
+        this.teamName = teamName;
+        return this;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -60,15 +66,6 @@ public class UpdateUserDto {
 
     public UpdateUserDto setEmail(String email) {
         this.email = email;
-        return this;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public UpdateUserDto setTeamName(String teamName) {
-        this.teamName = teamName;
         return this;
     }
 }

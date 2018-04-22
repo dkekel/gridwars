@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.controller;
+package cern.ais.gridwars.web.controller.user;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.error.AccessDeniedException;
@@ -154,8 +154,8 @@ public class UserController {
     private UpdateUserDto toUpdateUserDto(User user) {
         return new UpdateUserDto()
             .setUsername(user.getUsername())
-            .setEmail(user.getEmail())
-            .setTeamName(user.getTeamName());
+            .setTeamName(user.getTeamName())
+            .setEmail(user.getEmail());
     }
 
     @PostMapping("/update")
@@ -183,7 +183,6 @@ public class UserController {
 
     private void preprocessUpdatedUser(UpdateUserDto updateUserDto, User currentUser) {
         updateUserDto.setId(currentUser.getId());
-        updateUserDto.setTeamName(trim(updateUserDto.getTeamName()));
         updateUserDto.setEmail(trim(updateUserDto.getEmail()));
     }
 

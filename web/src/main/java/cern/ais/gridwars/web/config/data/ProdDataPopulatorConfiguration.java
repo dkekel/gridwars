@@ -1,6 +1,6 @@
 package cern.ais.gridwars.web.config.data;
 
-import cern.ais.gridwars.web.controller.NewUserDto;
+import cern.ais.gridwars.web.controller.user.NewUserDto;
 import cern.ais.gridwars.web.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

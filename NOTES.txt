@@ -26,7 +26,7 @@ Admin UI:
     - Reset all matches (cancel) and generate new matches...
     - Users page:
         - Create functionality to export user e-mail addresses for import into e-groups
-            - Format:
+            - Format: E,,mail
     - System status overview:
         - Heap usage
         - CPU load

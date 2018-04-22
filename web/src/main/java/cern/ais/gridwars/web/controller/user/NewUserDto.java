@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.controller;
+package cern.ais.gridwars.web.controller.user;
 
 import cern.ais.gridwars.web.util.validation.ValidEmail;
 

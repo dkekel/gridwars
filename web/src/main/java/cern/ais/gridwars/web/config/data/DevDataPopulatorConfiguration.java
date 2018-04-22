@@ -1,7 +1,7 @@
 package cern.ais.gridwars.web.config.data;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
-import cern.ais.gridwars.web.controller.NewUserDto;
+import cern.ais.gridwars.web.controller.user.NewUserDto;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.*;

@@ -19,6 +19,15 @@
                 <input th:field="*{username}" class="form-control" type="text" readonly/>
             </div>
             <div class="form-group">
+                <label th:text="#{page.user.update.teamName}"></label>
+                <input th:field="*{teamName}" class="form-control" type="text" readonly/>
+            </div>
+            <div class="form-group">
+                <label th:text="#{page.user.update.email}"></label>
+                <input th:field="*{email}" th:errorclass="is-invalid" name="email" class="form-control" type="email" maxlength="32" required/>
+                <p th:each="error : ${#fields.errors('email')}" th:text="${error}" class="text-danger"></p>
+            </div>
+            <div class="form-group">
                 <label th:text="#{page.user.update.password}"></label>
                 <input th:field="*{password}" name="password" class="form-control" type="password" th:errorclass="is-invalid" minlength="6" maxlength="32"/>
                 <small th:text="#{page.user.update.password.help}" class="form-text text-muted"></small>
@@ -28,16 +37,6 @@
                 <label th:text="#{page.user.update.passwordMatch}"></label>
                 <input id="passwordMatch" class="form-control" type="password" maxlength="32"/>
                 <small th:text="#{page.user.update.passwordMatch.help}" class="form-text text-muted"></small>
-            </div>
-            <div class="form-group">
-                <label th:text="#{page.user.update.email}"></label>
-                <input th:field="*{email}" th:errorclass="is-invalid" name="email" class="form-control" type="email" maxlength="32" required/>
-                <p th:each="error : ${#fields.errors('email')}" th:text="${error}" class="text-danger"></p>
-            </div>
-            <div class="form-group">
-                <label th:text="#{page.user.update.teamName}"></label>
-                <input th:field="*{teamName}" th:errorclass="is-invalid" name="teamName" class="form-control" type="text" minlength="4" maxlength="24" required/>
-                <p th:each="error : ${#fields.errors('teamName')}" th:text="${error}" class="text-danger"></p>
             </div>
             <button th:text="#{page.user.update.submit}" type="submit" class="btn btn-primary"></button>
         </form>

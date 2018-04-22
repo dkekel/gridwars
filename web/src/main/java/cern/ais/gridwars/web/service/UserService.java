@@ -1,7 +1,7 @@
 package cern.ais.gridwars.web.service;
 
-import cern.ais.gridwars.web.controller.NewUserDto;
-import cern.ais.gridwars.web.controller.UpdateUserDto;
+import cern.ais.gridwars.web.controller.user.NewUserDto;
+import cern.ais.gridwars.web.controller.user.UpdateUserDto;
 import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
@@ -140,16 +140,8 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("User does not exist: " + updateUserDto.getId() + " (" + updateUserDto.getUsername() + ")");
         }
 
-        if (userRepository.existsByUsernameAndIdNot(updateUserDto.getUsername(), updateUserDto.getId())) {
-            throw new UserFieldValueException("username", "user.error.exists.username");
-        }
-
         if (userRepository.existsByEmailAndIdNot(updateUserDto.getEmail(), updateUserDto.getId())) {
             throw new UserFieldValueException("email", "user.error.exists.email");
-        }
-
-        if (userRepository.existsByTeamNameAndIdNot(updateUserDto.getTeamName(), updateUserDto.getId())) {
-            throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
         updateExistingUser(updateUserDto);
@@ -158,12 +150,10 @@ public class UserService implements UserDetailsService {
     private void updateExistingUser(UpdateUserDto updateUserDto) {
        userRepository.findById(updateUserDto.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(updateUserDto.getEmail());
-           existingUser.setTeamName(updateUserDto.getTeamName());
-           existingUser.touch();
-
            if (StringUtils.hasLength(updateUserDto.getPassword())) {
                existingUser.setPassword(encodePassword(updateUserDto.getPassword()));
            }
+           existingUser.touch();
 
            userRepository.saveAndFlush(existingUser);
        });
