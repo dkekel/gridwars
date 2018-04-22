@@ -5,11 +5,10 @@ Matches:
     - Need to normalise scores and other values on the played matches?
 
 Production deployment:
+- Create different level admin bots to be able to deploy them
+    - Start with a slightly enhanced expand bot, or simply use the expand bot??
 - Create shell script that backs up the whole work folder
     - At least the DB file and logs should be backed up
-- When running as jar, have the application.yml file externalised in the folder
-    - Should be configurable with a start parameter:
-        - https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files
 
 Admin UI:
 - Simple actions for
@@ -23,6 +22,7 @@ Admin UI:
         - Can be changed by directly modifying GridWarsProperties bean in the controller
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
+        - Move general control buttons to the top...
     - Reset all matches (cancel) and generate new matches...
     - Users page:
         - Create functionality to export user e-mail addresses for import into e-groups
@@ -35,9 +35,6 @@ Admin UI:
 - Integrate Spring Actuators??
 
 UI:
-- Feedback from Bas:
-    - Change row highlighting to usage of icons instead, could use FontAwesome
-        - Win: fa-smile, Loss: fa-frown, Draw: fa-meh, Failure: exclamation-triangle, Pending: hourglass-half
 - Fix layout of match view, when the bot or team names have different lengths, then the full view is not centered anymore
     - have the areas left and right from the match view only fill the available space, thus centering the match view canvas
 - Use DataTables to make the tables sortable etc.
