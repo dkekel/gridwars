@@ -86,12 +86,7 @@ After we have set up the starter project and saw two simple bots fighting each o
 1. To have your bot fight in the emulator, you modify the code of the `gridwars.starter.EmulatorRunner` class to use your new bot class as one of the bots.
 1. That's it. Now you come up with some nice algorithms and keep improving your bot until it becomes the strongest on the fighting grid ;).
 
-You should also check out the JavaDocs of the classes in the `cern.ais.gridwars.api` package to get familiar with the (very basic) programming interfaces:
-
-* `cern.ais.gridwars.api.bot.PlayerBot`
-* `cern.ais.gridwars.api.UniverseView`
-* `cern.ais.gridwars.api.command.MovementCommand`
-* `cern.ais.gridwars.api.Coordinates`
+You should also check out the JavaDocs of the API classes in the `cern.ais.gridwars.api` packages to get familiar with the programming interface. The JavaDocs are available in the `api` folder of the starter package (simply open the `index.html` in a browser) and can also be [read online](/static/api/index.html).
 
 #### Build the bot jar file from the IDE
 

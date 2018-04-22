@@ -47,3 +47,9 @@ startScripts.enabled = false
 dependencies {
     compile project(':core:emulator')
 }
+
+task copyApiJavaDocs(type: Copy) {
+    from project(':core:api').javadoc
+    into project.file("src/main/dist/api")
+}
+processResources.dependsOn(copyApiJavaDocs)

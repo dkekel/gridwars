@@ -6,3 +6,9 @@ work/**
 
 # Don't ignore gridwars starter file
 !src/main/resources/files/*.zip
+
+# The API JavaDocs are automatically added by a build task
+src/main/resources/static/api/**
+
+# The starter project zip file is automatically added by a build task
+src/main/resources/files/gridwars-starter.zip

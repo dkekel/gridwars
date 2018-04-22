@@ -40,13 +40,7 @@
   <li>The bot class must implement the <code>cern.ais.gridwars.bot.PlayerBot</code> interface, which is the only requirement for the bot class.</li>
   <li>To have your bot fight in the emulator, you modify the code of the <code>gridwars.starter.EmulatorRunner</code> class to use your new bot class as one of the bots.</li>
   <li>That's it. Now you come up with some nice algorithms and keep improving your bot until it becomes the strongest on the fighting grid ;).</li>
-</ol><p>You should also check out the JavaDocs of the classes in the <code>cern.ais.gridwars.api</code> package to get familiar with the (very basic) programming interfaces:</p>
-<ul>
-  <li><code>cern.ais.gridwars.api.bot.PlayerBot</code></li>
-  <li><code>cern.ais.gridwars.api.UniverseView</code></li>
-  <li><code>cern.ais.gridwars.api.command.MovementCommand</code></li>
-  <li><code>cern.ais.gridwars.api.Coordinates</code></li>
-</ul><h4>Build the bot jar file from the IDE</h4><p>When you are ready to upload your first bot to the match server, you create the uploadable jar file using the following steps:</p>
+</ol><p>You should also check out the JavaDocs of the API classes in the <code>cern.ais.gridwars.api</code> packages to get familiar with the programming interface. The JavaDocs are available in the <code>api</code> folder of the starter package (simply open the <code>index.html</code> in a browser) and can also be <a href="/static/api/index.html">read online</a>.</p><h4>Build the bot jar file from the IDE</h4><p>When you are ready to upload your first bot to the match server, you create the uploadable jar file using the following steps:</p>
 <ol>
   <li>Fill in the fully qualified class name (package + class name) of your bot class in the <code>build.gradle</code> file in the root of the starter project in the section for the manifest attributes for the <code>Bot-Class-Name</code> header:
   <ul>

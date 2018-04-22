@@ -61,8 +61,11 @@ dependencies {
     compile project(':core:impl')
     compile project(':core:runtime')
 
-    // TODO Only used during development to provide test bots
+    // Used during development to provide test bots
     compile project(':core:bots')
+
+    // For copying the starter project zip file to the web resources folder
+    compile project(':starter')
 
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-security')
@@ -115,3 +118,15 @@ task setUpRuntimeLibWorkDir(type: Copy, dependsOn: cleanWorkDir) {
 
 task setUpWorkDir(dependsOn: [setUpBotsWorkDir, setUpRuntimeLibWorkDir])
 bootRun.dependsOn(setUpWorkDir)
+
+task copyApiJavaDocs(type: Copy) {
+    from project(':core:api').javadoc
+    into project.file("src/main/resources/static/api/")
+}
+processResources.dependsOn(copyApiJavaDocs)
+
+task copyStarterProjectZipFile(type: Copy) {
+    from project(':starter').distZip
+    into project.file("src/main/resources/files/")
+}
+processResources.dependsOn(copyStarterProjectZipFile)
