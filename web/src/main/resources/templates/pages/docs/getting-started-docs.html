@@ -17,7 +17,10 @@
     <li>Make sure that the option <em>"Use default gradle wrapper (recommended)"</em> is selected.</li>
     <li>Make sure that the <em>"Gradle JVM"</em> option is set to <em>"Use Project JDK"</em> and is pointing to the root folder of your JDK 8 installation. If not set, you might have to select the folder by yourself.</li>
   </ul></li>
-  <li>Click on <em>"Finish"</em> to conclude the project import. The IDE will open and run a first build of the project. It needs to download to artefacts from the web, so it may take a few moments and you might be prompted by your firewall to allow network access to the Java executable, which you should grant.</li>
+  <li>Click on <em>"Finish"</em> to conclude the project import. The IDE will open and run a first build of the project.
+  <ul>
+    <li>It is necessary to download some additional dependencies from the web, so it may take a few moments and you might be prompted by your firewall to allow network access to the Java executable, which you should grant.</li>
+  </ul></li>
 </ol><h4>Run the emulator from the IDE</h4><p>To simulate matches between two bots on your local machine, you can use the GridWars emulator that is shipped with the starter project. You can use it to have different versions of your bot fight each other during development to see if the improvements you are making increases the strength of your bot AI.</p>
 <ol>
   <li>In order to quickly execute the Gradle tasks, you should activate the Gradle tool window by selecting: <em>"View"</em> -&gt; <em>"Tool Windows"</em> -&gt; <em>"Gradle"</em>
@@ -54,7 +57,7 @@
   <ul>
     <li>The resulting uploadable bot jar file will be located at <code>build/libs/gridwars-bot.jar</code> in the starter project folder.</li>
   </ul></li>
-</ol><h4>Build the bot jar file from the console</h4><p>To build the bot jar file from the console, you first need to follow step 1. above about configuring the fully qualified class name in the <code>build.gradle</code> file. After that, you run the <em>"jar"</em> task from the console:</p><p>Linux/Mac: <code>./gradlew jar</code></p><p>Windows: <code>gradlew.bat jar</code></p><p>The resulting uploadable bot jar file will be located at <code>build/libs/gridwars-bot.jar</code> in the starter project folder.</p><h4>Upload your bot</h4><p>Now that you have your bot jar file, go to the <a href="/team">team page</a> and use the upload function to upload the bot jar file that we created above. The match server will run a few validations on the jar file and your bot class. If everything looks fine, it will generate the matches against all other existing bots. You can refresh the team page to see the match results as they become available.</p><p>You can upload a new bot file as often as you want. It will replace your currently active bot and schedule new matches. At the end of the competition you will be informed about the time when the bot upload will be closed. Make sure to upload your final version of the bot before this time. The last bot you upload will be used in the final playoffs.</p><p>That's it! Have fun developing your bot and good luck!</p><p>Don't forget to play fair... and may the code be with you ;)</p>
+</ol><h4>Build the bot jar file from the console</h4><p>To build the bot jar file from the console, you first need to follow step 1. above about configuring the fully qualified class name in the <code>build.gradle</code> file. After that, you run the <em>"jar"</em> task from the console:</p><p>Linux/Mac: <code>./gradlew jar</code></p><p>Windows: <code>gradlew.bat jar</code></p><p>The resulting uploadable bot jar file will be located at <code>build/libs/gridwars-bot.jar</code> in the starter project folder.</p><h4>Upload your bot</h4><p>Now that you have your bot jar file, go to the <a href="/team">team page</a> and use the upload function to upload the bot jar file that we created above. The match server will run a few validations on the jar file and your bot class. If everything looks fine, it will generate the matches against all other existing bots. You can refresh the team page to see the match results as they become available.</p><p>You can upload a new bot file as often as you want. It will replace your currently active bot and schedule new matches. At the end of the competition you will be informed about the time when the bot upload will be closed. Make sure to upload your final version of the bot before this time. The last bot you upload will be used in the final playoffs.</p><p>That's it! Have fun developing your bot and good luck!</p><p>Play fair... and may the code be with you ;)</p>
 <pre>
                                     _.=+._
  \::::::::::::::::::::::::::.\`--._/[_/~|;\_.--'/.:::::::::\
@@ -86,6 +89,9 @@
 <dt>Q: Is there a timout for the whole match?</dt>
 <dd>A: Yes, it's 60 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
 
+<dt>Q: How are the scores calculated?</dt>
+<dd>A: A win gives 3 points, a draw 1 point and a loss no points. The score is the sum of the points.</dd>
+
 <dt>Q: Can the bot be stateful?</dt>
 <dd>A: Yes, your bot will instantiated once and used during the whole match. You can store state in class variables between the turns.</dd>
 
@@ -97,9 +103,6 @@
 
 <dt>Q: Can I use 3rd party Java libs?</dt>
 <dd>A: Sorry, no. It's just you, your brain, your team and the standard Java API.</dd>
-
-<dt>Q: Can I use additional threads?</dt>
-<dd>A: No.</dd>
 
 <dt>Q: Can I read or write files on the file system?</dt>
 <dd>A: Negative.</dd>

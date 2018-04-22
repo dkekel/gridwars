@@ -42,16 +42,16 @@ public class RankingService {
 
         switch (match.getOutcome()) {
             case WIN:
-                rankingInfoUser1.wins++;
-                rankingInfoUser2.losses++;
+                rankingInfoUser1.incrementWins();
+                rankingInfoUser2.incrementLosses();
                 break;
             case LOSS:
-                rankingInfoUser1.losses++;
-                rankingInfoUser2.wins++;
+                rankingInfoUser1.incrementLosses();
+                rankingInfoUser2.incrementWins();
                 break;
             case DRAW:
-                rankingInfoUser1.draws++;
-                rankingInfoUser2.draws++;
+                rankingInfoUser1.incrementDraws();
+                rankingInfoUser2.incrementDraws();
         }
         // Failed matches are currently not taken into consideration for the ranking calculation.
     }
@@ -77,11 +77,11 @@ public class RankingService {
 
     private void evaluateMatchForBot(Match match, Bot bot, RankingInfo rankingInfo) {
         if (match.isBotWinner(bot)) {
-            rankingInfo.wins++;
+            rankingInfo.incrementWins();
         } else if (match.isBotLoser(bot)) {
-            rankingInfo.losses++;
+            rankingInfo.incrementLosses();
         } else if (match.isDraw()) {
-            rankingInfo.draws++;
+            rankingInfo.incrementDraws();
         }
         // Failed matches are currently not taken into consideration for the ranking calculation.
     }
@@ -93,18 +93,58 @@ public class RankingService {
         private int wins = 0;
         private int draws = 0;
         private int losses = 0;
+        private int scoreCache = -1;
 
         @Override
         public int compareTo(RankingInfo o) {
-            // TODO decide on a fair ranking system
-            // - elo formula for wins, draws, losses, e.g. like in football?
-            // - what if two or more teams have the same score, what are the secondary, tertiary, etc. criteria?
-            return o.wins - wins;
+            // 1. higher score
+            int comparisonResult = o.getScore() - getScore();
+
+            // 2. more wins
+            if (comparisonResult == 0) {
+                comparisonResult = o.wins - wins;
+            }
+
+            // 3. more draws
+            if (comparisonResult == 0) {
+                comparisonResult = o.draws - draws;
+            }
+
+            // 3. less losses
+            if (comparisonResult == 0) {
+                comparisonResult = losses - o.losses;
+            }
+
+            // 4. first uploaded
+            if (comparisonResult == 0) {
+                comparisonResult = bot.getUploaded().compareTo(o.getBot().getUploaded());
+            }
+
+            return comparisonResult;
         }
 
         private RankingInfo(User user, Bot bot) {
             this.user = user;
             this.bot = bot;
+        }
+
+        private void incrementWins() {
+            wins++;
+            resetScoreCache();
+        }
+
+        private void incrementDraws() {
+            draws++;
+            resetScoreCache();
+        }
+
+        private void incrementLosses() {
+            losses++;
+            resetScoreCache();
+        }
+
+        private void resetScoreCache() {
+            scoreCache = -1;
         }
 
         public User getUser() {
@@ -129,6 +169,14 @@ public class RankingService {
 
         public int getTotal() {
             return wins + draws + losses;
+        }
+
+        public int getScore() {
+            if (scoreCache == -1) {
+                scoreCache = (wins * 3) + draws;
+            }
+
+            return scoreCache;
         }
     }
 }

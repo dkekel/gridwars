@@ -157,6 +157,9 @@ Play fair... and may the code be with you ;)
 <dt>Q: Is there a timout for the whole match?</dt>
 <dd>A: Yes, it's 60 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
 
+<dt>Q: How are the scores calculated?</dt>
+<dd>A: A win gives 3 points, a draw 1 point and a loss no points. The score is the sum of the points.</dd>
+
 <dt>Q: Can the bot be stateful?</dt>
 <dd>A: Yes, your bot will instantiated once and used during the whole match. You can store state in class variables between the turns.</dd>
 
@@ -168,9 +171,6 @@ Play fair... and may the code be with you ;)
 
 <dt>Q: Can I use 3rd party Java libs?</dt>
 <dd>A: Sorry, no. It's just you, your brain, your team and the standard Java API.</dd>
-
-<dt>Q: Can I use additional threads?</dt>
-<dd>A: No.</dd>
 
 <dt>Q: Can I read or write files on the file system?</dt>
 <dd>A: Negative.</dd>

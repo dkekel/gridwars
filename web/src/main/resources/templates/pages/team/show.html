@@ -94,6 +94,7 @@
                         <th scope="col" class="text-center" th:text="#{page.team.draws}"></th>
                         <th scope="col" class="text-center" th:text="#{page.team.losses}"></th>
                         <th scope="col" class="text-center" th:text="#{page.team.total}"></th>
+                        <th scope="col" class="text-center" th:text="#{page.team.score}"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,6 +103,7 @@
                         <td class="table-warning text-center" th:text="${rankingInfo.draws}"></td>
                         <td class="table-danger text-center" th:text="${rankingInfo.losses}"></td>
                         <td class="text-center" th:text="${rankingInfo.total}"></td>
+                        <td class="text-center" th:text="${rankingInfo.score}"></td>
                     </tr>
                 </tbody>
             </table>

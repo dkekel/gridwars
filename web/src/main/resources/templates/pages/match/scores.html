@@ -33,6 +33,7 @@
                     <th scope="col" class="text-center" th:text="#{page.match.scores.draws}"></th>
                     <th scope="col" class="text-center" th:text="#{page.match.scores.losses}"></th>
                     <th scope="col" class="text-center" th:text="#{page.match.scores.total}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.score}"></th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +44,7 @@
                     <td th:text="${ranking.draws}" class="text-center"></td>
                     <td th:text="${ranking.losses}" class="text-center"></td>
                     <td th:text="${ranking.total}" class="text-center"></td>
+                    <td th:text="${ranking.score}" class="text-center"></td>
                 </tr>
             </tbody>
         </table>
