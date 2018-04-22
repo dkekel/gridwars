@@ -149,12 +149,14 @@
                         </td>
 
                         <td>
-                            <a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark"></a>
+                            <a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark"
+                               th:classappend="${match.isBot1OfUser(currentUser) ? 'font-weight-bold' : _}"></a>
                             <i th:if="${match.bot1.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
                             <i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i>
                         </td>
                         <td>
-                            <a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark"></a>
+                            <a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark"
+                               th:classappend="${match.isBot2OfUser(currentUser) ? 'font-weight-bold' : _}"></a>
                             <i th:if="${match.bot2.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
                             <i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i>
                         </td>

@@ -13,18 +13,20 @@ Production deployment:
 
 Admin UI:
 - Simple actions for
-    - List users and allow to update/reset a user password
-    - Match queue, cancel or reset matches by hand
-        - Show all pending matches in order
-        - Show average match time on top and estimate when the queue will be empty
     - List all active bots
         - Disable/delete bots
         - List all matches of bots, also failed ones
+    - Match queue, cancel or reset matches by hand
+        - Show all pending matches in order
+        - Show average match time on top and estimate when the queue will be empty
     - block bot upload and user registration
         - Can be changed by directly modifying GridWarsProperties bean in the controller
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
     - Reset all matches (cancel) and generate new matches...
+    - Users page:
+        - Create functionality to export user e-mail addresses for import into e-groups
+            - Format:
     - System status overview:
         - Heap usage
         - CPU load

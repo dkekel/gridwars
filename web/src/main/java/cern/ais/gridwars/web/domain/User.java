@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -103,6 +105,10 @@ public class User implements UserDetails {
         return created;
     }
 
+    public LocalDateTime getCreatedDateTime() {
+        return LocalDateTime.ofInstant(created, ZoneId.systemDefault());
+    }
+
     public User setCreated(Instant created) {
         this.created = created;
         return this;
@@ -133,6 +139,10 @@ public class User implements UserDetails {
     public User setConfirmed(Instant confirmed) {
         this.confirmed = confirmed;
         return this;
+    }
+
+    public LocalDateTime getConfirmedDateTime() {
+        return (confirmed != null) ? LocalDateTime.ofInstant(confirmed, ZoneId.systemDefault()) : null;
     }
 
     public String getIp() {
@@ -176,6 +186,10 @@ public class User implements UserDetails {
 
     public boolean isConfirmed() {
         return (confirmed != null);
+    }
+
+    public void touch() {
+        setModified(Instant.now());
     }
 
     @Override

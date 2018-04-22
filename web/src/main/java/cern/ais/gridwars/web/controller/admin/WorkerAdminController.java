@@ -1,4 +1,4 @@
-package cern.ais.gridwars.web.controller;
+package cern.ais.gridwars.web.controller.admin;
 
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.MatchWorkerService;
@@ -18,12 +18,12 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class WorkerAdminController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchWorkerService matchWorkerService;
 
-    public AdminController(MatchWorkerService matchWorkerService) {
+    public WorkerAdminController(MatchWorkerService matchWorkerService) {
         this.matchWorkerService = Objects.requireNonNull(matchWorkerService);
     }
 

@@ -5,63 +5,51 @@
       layout:decorate="~{layouts/main}">
 <head>
     <title th:text="#{page.admin.users.title}"></title>
-
-    <style>
-        .worker-idle {
-            background-color: lightgreen;
-        }
-
-        .worker-running {
-            background-color: #fff3cd;
-        }
-
-        .worker-stopped {
-            background-color: lightcoral;
-        }
-    </style>
 </head>
 <body>
 <main layout:fragment="content" class="container">
     <h2 class="text-center" th:text="#{page.admin.users.title}"></h2>
 
     <div class="text-center">
-        <div th:if="${started}" th:text="#{page.admin.worker.startSuccess}" class="alert alert-success d-inline-block" role="alert"></div>
-        <div th:if="${wokenup}" th:text="#{page.admin.worker.wakeUpSuccess}" class="alert alert-primary d-inline-block" role="alert"></div>
-        <div th:if="${stopped}" th:text="#{page.admin.worker.stopSuccess}" class="alert alert-warning d-inline-block" role="alert"></div>
+        <div th:if="${success}" th:text="${success}" class="alert alert-success d-inline-block" role="alert"></div>
+        <div th:if="${error}" th:text="${error}" class="alert alert-warning d-inline-block" role="alert"></div>
     </div>
 
-    <table class="table table-bordered table-sm">
+    <table class="table table-bordered table-hover table-sm">
         <thead class="thead-dark">
         <tr>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.number}">Username</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.number}">Team Name</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.status}">Email</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.status}">Is Admin</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.status}">Status</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.status}">Created</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.status}">Confirmed</th>
-            <th scope="col" class="text-center" th:text="#{page.admin.worker.status}">Action</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.username}">Username</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.teamName}">Team Name</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.email}">Email</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.enabled}">Enabled</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.created}">Created</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.confirmed}">Confirmed</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.users.changePassword}">Change Password</th>
         </tr>
         </thead>
         <tbody>
-            <tr th:each="workerStatus : ${workerStatuses}" th:class="'worker-' + ${workerStatus.status.name().toLowerCase()}">
-                <td class="text-center" th:text="${workerStatus.number}"></td>
-                <td class="text-center" th:text="${workerStatus.status}"></td>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.teamName}"></td>
+                <td th:text="${user.email}"></td>
+                <td class="text-center">
+                    <i th:if="${user.enabled}" class="fas fa-check text-success"></i>
+                    <i th:unless="${user.enabled}" class="fas fa-times text-danger"></i>
+                </td>
+                <td class="text-center" th:text="${#temporals.format(user.createdDateTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                <td class="text-center" th:text="${#temporals.format(user.confirmedDateTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                <td class="text-center">
+                    <form th:action="@{/admin/users(action=changePassword)}" method="post"
+                          onsubmit="return confirm('Do you really want to change the password of the user?')">
+                        <input name="userId" type="hidden" th:value="${user.id}">
+                        <input name="newPassword" type="password" required>
+                        <input type="submit" th:value="'Change'">
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
-
-    <div class="d-flex justify-content-around">
-        <form th:action="@{/admin/worker(action=start)}" method="post" onsubmit="return confirm('Are you sure you want to START all workers?')">
-            <button type="submit" th:text="#{page.admin.worker.start}" class="btn btn-success"></button>
-        </form>
-        <form th:action="@{/admin/worker(action=wakeup)}" method="post">
-            <button type="submit" th:text="#{page.admin.worker.wakeUp}" class="btn btn-primary"></button>
-        </form>
-        <form th:action="@{/admin/worker(action=stop)}" method="post" onsubmit="return confirm('Are you sure you want to STOP all workers?')">
-            <button type="submit" th:text="#{page.admin.worker.stop}" class="btn btn-danger"></button>
-        </form>
-    </div>
+    <div class="font-weight-light text-center" th:text="#{page.common.results(${users.size()})}"></div>
 </main>
 </body>
 </html>

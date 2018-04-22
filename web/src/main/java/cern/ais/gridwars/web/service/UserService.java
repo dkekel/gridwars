@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -52,6 +53,11 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public Optional<User> getByConfirmationId(String confirmationId) {
         return userRepository.findByConfirmationId(confirmationId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getAllNonAdminUsers() {
+        return userRepository.findAllByAdminIsFalse();
     }
 
     @Transactional
@@ -148,7 +154,7 @@ public class UserService implements UserDetailsService {
        userRepository.findById(updateUserDto.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(updateUserDto.getEmail());
            existingUser.setTeamName(updateUserDto.getTeamName());
-           existingUser.setModified(Instant.now());
+           existingUser.touch();
 
            if (StringUtils.hasLength(updateUserDto.getPassword())) {
                existingUser.setPassword(encodePassword(updateUserDto.getPassword()));
@@ -160,6 +166,15 @@ public class UserService implements UserDetailsService {
 
     private String encodePassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    @Transactional
+    public void changeUserPassword(String userId, String newPassword) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setPassword(encodePassword(newPassword));
+            user.touch();
+            userRepository.saveAndFlush(user);
+        });
     }
 
     public static class UserFieldValueException extends RuntimeException {
