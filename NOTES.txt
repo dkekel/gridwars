@@ -2,6 +2,7 @@ TODO:
 ========================================================================================================================
 Matches:
 - Score system: how to handle the case if the scores are the some but one bot has played more matches?
+    - Need to normalise scores and other values on the played matches?
 
 Production deployment:
 - Create shell script that backs up the whole work folder
@@ -37,8 +38,6 @@ UI:
         - Win: fa-smile, Loss: fa-frown, Draw: fa-meh, Failure: exclamation-triangle, Pending: hourglass-half
 - Fix layout of match view, when the bot or team names have different lengths, then the full view is not centered anymore
     - have the areas left and right from the match view only fill the available space, thus centering the match view canvas
-- Add link to bot output file in match list of team view?
-- Add Imperial FontAwesome logo to admin bots in the match lists?
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard

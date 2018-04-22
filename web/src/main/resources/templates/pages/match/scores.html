@@ -11,21 +11,21 @@
             font-weight: bold;
         }
 
-        .score-table i {
+        .score-table .trophy-icon {
             visibility: hidden;
         }
 
-        .score-table > tbody > tr:nth-child(1) i {
+        .score-table > tbody > tr:nth-child(1) .trophy-icon {
             visibility: visible;
             color: goldenrod;
         }
 
-        .score-table > tbody > tr:nth-child(2) i {
+        .score-table > tbody > tr:nth-child(2) .trophy-icon {
             visibility: visible;
             color: silver;
         }
 
-        .score-table > tbody > tr:nth-child(3) i {
+        .score-table > tbody > tr:nth-child(3) .trophy-icon {
             visibility: visible;
             color: sandybrown;
         }
@@ -49,7 +49,11 @@
             <tbody>
                 <tr th:each="ranking,iter : ${rankings}">
                     <td th:text="${iter.index} + 1" class="text-center"></td>
-                    <td><a th:href="@{'/team/' + ${ranking.user.id}}" th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'" class="text-dark"></a><i class="fas fa-trophy ml-1"></i></td>
+                    <td>
+                        <a th:href="@{'/team/' + ${ranking.user.id}}" th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'" class="text-dark"></a>
+                        <i th:if="${ranking.bot.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
+                        <i class="fas fa-trophy ml-1 trophy-icon"></i>
+                    </td>
                     <td th:text="${ranking.wins}" class="text-center"></td>
                     <td th:text="${ranking.draws}" class="text-center"></td>
                     <td th:text="${ranking.losses}" class="text-center"></td>

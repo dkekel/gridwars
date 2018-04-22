@@ -228,8 +228,16 @@ public class Match {
         return (isBot1Winner() && bot2.equals(bot)) || (isBot2Winner() && bot1.equals(bot));
     }
 
+    public boolean isBot1OfUser(User user) {
+        return bot1.getUser().equals(user);
+    }
+
+    public boolean isBot2OfUser(User user) {
+        return bot2.getUser().equals(user);
+    }
+
     public boolean isMatchOfUser(User user) {
-        return bot1.getUser().equals(user) || bot2.getUser().equals(user);
+        return isBot1OfUser(user) || isBot2OfUser(user);
     }
 
     @Override

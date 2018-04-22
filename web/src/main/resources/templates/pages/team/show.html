@@ -148,8 +148,16 @@
                             <span th:text="#{page.team.matches.failed}" class="text-danger font-weight-bold">FAILURE</span>
                         </td>
 
-                        <td><a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark"></a><i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i></td>
-                        <td><a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark"></a><i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i></td>
+                        <td>
+                            <a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark"></a>
+                            <i th:if="${match.bot1.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
+                            <i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i>
+                        </td>
+                        <td>
+                            <a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark"></a>
+                            <i th:if="${match.bot2.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
+                            <i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i>
+                        </td>
                         <td th:text="${match.turnCount}" class="text-center"></td>
                         <td th:text="${#numbers.formatDecimal(match.durationMillis / 1000d, 1, 2)}" class="text-center"></td>
                         <td th:text="${#temporals.format(match.startedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>
