@@ -36,12 +36,6 @@ repositories {
 
 bootJar {
     archiveName = "gridwars-${project.name}.jar"
-
-    // We assume that if we build the runnable jar, it is for production. So the DevConfiguration class
-    // will be excluded to not be executed by mistake. Don't want to rely merely on the profile guard
-    // in the class itself. In could potentially mess us the production db in the worst case.
-    // TODO exclude doesn't work...
-    exclude('**/DevConfiguration.class')
 }
 
 bootRun {
@@ -49,7 +43,7 @@ bootRun {
     sourceResources sourceSets.main
 
     // Set the base work folder. When running from a runnable jar, the base work dir should be set using
-    // the -Dgridwars.directories.baseWorkDir system property.
+    // the -Dgridwars.directories.baseWorkDir system property. Must be an absolute path!
     systemProperties['gridwars.directories.baseWorkDir'] = project.file(workDirName).absolutePath
 }
 
@@ -93,7 +87,7 @@ task createWorkDir(dependsOn: processResources) {
 
 task cleanWorkDir(type: Delete, dependsOn: createWorkDir) {
     doLast {
-        ['bots', 'db', 'matches', 'runtime'/*, 'server'*/].each { subWorkDir ->
+        ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
             def workSubDir = project.file("${workDirName}/${subWorkDir}")
 
             if (workSubDir && workSubDir.exists()) {

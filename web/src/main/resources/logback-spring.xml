@@ -5,7 +5,7 @@
     <root level="WARN"/>
 
     <logger name="org.springframework.web.servlet.PageNotFound" level="ERROR"/>
-    <logger name="cern.ais.gridwars.web" level="DEBUG"/>
+    <logger name="cern.ais.gridwars.web" level="INFO"/>
 
     <springProfile name="dev">
         <logger name="cern.ais.gridwars.web" level="DEBUG"/>

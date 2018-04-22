@@ -56,6 +56,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
+    public boolean hasExistingUsers() {
+        return userRepository.count() > 0;
+    }
+
+    @Transactional(readOnly = true)
     public List<User> getAllNonAdminUsers() {
         return userRepository.findAllByAdminIsFalse();
     }

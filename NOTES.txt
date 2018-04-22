@@ -6,7 +6,7 @@ Matches:
 
 Production deployment:
 - Create shell script that backs up the whole work folder
-    - At least the DB file should be backed up
+    - At least the DB file and logs should be backed up
 - When running as jar, have the application.yml file externalised in the folder
     - Should be configurable with a start parameter:
         - https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files
@@ -56,10 +56,6 @@ DB:
 - if the performance is too slow when using a file-based H2 db in production, consider adding a second level JPA cache (EHCache)
 
 Misc:
-- Create a main admin account for me and then 1-7 admin accounts (according to bot level) that will be used to upload new bots
-
-- Create a simple test user
-
 - Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
     - List suspiciously large match output log files
 

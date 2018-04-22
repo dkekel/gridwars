@@ -1,9 +1,12 @@
-package cern.ais.gridwars.web.config;
+package cern.ais.gridwars.web.config.data;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.NewUserDto;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -17,11 +20,13 @@ import java.util.List;
 
 
 /**
- * Provides some mock data for development when using in in-memory database.
+ * Populates some test data used during development. Should only be used on volatile in-memory databases.
  */
 @Configuration
-//@Profile("dev") // TODO re-enable to only do this in dev!!!
-public class DevConfiguration {
+@Profile("dev")
+public class DevDataPopulatorConfiguration {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserService userService;
@@ -43,8 +48,12 @@ public class DevConfiguration {
 
     @PostConstruct
     public void initTestData() {
-        // TODO Ensure that this here is never executed in production!! Could this class be excluded when building the runnable jar?
-        // See: https://stackoverflow.com/questions/19575474/gradle-how-to-exclude-a-particular-package-from-a-jar
+        // Make sure we never work on a non-empty user database
+        if (userService.hasExistingUsers()) {
+            return;
+        }
+
+        LOG.warn("Populating development users and bots ...");
 
         // =====================================================================
         // Users
