@@ -88,6 +88,9 @@ public class DevConfiguration {
         Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.PermissionCheckerBot", testUsers.get(4), Instant.now(), null);
         matchService.generateMatches(bot5);
 
+        Bot bot6 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.IdleBot", testUsers.get(5), Instant.now(), null);
+        matchService.generateMatches(bot6);
+
         matchWorkerService.wakeUpAllMatchWorkers();
 
 //        mailService.sendMail(MailService.MailBuilder.newMail()

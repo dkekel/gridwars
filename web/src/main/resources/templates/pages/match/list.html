@@ -9,7 +9,7 @@
 <body>
     <main layout:fragment="content" class="container">
         <h2 class="text-center" th:text="#{page.match.list.title}"></h2>
-        <table class="table table-sm">
+        <table class="table table-hover table-sm">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col"></th>
@@ -21,7 +21,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="match : ${matches}" th:class="${match.isMatchOfUser(currentUser)} ? 'table-active' : _">
+                <tr th:each="match : ${matches}">
                     <td class="text-center"><a th:text="#{page.match.list.show}" th:href="@{'/match/' + ${match.id}}"></a></td>
                     <td><a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark"></a><i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i></td>
                     <td><a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark"></a><i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i></td>

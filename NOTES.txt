@@ -1,14 +1,7 @@
 TODO:
 ========================================================================================================================
-Starter Project:
-- Bundle the API JavaDocs in the starter projects and also at them to
-
 Matches:
-- Think about a fair scoring system for the ranking
-    - Maybe an elo based system like in football or so with points?
-    - Win 3 points, draw 1 point, loss 0 points
-    - If tie, then who has more wins, more draws, less losses, direct comparison?
-    - Update the FAQ in the getting-started guide accordingly
+- Score system: how to handle the case if the scores are the some but one bot has played more matches?
 
 Production deployment:
 - Create shell script that backs up the whole work folder
@@ -56,8 +49,6 @@ Matchmaking:
     - Shuffle the teams before to get a random order in which they play
 
 Match runtime process:
-- Currently threads are still allowed, should be forbidden.
-    - See: https://stackoverflow.com/questions/15868534/why-java-security-manager-doesnt-forbid-neither-creating-new-thread-nor-start?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 - Tweak the stack size -Xss
 
 DB:
@@ -152,5 +143,7 @@ Useful links:
     - ClassLoading and threads: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#RuntimePermission
     - File access: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#FilePermission
     - Socket permissions: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#SocketPermission
+
+    - It seems that creating threads can't be avoided: https://stackoverflow.com/questions/15868534/why-java-security-manager-doesnt-forbid-neither-creating-new-thread-nor-start?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
 - Creating a pkcs12 keystore from Let's Encrpyt certificates: https://www.namecheap.com/support/knowledgebase/article.aspx/9441/0/tomcat-using-keytool
