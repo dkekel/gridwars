@@ -8,23 +8,33 @@
 
     <style>
         .score-table > tbody > tr:nth-child(1) {
-            background-color: goldenrod;
             font-weight: bold;
         }
 
-        .score-table > tbody > tr:nth-child(2) {
-            background-color: silver;
+        .score-table i {
+            visibility: hidden;
         }
 
-        .score-table > tbody > tr:nth-child(3) {
-            background-color: sandybrown;
+        .score-table > tbody > tr:nth-child(1) i {
+            visibility: visible;
+            color: goldenrod;
+        }
+
+        .score-table > tbody > tr:nth-child(2) i {
+            visibility: visible;
+            color: silver;
+        }
+
+        .score-table > tbody > tr:nth-child(3) i {
+            visibility: visible;
+            color: sandybrown;
         }
     </style>
 </head>
 <body>
     <main layout:fragment="content" class="container">
         <h2 th:text="#{page.match.scores.title}" class="text-center"></h2>
-        <table class="table table-sm score-table">
+        <table class="table table-sm table-hover score-table">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col" class="text-center" th:text="#{page.match.scores.rank}"></th>
@@ -38,8 +48,8 @@
             </thead>
             <tbody>
                 <tr th:each="ranking,iter : ${rankings}">
-                    <th th:text="${iter.index} + 1" scope="row" class="text-center"></th>
-                    <td><a th:href="@{'/team/' + ${ranking.user.id}}" th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'" class="text-dark"></a></td>
+                    <td th:text="${iter.index} + 1" class="text-center"></td>
+                    <td><a th:href="@{'/team/' + ${ranking.user.id}}" th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'" class="text-dark"></a><i class="fas fa-trophy ml-1"></i></td>
                     <td th:text="${ranking.wins}" class="text-center"></td>
                     <td th:text="${ranking.draws}" class="text-center"></td>
                     <td th:text="${ranking.losses}" class="text-center"></td>
