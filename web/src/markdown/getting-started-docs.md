@@ -82,7 +82,7 @@ After we have set up the starter project and saw two simple bots fighting each o
 1. Create a new Java class in the starter project. You can create it in the `gridwars.starter` package, or you may also choose a different package.
     * You can use one of the two example bots as a starting point. Just copy one of the classes and give it a new name.
     * The name of the class does not really matter, but the last part of the name will be shown in the web UI to identify your bot, so you may want to give it a fearsome name ;).
-1. The bot class must implement the `cern.ais.gridwars.bot.PlayerBot` interface, which is the only requirement for the bot class.
+1. The bot class must implement the `cern.ais.gridwars.bot.PlayerBot` interface and must have a parameterless default constructor.
 1. To have your bot fight in the emulator, you modify the code of the `gridwars.starter.EmulatorRunner` class to use your new bot class as one of the bots.
 1. That's it. Now you come up with some nice algorithms and keep improving your bot until it becomes the strongest on the fighting grid ;).
 
@@ -160,9 +160,6 @@ Play fair... and may the code be with you ;)
 
 <dt>Q: Can the bot log output?</dt>
 <dd>A: Yes, you can simply write to stdout and/or stderr (<code>System.out.println()</code>, <code>System.err.println()</code>). The output will be redirected to a file that you can download from the match view page. You can only download the output file of your own bot. Please note that the maximal total text that you are allowed to output is 5 MB. If you try to print more, any further output will simply be discarded.</dd>
-
-<dt>Q: How is the bot ranking calculated?</dt>
-<dd>A: TODO explain...</dd>
 
 <dt>Q: Can I use 3rd party Java libs?</dt>
 <dd>A: Sorry, no. It's just you, your brain, your team and the standard Java API.</dd>

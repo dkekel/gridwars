@@ -54,7 +54,8 @@ bootRun {
 }
 
 // See: https://github.com/aalmiray/markdown-gradle-plugin
-markdownToHtml.outputDir = project.file('src/main/resources/templates/pages/docs')
+markdownToHtml.outputDir = project.file('src/main/resources/templates/pages/docs/')
+processResources.dependsOn(markdownToHtml)
 
 dependencies {
     compile project(':core:api')

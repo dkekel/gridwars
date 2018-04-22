@@ -37,7 +37,7 @@
     <li>You can use one of the two example bots as a starting point. Just copy one of the classes and give it a new name.</li>
     <li>The name of the class does not really matter, but the last part of the name will be shown in the web UI to identify your bot, so you may want to give it a fearsome name ;).</li>
   </ul></li>
-  <li>The bot class must implement the <code>cern.ais.gridwars.bot.PlayerBot</code> interface, which is the only requirement for the bot class.</li>
+  <li>The bot class must implement the <code>cern.ais.gridwars.bot.PlayerBot</code> interface and must have a parameterless default constructor.</li>
   <li>To have your bot fight in the emulator, you modify the code of the <code>gridwars.starter.EmulatorRunner</code> class to use your new bot class as one of the bots.</li>
   <li>That's it. Now you come up with some nice algorithms and keep improving your bot until it becomes the strongest on the fighting grid ;).</li>
 </ol><p>You should also check out the JavaDocs of the API classes in the <code>cern.ais.gridwars.api</code> packages to get familiar with the programming interface. The JavaDocs are available in the <code>api</code> folder of the starter package (simply open the <code>index.html</code> in a browser) and can also be <a href="/static/api/index.html">read online</a>.</p><h4>Build the bot jar file from the IDE</h4><p>When you are ready to upload your first bot to the match server, you create the uploadable jar file using the following steps:</p>
