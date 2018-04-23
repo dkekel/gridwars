@@ -69,17 +69,17 @@ Please refer to the [getting started page](https://gridwars.cern.ch/docs/getting
 
 ### Project Content
 
-| Content                   | Description |
-|---------------------------|-------------|
-| `build.gradle`            | Gradle build config file. You need to configure the class name of your bot here. |
-| `gridwars-intro-2018.pdf` | Slides of the GridWars intro session. |
-| `/src/**`                 | Source code to run the emulator and two simple example bots. |
-| `/api/**`                 | JavaDocs of the GridWars API classes. Open the `index.html` in a browser. |
-| `/lib/**`                 | GridWars API and the emulator Java libs (no need to touch). |
-| `/build/**`               | Automatically generated, contains the build output and temporary files. |
-| `gradlew`                 | Gradle wrapper executable for Linux and Mac (no need to touch). |
-| `gradlew.bat`             | Gradle wrapper executable for Windows (no need to touch). |
-| `/gradle/**`              | Gradle wrapper files (no need to touch). |
+| Content        | Description |
+|----------------|-------------|
+| `build.gradle` | Gradle build config file. You need to configure the class name of your bot here. |
+| `/src/`        | Source code to run the emulator and two simple example bots. |
+| `/slides/`     | Slides of the GridWars intro session. |
+| `/api/`        | JavaDocs of the GridWars API classes. Open the `index.html` in a browser. |
+| `/lib/`        | GridWars API and the emulator Java libs (no need to touch). |
+| `/build/`      | Automatically generated, used for build output and temporary files. |
+| `gradlew`      | Gradle wrapper executable for Linux and Mac (no need to touch). |
+| `gradlew.bat`  | Gradle wrapper executable for Windows (no need to touch). |
+| `/gradle/`     | Gradle wrapper files (no need to touch). |
 
 ### Run the emulator
 

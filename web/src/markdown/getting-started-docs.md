@@ -1,17 +1,17 @@
 ### Content
 
-* <a href="#intro">Introduction</a>
-* <a href="#pre">Prerequisites</a>
-* <a href="#starter">GridWars Starter Project</a>
-* <a href="#bot">Create and upload your own bot</a>
-* <a href="#faq">FAQ</a>
+* [Introduction](#intro)
+* [Prerequisites](#pre)
+* [GridWars Starter Project](#starter)
+* [Create and upload your own bot](#bot)
+* [FAQ](#faq)
 
 ### Introduction <a name="intro" class="anchor"></a>
 ---
 
 GridWars is a turn based game AI coding competition that takes place on a two-dimensional grid, on which two bots fight to gain the upper hand. You are going to programm your own bot AI and upload it to a match server, where it will compete against the bots of other competitors.
 
-The following guide helps you to get started developing your own bot. To learn more about the game mechanics and rules, you can download the [slides of the introduction session](/files/gridwars-intro-2018.pdf).
+The following guide helps you to get started developing your own bot. To learn more about the game mechanics and rules, you can find the slides of the intro session in the [GridWars starter project](#starter), which is described further below.
 
 ### Prerequisites <a name="pre" class="anchor"></a>
 ---
