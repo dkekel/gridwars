@@ -8,7 +8,7 @@ gridwars:
         baseWorkDir: "work"
     registration:
         enabled: true
-        registrationPassword: '5pr1ngC4mpu52018!'
+        registrationPassword: '!SpringCampus2018!'
     matches:
         botUploadEnabled: true
         matchCountPerOpponent: 1
