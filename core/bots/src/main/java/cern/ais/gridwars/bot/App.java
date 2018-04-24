@@ -15,9 +15,12 @@ public class App {
 		Main bot1 = new Main();
         bot1.setBot(new SplitBot(bot1));
 
+//        PlayerBot bot1 = new JaegerBot();
+//        PlayerBot bot1 = new BrugalColaBot();
 //        PlayerBot bot2 = new ExpandBot();
 
-        PlayerBot bot2 = new RocketBot();
+//        PlayerBot bot1 = new RocketBot();
+        PlayerBot bot2 = new JaegerBot();
 
 		Emulator.playMatch(bot1, bot2);
 	}
