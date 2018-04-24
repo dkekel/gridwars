@@ -151,9 +151,10 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
-    public List<Match> getAllStartedMatchesForBot(Bot bot) {
+    public List<Match> getAllStartedMatchesForBotAgainstActiveBots(Bot bot) {
         return matchRepository.findAllByBot1OrBot2(bot, bot).stream()
             .filter(this::wasMatchStarted)
+            .filter(this::areBothBotsActive)
             .collect(Collectors.toList());
     }
 
@@ -162,9 +163,10 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
-    public List<Match> getAllPublicMatchesForBot(Bot bot) {
+    public List<Match> getAllPublicMatchesForBotAgainstActiveBots(Bot bot) {
         return matchRepository.findAllByBot1OrBot2(bot, bot).stream()
             .filter(this::isPublic)
+            .filter(this::areBothBotsActive)
             .collect(Collectors.toList());
     }
 

@@ -83,8 +83,8 @@ public class TeamController {
 
     private List<Match> getBotMatches(Bot bot, boolean isCurrentUserBotOwner) {
         List<Match> botMatches = isCurrentUserBotOwner
-            ? matchService.getAllStartedMatchesForBot(bot)
-            : matchService.getAllPublicMatchesForBot(bot);
+            ? matchService.getAllStartedMatchesForBotAgainstActiveBots(bot)
+            : matchService.getAllPublicMatchesForBotAgainstActiveBots(bot);
 
         return botMatches.stream()
             .sorted(Comparator.comparing(Match::getStarted).reversed())
