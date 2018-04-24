@@ -11,6 +11,14 @@
         .system-info-table td {
             vertical-align: middle;
         }
+
+        .system-info-table tr > td:nth-child(1) {
+            text-align: right;
+        }
+
+        .system-info-table ul {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -18,19 +26,19 @@
     <table class="table table-bordered table-sm system-info-table">
         <tbody>
             <tr>
-                <td class="table-active text-right" th:text="#{page.admin.system.heapUsage}"></td>
+                <td class="table-active" th:text="#{page.admin.system.heapUsage}"></td>
                 <td th:text="${#numbers.formatDecimal(systemInfo.usedHeapMb, 1, 'POINT', 0, 'COMMA')} + ' / ' + ${#numbers.formatDecimal(systemInfo.maxHeapMb, 1, 'POINT', 0, 'COMMA')} + ' (' + ${#numbers.formatDecimal(systemInfo.heapUsage, 1, 0)} + '%)'"></td>
             </tr>
             <tr>
-                <td class="table-active text-right" th:text="#{page.admin.system.diskUsage}"></td>
+                <td class="table-active" th:text="#{page.admin.system.diskUsage}"></td>
                 <td th:text="${#numbers.formatDecimal(systemInfo.usedDiskSpaceMb, 1, 'POINT', 0, 'COMMA')} + ' / ' + ${#numbers.formatDecimal(systemInfo.maxDiskSpaceMb, 1, 'POINT', 0, 'COMMA')} + ' (' + ${#numbers.formatDecimal(systemInfo.diskSpaceUsage, 1, 0)} + '%)'"></td>
             </tr>
             <tr>
-                <td class="table-active text-right" th:text="#{page.admin.system.workDirPath}"></td>
+                <td class="table-active" th:text="#{page.admin.system.workDirPath}"></td>
                 <td th:text="${systemInfo.workDir}"></td>
             </tr>
             <tr>
-                <td class="table-active text-right" th:text="#{page.admin.system.workDirSize}"></td>
+                <td class="table-active" th:text="#{page.admin.system.workDirSize}"></td>
                 <td>
                     <ul>
                         <li th:text="'Total: ' + ${#numbers.formatDecimal(systemInfo.workDirSizeMb, 1, 3)}" class="font-weight-bold"></li>
@@ -39,6 +47,14 @@
                         <li th:text="'DB: ' + ${#numbers.formatDecimal(systemInfo.dbWorkDirSizeMb, 1, 3)}"></li>
                         <li th:text="'Server: ' + ${#numbers.formatDecimal(systemInfo.serverWorkDirSizeMb, 1, 3)}"></li>
                     </ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="table-active">Server Log Files</td>
+                <td>
+                    <select name="logFileSelect">
+                        <option th:each="serverLogFileName : ${systemInfo.serverLogFileNames}" th:value="${serverLogFileName}" th:text="${serverLogFileName}"></option>
+                    </select>
                 </td>
             </tr>
         </tbody>

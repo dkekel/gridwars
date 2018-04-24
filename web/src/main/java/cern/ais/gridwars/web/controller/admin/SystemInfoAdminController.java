@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Controller
@@ -43,6 +45,7 @@ public class SystemInfoAdminController extends BaseAdminController {
         final Runtime runtime = Runtime.getRuntime();
         info.setUsedHeapMb(toMegaBytes(runtime.totalMemory() - runtime.freeMemory()));
         info.setMaxHeapMb(toMegaBytes(runtime.maxMemory()));
+        info.setServerLogFileNames(getServerLogFileNames());
     }
 
     private void populateDiskUsageInfo(SystemInfo info) {
@@ -90,6 +93,24 @@ public class SystemInfoAdminController extends BaseAdminController {
         return size.get();
     }
 
+    private List<String> getServerLogFileNames() {
+        final File logDir = Paths.get(gridWarsProperties.getDirectories().getBaseWorkDir(), "logs").toFile();
+        if (!logDir.exists() || !logDir.canRead()) {
+            return Collections.emptyList();
+        }
+
+        File[] logFiles = logDir.listFiles();
+        if ((logFiles == null) || (logFiles.length == 0)) {
+            return Collections.emptyList();
+        }
+
+        return Stream.of(logFiles)
+            .filter(file -> file.length() > 0)
+            .sorted((file1, file2) -> file2.getName().compareToIgnoreCase(file1.getName()))
+            .map(File::getName)
+            .collect(Collectors.toList());
+    }
+
     public static final class SystemInfo {
 
         private String workDir;
@@ -101,6 +122,7 @@ public class SystemInfoAdminController extends BaseAdminController {
         private double matchesWorkDirSizeMb;
         private double dbWorkDirSizeMb;
         private double serverWorkDirSizeMb;
+        private List<String> serverLogFileNames;
 
         public String getWorkDir() {
             return workDir;
@@ -193,6 +215,15 @@ public class SystemInfoAdminController extends BaseAdminController {
 
         public double getWorkDirSizeMb() {
             return botWorkDirSizeMb + matchesWorkDirSizeMb + dbWorkDirSizeMb + serverWorkDirSizeMb;
+        }
+
+        public List<String> getServerLogFileNames() {
+            return serverLogFileNames;
+        }
+
+        public SystemInfo setServerLogFileNames(List<String> serverLogFileNames) {
+            this.serverLogFileNames = serverLogFileNames;
+            return this;
         }
     }
 }
