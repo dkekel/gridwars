@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository
-            .findByUsername(username)
+            .findByUsernameIgnoreCase(username)
             .map(this::populateAuthorities)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
@@ -86,15 +86,15 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User create(NewUserDto newUserDto, boolean createAdmin, boolean bypassConfirmation, boolean sendMailToAdmin) {
-        if (userRepository.existsByUsername(newUserDto.getUsername())) {
+        if (userRepository.existsByUsernameIgnoreCase(newUserDto.getUsername())) {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
-        if (userRepository.existsByEmail(newUserDto.getEmail())) {
+        if (userRepository.existsByEmailIgnoreCase(newUserDto.getEmail())) {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 
-        if (userRepository.existsByTeamName(newUserDto.getTeamName())) {
+        if (userRepository.existsByTeamNameIgnoreCase(newUserDto.getTeamName())) {
             throw new UserFieldValueException("teamName", "user.error.exists.teamName");
         }
 
@@ -140,7 +140,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("User does not exist: " + updateUserDto.getId() + " (" + updateUserDto.getUsername() + ")");
         }
 
-        if (userRepository.existsByEmailAndIdNot(updateUserDto.getEmail(), updateUserDto.getId())) {
+        if (userRepository.existsByEmailIgnoreCaseAndIdNot(updateUserDto.getEmail(), updateUserDto.getId())) {
             throw new UserFieldValueException("email", "user.error.exists.email");
         }
 

@@ -62,7 +62,7 @@ public class DevDataPopulatorConfiguration {
         for (int i = 1; i <= 6; i++) {
             testUsers.add(userService.create(
                 new NewUserDto()
-                    .setUsername("user" + i)
+                    .setUsername("uSeR" + i)
                     .setPassword("bla" + i)
                     .setEmail("user" + i + "@blubb.bla")
                     .setTeamName("Team User" + i),
@@ -71,7 +71,7 @@ public class DevDataPopulatorConfiguration {
 
         User admin1 = userService.create(
             new NewUserDto()
-                .setUsername("admin")
+                .setUsername("adMin")
                 .setPassword("blabla")
                 .setEmail("admin@cern.ch")
                 .setTeamName("Team Admin"),

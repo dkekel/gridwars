@@ -122,7 +122,7 @@ public class UserController {
     }
 
     private void preprocessNewUser(NewUserDto newUserDto, HttpServletRequest request) {
-        newUserDto.setUsername(trim(newUserDto.getUsername()));
+        newUserDto.setUsername(trim(newUserDto.getUsername()).toLowerCase());
         newUserDto.setTeamName(trim(newUserDto.getTeamName()));
         newUserDto.setEmail(trim(newUserDto.getEmail()));
         newUserDto.setIp(request.getRemoteAddr());
