@@ -155,6 +155,8 @@ server:
     port: 8443
     servlet:
         session:
+            persistent: true
+            timeout: 24h
             cookie:
                 secure: true
     ssl:
