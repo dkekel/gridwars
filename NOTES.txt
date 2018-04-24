@@ -1,42 +1,24 @@
 TODO:
 ========================================================================================================================
-Matches:
-- Score system: how to handle the case if the scores are the some but one bot has played more matches?
-    - Need to normalise scores and other values on the played matches?
-
-Production deployment:
-- Create different level admin bots to be able to deploy them
-    - Start with a slightly enhanced expand bot, or simply use the expand bot??
-- Create shell script that backs up the whole work folder
-    - At least the DB file and logs should be backed up
-
 Admin UI:
 - Simple actions for
-    - List all active bots
-        - Disable/delete bots
-        - List all matches of bots, also failed ones
     - Match queue, cancel or reset matches by hand
         - Show all pending matches in order
         - Show average match time on top and estimate when the queue will be empty
+    - List all active bots
+        - Disable/delete bots
+        - List all matches of bots, also failed ones
+
     - block bot upload and user registration
         - Can be changed by directly modifying GridWarsProperties bean in the controller
     - Disable/delete bots
     - Stop, Start, Wake individual match workers
         - Move general control buttons to the top...
     - Reset all matches (cancel) and generate new matches...
-    - Users page:
-        - Create functionality to export user e-mail addresses for import into e-groups
-            - Format: E,,mail
-    - System status overview:
-        - Heap usage
-        - CPU load
-        - Filesystem
     - Display logs in the "work/logs/" folder
 - Integrate Spring Actuators??
 
 UI:
-- Fix layout of match view, when the bot or team names have different lengths, then the full view is not centered anymore
-    - have the areas left and right from the match view only fill the available space, thus centering the match view canvas
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
@@ -45,6 +27,10 @@ Matchmaking:
 - When resetting all matches and generating new matches, I need to do the correct calculation to create all the match
   pairings:
     - Shuffle the teams before to get a random order in which they play
+
+Matches:
+- Score system: how to handle the case if the scores are the some but one bot has played more matches?
+    - Need to normalise scores and other values on the played matches?
 
 Match runtime process:
 - Tweak the stack size -Xss
@@ -62,6 +48,7 @@ Info:
 - Service account: gridwars Fiba-Raxi
 - Egroups for participants: https://e-groups.cern.ch/e-groups/Egroup.do?egroupName=gridwars-2018&tab=3
 
+- H2 connection URL string for deployed database: jdbc:h2:/ais/deployed/work/db/gridwars
 
 GridWars Machine:
 ========================================================================================================================

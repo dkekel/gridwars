@@ -17,17 +17,15 @@ import java.util.Objects;
 
 
 @Controller
-@RequestMapping("/admin")
-public class WorkerAdminController {
+public class WorkerAdminController extends BaseAdminController {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final MatchWorkerService matchWorkerService;
 
     public WorkerAdminController(MatchWorkerService matchWorkerService) {
         this.matchWorkerService = Objects.requireNonNull(matchWorkerService);
     }
 
-    @GetMapping("/worker")
+    @GetMapping("worker")
     public ModelAndView workerStatus() {
         return ModelAndViewBuilder.forPage("admin/worker")
             .addAttribute("workerStatuses", matchWorkerService.getMatchWorkerStatuses())
@@ -36,7 +34,7 @@ public class WorkerAdminController {
             .toModelAndView();
     }
 
-    @PostMapping(path = "/worker", params = { "action=start" })
+    @PostMapping(path = "worker", params = { "action=start" })
     public ModelAndView startWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
         logAction("START", currentUser);
         matchWorkerService.startAllMatchWorkers();
@@ -44,7 +42,7 @@ public class WorkerAdminController {
         return ModelAndViewBuilder.forRedirect("/admin/worker").toModelAndView();
     }
 
-    @PostMapping(path = "/worker", params = { "action=wakeup" })
+    @PostMapping(path = "worker", params = { "action=wakeup" })
     public ModelAndView wakeUpWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
         logAction("WAKE UP", currentUser);
         matchWorkerService.wakeUpAllMatchWorkers();
@@ -52,7 +50,7 @@ public class WorkerAdminController {
         return ModelAndViewBuilder.forRedirect("/admin/worker").toModelAndView();
     }
 
-    @PostMapping(path = "/worker", params = { "action=stop" })
+    @PostMapping(path = "worker", params = { "action=stop" })
     public ModelAndView stopWorkers(RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
         logAction("STOP", currentUser);
         matchWorkerService.stopAllMatchWorkers();

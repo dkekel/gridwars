@@ -12,28 +12,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.mail.internet.ContentType;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Controller
-@RequestMapping("/admin")
-public class UserAdminController {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+@Controller
+public class UserAdminController extends BaseAdminController {
+
     private final UserService userService;
 
     public UserAdminController(UserService userService) {
         this.userService = Objects.requireNonNull(userService);
     }
 
-    @GetMapping("/users")
+    @GetMapping("users")
     public ModelAndView listUsers() {
         return ModelAndViewBuilder.forPage("admin/users")
             .addAttribute("users", getAllUsers())
@@ -46,7 +43,7 @@ public class UserAdminController {
             .collect(Collectors.toList());
     }
 
-    @PostMapping(path = "/users", params = { "action=changePassword" })
+    @PostMapping(path = "users", params = { "action=changePassword" })
     public ModelAndView changePassword(@RequestParam String userId, @RequestParam String newPassword,
                                        RedirectAttributes redirectAttributes) {
         try {
@@ -60,7 +57,7 @@ public class UserAdminController {
         return ModelAndViewBuilder.forRedirect("/admin/users").toModelAndView();
     }
 
-    @GetMapping("/users/export")
+    @GetMapping("users/export")
     public ResponseEntity<String> downloadEgroupsImportFile() {
         return ResponseEntity.ok()
             .contentType(MediaType.TEXT_PLAIN)
