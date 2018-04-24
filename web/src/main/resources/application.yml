@@ -37,6 +37,9 @@ spring:
     profiles: prod
 
 gridwars:
+    matches:
+        matchCountPerOpponent: 3
+        workerCount: 20
     mail:
         baseUrl: 'https://gridwars.cern.ch'
 
