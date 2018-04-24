@@ -22,7 +22,6 @@
 </head>
 <body>
 <main layout:fragment="content" class="container">
-    <h2 class="text-center" th:text="#{page.admin.worker.title}"></h2>
 
     <div class="text-center">
         <div th:if="${started}" th:text="#{page.admin.worker.startSuccess}" class="alert alert-success d-inline-block" role="alert"></div>
@@ -30,7 +29,7 @@
         <div th:if="${stopped}" th:text="#{page.admin.worker.stopSuccess}" class="alert alert-warning d-inline-block" role="alert"></div>
     </div>
 
-    <div class="text-center">
+    <div class="text-center mt-1">
         <span class="text-muted" th:text="#{page.admin.worker.activeThreads(${activeWorkerThreads}, ${maxWorkerThreads})}"></span>
     </div>
 

@@ -6,6 +6,9 @@ import cern.ais.gridwars.web.service.UserService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.internet.ContentType;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -54,5 +58,30 @@ public class UserAdminController {
         }
 
         return ModelAndViewBuilder.forRedirect("/admin/users").toModelAndView();
+    }
+
+    @GetMapping("/users/export")
+    public ResponseEntity<String> downloadEgroupsImportFile() {
+        return ResponseEntity.ok()
+            .contentType(MediaType.TEXT_PLAIN)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"gridwars-egroups-import.csv\"")
+            .body(createEgroupsImportFileContent());
+    }
+
+    private String createEgroupsImportFileContent() {
+        return getAllUsers().stream()
+            .filter(this::isNoTestOrCernUser)
+            .map(this::createEgroupsImportFileLine)
+            .collect(Collectors.joining("\n"));
+    }
+
+    private boolean isNoTestOrCernUser(User user) {
+        return !user.isAdmin() &&
+            !user.getUsername().toLowerCase().startsWith("test") &&
+            !user.getEmail().toLowerCase().contains("@cern.ch");
+    }
+
+    private String createEgroupsImportFileLine(User user) {
+        return "E,," + user.getEmail();
     }
 }

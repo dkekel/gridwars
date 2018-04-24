@@ -58,6 +58,10 @@ public class GlobalErrorController implements ErrorController {
                 errorMsg = "Page Not Found";
                 break;
             }
+            case 405: {
+                errorMsg = "Method Not Allowed";
+                break;
+            }
             case 500: {
                 errorMsg = "Internal Server Error";
                 break;

@@ -8,12 +8,13 @@
 </head>
 <body>
 <main layout:fragment="content" class="container">
-    <h2 class="text-center" th:text="#{page.admin.users.title}"></h2>
 
     <div class="text-center">
         <div th:if="${success}" th:text="${success}" class="alert alert-success d-inline-block" role="alert"></div>
         <div th:if="${error}" th:text="${error}" class="alert alert-warning d-inline-block" role="alert"></div>
     </div>
+
+    <div class="font-weight-light text-center" th:text="#{page.common.results(${users.size()})}"></div>
 
     <table class="table table-bordered table-hover table-sm">
         <thead class="thead-dark">
@@ -49,7 +50,12 @@
             </tr>
         </tbody>
     </table>
-    <div class="font-weight-light text-center" th:text="#{page.common.results(${users.size()})}"></div>
+
+    <div class="d-flex justify-content-around mt-1">
+        <form th:action="@{/admin/users/export}" method="get">
+            <button type="submit" th:text="#{page.admin.users.downloadEgroupsImportFile}" class="btn btn-primary"></button>
+        </form>
+    </div>
 </main>
 </body>
 </html>

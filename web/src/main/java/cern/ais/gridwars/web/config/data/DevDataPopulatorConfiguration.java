@@ -64,7 +64,7 @@ public class DevDataPopulatorConfiguration {
                 new NewUserDto()
                     .setUsername("user" + i)
                     .setPassword("bla" + i)
-                    .setEmail("user" + i + "@cern.ch")
+                    .setEmail("user" + i + "@blubb.bla")
                     .setTeamName("Team User" + i),
                 false, true, false));
         }
@@ -88,17 +88,17 @@ public class DevDataPopulatorConfiguration {
         Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.JaegerBot", testUsers.get(1), Instant.now(), null);
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.GinTonicBot", testUsers.get(2), Instant.now(), null);
-        matchService.generateMatches(bot3);
-
-        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.BrugalColaBot", testUsers.get(3), Instant.now(), null);
-        matchService.generateMatches(bot4);
-
-        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.PermissionCheckerBot", testUsers.get(4), Instant.now(), null);
-        matchService.generateMatches(bot5);
-
-        Bot bot6 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.IdleBot", testUsers.get(5), Instant.now(), null);
-        matchService.generateMatches(bot6);
+//        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.GinTonicBot", testUsers.get(2), Instant.now(), null);
+//        matchService.generateMatches(bot3);
+//
+//        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.BrugalColaBot", testUsers.get(3), Instant.now(), null);
+//        matchService.generateMatches(bot4);
+//
+//        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.PermissionCheckerBot", testUsers.get(4), Instant.now(), null);
+//        matchService.generateMatches(bot5);
+//
+//        Bot bot6 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.IdleBot", testUsers.get(5), Instant.now(), null);
+//        matchService.generateMatches(bot6);
 
         matchWorkerService.wakeUpAllMatchWorkers();
 
