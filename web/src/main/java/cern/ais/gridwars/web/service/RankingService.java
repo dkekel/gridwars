@@ -115,7 +115,16 @@ public class RankingService {
                 comparisonResult = losses - o.losses;
             }
 
-            // 4. first uploaded
+            // 4. Admin has disadvantage
+            if (comparisonResult == 0) {
+                if (bot.isAdminBot() && !o.bot.isAdminBot()) {
+                    comparisonResult = 1;
+                }  else if (!bot.isAdminBot() && o.bot.isAdminBot()) {
+                    comparisonResult = -1;
+                }
+            }
+
+            // 5. first uploaded
             if (comparisonResult == 0) {
                 comparisonResult = bot.getUploaded().compareTo(o.getBot().getUploaded());
             }
