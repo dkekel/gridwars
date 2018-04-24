@@ -20,6 +20,16 @@
         .available-files {
             margin-bottom: 8rem;
         }
+
+        .show-match-column {
+            flex: 0 0 602px;
+        }
+
+        .team-label-column {
+            flex: 1;
+            text-wrap: normal;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -29,17 +39,18 @@
         <div th:text="#{page.match.show.error.loading}" id="matchDataLoadErrorLabel" class="alert alert-danger text-center" role="alert" hidden></div>
 
         <div th:unless="${error}" id="gameView" class="d-flex justify-content-center" hidden>
-            <div class="text-center mr-3">
+            <div class="text-center mr-2 team-label-column">
                 <div class="d-flex justify-content-center align-items-end h-50">
                     <i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                    <span th:if="${match.draw}" th:text="#{page.common.draw}" class="h4 text-secondary"></span>
                 </div>
                 <div class="h-50">
-                    <h4 class="team-1-label font-weight-bold text-truncate" th:text="${match.bot1.user.teamName}"></h4>
-                    <h5 class="text-muted text-truncate" th:text="${match.bot1.name}"></h5>
+                    <div class="team-1-label h4 font-weight-bold" th:text="${match.bot1.user.teamName}"></div>
+                    <div class="text-muted h5" th:text="${match.bot1.name}"></div>
                 </div>
             </div>
 
-            <div class="text-center">
+            <div class="text-center show-match-column">
                 <canvas id="gameCanvas" width="600" height="600" class="border border-dark"></canvas>
                 <canvas id="preCanvas" hidden></canvas>
 
@@ -59,13 +70,14 @@
                 </div>
             </div>
 
-            <div class="text-center ml-3">
+            <div class="text-center ml-2 team-label-column">
                 <div class="d-flex justify-content-center align-items-end h-50">
                     <i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                    <span th:if="${match.draw}" th:text="#{page.common.draw}" class="h4 text-secondary"></span>
                 </div>
                 <div class="h-50">
-                    <h4 class="team-2-label font-weight-bold text-truncate" th:text="${match.bot2.user.teamName}"></h4>
-                    <h5 class="text-muted text-truncate" th:text="${match.bot2.name}"></h5>
+                    <div class="team-2-label h4 font-weight-bold" th:text="${match.bot2.user.teamName}"></div>
+                    <div class="text-muted h5" th:text="${match.bot2.name}"></div>
                 </div>
             </div>
         </div>

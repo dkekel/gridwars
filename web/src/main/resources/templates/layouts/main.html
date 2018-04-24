@@ -31,7 +31,7 @@
         </button>
 
         <div id="navbar" class="collapse navbar-collapse">
-            <ul th:if="${currentUser}" class="navbar-nav">
+            <ul th:if="${currentUser}" class="navbar-nav text-nowrap">
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/docs/getting-started}" th:text="#{layout.main.gettingStarted}" th:classappend="${#request.getRequestURI().contains('/docs') ? 'active' : ''}"></a>
                 </li>
@@ -59,11 +59,11 @@
                 <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" class="navbar-text ml-3"></a>
             </div>
 
-            <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="form-inline my-2 my-lg-0 ml-auto">
+            <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="ml-auto text-nowrap">
                 <a th:href="@{/user/update}" class="navbar-text">
-                    <span th:text="${currentUser.username} + ' (' + ${currentUser.teamName} + ')'"></span><span th:if="${currentUser.admin}" th:text="#{layout.main.userAdminSuffix}" class="ml-1"></span>
+                    <span th:text="${currentUser.username}"></span><span th:if="${currentUser.admin}" th:text="#{layout.main.userAdminSuffix}" class="ml-1"></span>
                 </a>
-                <a href="javascript:{}" th:text="#{layout.main.signout}" onclick="document.getElementById('signOutForm').submit();" class="navbar-text ml-4"></a>
+                <a href="javascript:{}" th:text="#{layout.main.signout}" onclick="document.getElementById('signOutForm').submit();" class="navbar-text ml-3"></a>
             </form>
         </div>
     </nav>

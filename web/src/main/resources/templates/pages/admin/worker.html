@@ -29,7 +29,7 @@
         <div th:if="${stopped}" th:text="#{page.admin.worker.stopSuccess}" class="alert alert-warning d-inline-block" role="alert"></div>
     </div>
 
-    <div class="text-center mt-1">
+    <div class="text-center mt-1 mb-1">
         <span class="text-muted" th:text="#{page.admin.worker.activeThreads(${activeWorkerThreads}, ${maxWorkerThreads})}"></span>
     </div>
 

@@ -14,7 +14,7 @@
         <div th:if="${error}" th:text="${error}" class="alert alert-warning d-inline-block" role="alert"></div>
     </div>
 
-    <div class="font-weight-light text-center" th:text="#{page.common.results(${users.size()})}"></div>
+    <div class="font-weight-light mb-1 text-center" th:text="#{page.common.results(${users.size()})}"></div>
 
     <table class="table table-bordered table-hover table-sm">
         <thead class="thead-dark">
@@ -40,10 +40,10 @@
                 <td class="text-center" th:text="${#temporals.format(user.createdDateTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
                 <td class="text-center" th:text="${#temporals.format(user.confirmedDateTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
                 <td class="text-center">
-                    <form th:action="@{/admin/users(action=changePassword)}" method="post"
+                    <form th:action="@{/admin/users(action=changePassword)}" method="post" class="text-nowrap"
                           onsubmit="return confirm('Do you really want to change the password of the user?')">
                         <input name="userId" type="hidden" th:value="${user.id}">
-                        <input name="newPassword" type="password" required>
+                        <input name="newPassword" type="password" size="12" required>
                         <input type="submit" th:value="'Change'">
                     </form>
                 </td>
