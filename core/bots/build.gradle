@@ -5,9 +5,7 @@ mainClassName = 'cern.ais.gridwars.bot.App'
 jar {
     manifest {
         attributes(
-		        'Bot-Class-Name': 'cern.ais.gridwars.bot.admin.Level2AdminBot'
-//                'Bot-Class-Name': 'cern.ais.gridwars.bot.GinTonicBot'
-//                'Bot-Class-Name': 'cern.ais.gridwars.bot.BrugalColaBot'
+		        'Bot-Class-Name': 'cern.ais.gridwars.bot.admin.Level3AdminBot'
         )
     }
 }
