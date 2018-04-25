@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class BotAdminController extends BaseAdminController {
 
     private List<Bot> getAllBots() {
         return botService.getAllBots().stream()
-            .sorted(Comparator.comparing(Bot::getUploaded).reversed())
+            .sorted()
             .collect(Collectors.toList());
     }
 }

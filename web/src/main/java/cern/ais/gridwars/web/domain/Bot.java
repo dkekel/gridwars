@@ -12,7 +12,7 @@ import java.util.Objects;
 
 
 @Entity
-public class Bot {
+public class Bot implements Comparable<Bot> {
 
     @Id
     private String id;
@@ -154,6 +154,15 @@ public class Bot {
 
     public String getTeamBotLabel() {
         return user.getTeamName() + " (" + getName() + ")";
+    }
+
+    @Override
+    public int compareTo(Bot bot) {
+        if (isActive() != bot.isActive()) {
+            return isActive() ? -1 : 1;
+        }
+
+        return bot.uploaded.compareTo(uploaded);
     }
 
     @Override
