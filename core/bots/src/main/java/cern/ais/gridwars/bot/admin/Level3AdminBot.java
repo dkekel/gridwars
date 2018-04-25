@@ -74,8 +74,8 @@ public class Level3AdminBot implements PlayerBot {
             if (!cell.done) {
                 if (cell.commands == null) {
                     for (Strategy strategy : strategies) {
-                        if (strategy.shouldApply(cell)) {
-                            strategy.apply(cell);
+                        if (strategy.shouldApply(cell, universeView)) {
+                            strategy.apply(cell, universeView);
                             break;
                         }
                     }
@@ -139,7 +139,7 @@ public class Level3AdminBot implements PlayerBot {
         return false;
     }
 
-    private Direction invert(Direction direction) {
+    private static Direction invert(Direction direction) {
         switch (direction) {
             case UP:
                 return Direction.DOWN;
@@ -154,7 +154,7 @@ public class Level3AdminBot implements PlayerBot {
         }
     }
 
-    private class Cell implements Comparable<Cell> {
+    public static class Cell implements Comparable<Cell> {
         int population;
         boolean underAttack;
         boolean mine;
@@ -190,7 +190,7 @@ public class Level3AdminBot implements PlayerBot {
         }
     }
 
-    private class NeighborCell implements Comparable<NeighborCell> {
+    public static class NeighborCell implements Comparable<NeighborCell> {
         final Direction direction;
         final Cell cell;
 
@@ -205,25 +205,25 @@ public class Level3AdminBot implements PlayerBot {
         }
     }
 
-    private interface Strategy {
-        boolean shouldApply(Cell cell);
+    public interface Strategy {
+        boolean shouldApply(Cell cell, UniverseView universeView);
 
-        void apply(Cell cell);
+        void apply(Cell cell, UniverseView universeView);
     }
 
-    private class FastExpansion implements Strategy {
+    public static class FastExpansion implements Strategy {
 
         @Override
-        public boolean shouldApply(Cell cell) {
+        public boolean shouldApply(Cell cell, UniverseView universeView) {
             return !cell.underAttack && cell.population >= 2 * ROUND_THRESHOLD;
         }
 
         @Override
-        public void apply(Cell cell) {
+        public void apply(Cell cell, UniverseView universeView) {
             Map<NeighborCell, Integer> commands = new LinkedHashMap<>();
             int populationToMove = cell.originalPopulation - ROUND_THRESHOLD;
-            populationToMove = distributeRoundingGarbage(cell, commands, populationToMove);
-            expandPopulation(cell, commands, populationToMove);
+            populationToMove = distributeRoundingGarbage(cell, commands, populationToMove, universeView);
+            expandPopulation(cell, commands, populationToMove, universeView);
             removeOriginalCellRoundingGarbage(cell, commands);
 
             List<Command> list = new LinkedList<Command>();
@@ -237,7 +237,7 @@ public class Level3AdminBot implements PlayerBot {
             cell.commands = list.isEmpty() ? null : list;
         }
 
-        private int distributeRoundingGarbage(Cell cell, Map<NeighborCell, Integer> commands, int populationToMove) {
+        private int distributeRoundingGarbage(Cell cell, Map<NeighborCell, Integer> commands, int populationToMove, UniverseView universeView) {
             Collections.sort(cell.neighbours);
             for (NeighborCell neighbor : cell.neighbours) {
                 commands.put(neighbor, 0);
@@ -257,7 +257,7 @@ public class Level3AdminBot implements PlayerBot {
             return populationToMove;
         }
 
-        private void expandPopulation(Cell cell, Map<NeighborCell, Integer> commands, int populationToMove) {
+        private void expandPopulation(Cell cell, Map<NeighborCell, Integer> commands, int populationToMove, UniverseView universeView) {
             Collections.sort(cell.neighbours);
             List<NeighborCell> cells = new LinkedList<NeighborCell>(cell.neighbours);
             int buckets = (int) Math.floor(populationToMove / (double) ROUND_MODULUS);
@@ -302,15 +302,15 @@ public class Level3AdminBot implements PlayerBot {
         }
     }
 
-    private class AttackStrategy implements Strategy {
+    public static class AttackStrategy implements Strategy {
 
         @Override
-        public boolean shouldApply(Cell cell) {
+        public boolean shouldApply(Cell cell, UniverseView universeView) {
             return cell.underAttack;
         }
 
         @Override
-        public void apply(Cell cell) {
+        public void apply(Cell cell, UniverseView universeView) {
             List<NeighborCell> allies = new LinkedList<NeighborCell>();
             List<NeighborCell> enemies = new LinkedList<NeighborCell>();
             Map<NeighborCell, Integer> defenseCommands = new LinkedHashMap<>();
@@ -324,7 +324,7 @@ public class Level3AdminBot implements PlayerBot {
             }
 
             attack(cell, enemies);
-            helpAttackedCell(cell, allies, defenseCommands);
+            helpAttackedCell(cell, allies, defenseCommands, universeView);
 
             for (Map.Entry<NeighborCell, Integer> entry : defenseCommands.entrySet()) {
                 NeighborCell neighbor = entry.getKey();
@@ -349,7 +349,7 @@ public class Level3AdminBot implements PlayerBot {
         }
 
         private void helpAttackedCell(Cell cell, List<NeighborCell> neightborAllies,
-                Map<NeighborCell, Integer> defenseCommands) {
+                Map<NeighborCell, Integer> defenseCommands, UniverseView universeView) {
             LinkedList<NeighborCell> allies = new LinkedList<NeighborCell>(neightborAllies);
             while (cell.population < universeView.getMaximumPopulation() && !allies.isEmpty()) {
                 Collections.sort(allies);
@@ -374,7 +374,7 @@ public class Level3AdminBot implements PlayerBot {
         }
     }
 
-    private abstract class Command {
+    public static abstract class Command {
         protected final Cell from;
         protected final Direction direction;
         protected final int amount;
@@ -395,19 +395,19 @@ public class Level3AdminBot implements PlayerBot {
         }
     }
 
-    private class ExpandCommand extends Command {
+    public static class ExpandCommand extends Command {
         public ExpandCommand(Cell from, Direction direction, int amount) {
             super(from, direction, amount);
         }
     }
 
-    private class AttackCommand extends Command {
+    public static class AttackCommand extends Command {
         public AttackCommand(Cell from, Direction direction, int amount) {
             super(from, direction, amount);
         }
     }
 
-    private class DefenseCommand extends Command {
+    public static class DefenseCommand extends Command {
         public DefenseCommand(Cell from, Direction direction, int amount) {
             super(from, direction, amount);
         }
