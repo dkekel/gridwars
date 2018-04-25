@@ -92,7 +92,7 @@ final class Game {
 
         try {
             if (player.hasBotOutputPrintWriter()) {
-                StdOutputSwitcher.INSTANCE.switchToBotPrintWriter(player.getBotOutputPrintWriter());
+                StdOutputSwitcher.INSTANCE.switchToPrintStream(player.getBotOutputPrintStream());
             }
 
             final List<MovementCommand> movementCommands = playerTurnThread.getNextMovementCommands();
@@ -104,7 +104,7 @@ final class Game {
             }
         } finally {
             if (player.hasBotOutputPrintWriter()) {
-                player.getBotOutputPrintWriter().flush();
+                player.getBotOutputPrintStream().flush();
                 StdOutputSwitcher.INSTANCE.restoreOriginal();
             }
         }
@@ -205,7 +205,7 @@ final class Game {
                     byteBuffer.put(EMPTY_PIXEL);
                 } else {
                     // Red, Green, Blue
-                    byteBuffer.put(GameConstants.PLAYER_COLORS[currentCell.getOwner().getColorIndex()]);
+                    byteBuffer.put(GameConstants.PLAYER_COLORS[currentCell.getOwner().getId()]);
 
                     // Alpha channel, opacity (0-255)
                     byteBuffer.put((byte) Math.round(255 * currentCell.getPopulation() / GameConstants.MAXIMUM_POPULATION));

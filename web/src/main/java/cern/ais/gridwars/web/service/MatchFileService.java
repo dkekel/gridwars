@@ -28,8 +28,8 @@ public class MatchFileService {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
     }
 
-    public String createMatchTurnDataFilePath(String matchId) {
-        return MatchFile.TURN_DATA.toAbsolutePath(createMatchBaseDirPath(matchId));
+    public String createAbsoluteMatchFilePath(String matchId, MatchFile matchFile) {
+        return matchFile.toAbsolutePath(createMatchBaseDirPath(matchId));
     }
 
     private String createMatchBaseDirPath(String matchId) {
@@ -38,6 +38,11 @@ public class MatchFileService {
 
     public boolean canUserAccessMatchFile(User user, Match match, MatchFile matchFile) {
         if (user.isAdmin()) {
+            return true;
+        }
+
+        // Everyone can access the turn data
+        if (MatchFile.TURN_DATA == matchFile) {
             return true;
         }
 

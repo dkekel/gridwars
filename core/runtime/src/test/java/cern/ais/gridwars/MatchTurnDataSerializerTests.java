@@ -17,8 +17,8 @@ public class MatchTurnDataSerializerTests {
     public void serializationAndDeserializationShouldWork() throws IOException {
         final File turnsFile = createTurnsTmpFile();
         final List<byte[]> expectedTurnStates = generateTestTurnData();
-        final MatchTurnDataSerializer serializer = new MatchTurnDataSerializer();
-        final int expectedBytesCount = serializer.serializeToFile(expectedTurnStates, turnsFile.getAbsolutePath());
+        final MatchDataSerializer serializer = new MatchDataSerializer();
+        final int expectedBytesCount = serializer.serializeTurnDataToFile(expectedTurnStates, turnsFile.getAbsolutePath());
         final Optional<InputStream> deserializedTurnStates = serializer.deserializeUncompressedFromFile(turnsFile.getAbsolutePath());
 
         assertTrue(deserializedTurnStates.isPresent());
@@ -37,7 +37,7 @@ public class MatchTurnDataSerializerTests {
         final List<byte[]> turnStates = new LinkedList<>();
 
         for (int i = 0; i < 10; i++) {
-            byte[] turnState = new byte[MatchTurnDataSerializer.BYTES_PER_TURN_STATE];
+            byte[] turnState = new byte[MatchDataSerializer.BYTES_PER_TURN_STATE];
             random.nextBytes(turnState);
             turnStates.add(turnState);
         }

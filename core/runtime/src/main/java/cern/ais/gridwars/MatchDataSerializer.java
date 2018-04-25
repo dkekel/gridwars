@@ -24,14 +24,14 @@ import java.util.zip.GZIPOutputStream;
  * a result, we save a lot of disk and network i/o and also CPU, because we don't need to ever uncompress the
  * bytes on the server-side. Neat!
  */
-public final class MatchTurnDataSerializer {
+public final class MatchDataSerializer {
 
     // See: cern.ais.gridwars.Game:325
     static final int BYTES_PER_TURN_STATE = GameConstants.UNIVERSE_SIZE * GameConstants.UNIVERSE_SIZE * 4;
     private static final double MEGA_BYTE_FACTOR = 1024d * 1024d;
     private static final int GZIP_STREAM_BUFFER_SIZE = (1 << 16);
 
-    int serializeToFile(List<byte[]> turnStates, String filePath) {
+    int serializeTurnDataToFile(List<byte[]> turnStates, String filePath) {
         int totalBytesWritten = 0;
 
         try (GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(filePath), GZIP_STREAM_BUFFER_SIZE)) {
@@ -46,8 +46,21 @@ public final class MatchTurnDataSerializer {
         }
     }
 
+    int serializeBytesToFile(byte[] bytes, String filePath) {
+        try (GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(filePath), GZIP_STREAM_BUFFER_SIZE)) {
+            gos.write(bytes);
+            return bytes.length;
+        } catch (Exception e) {
+            throw new MatchTurnStateSerializerException("Failed to serialize bytes file: " + filePath, e);
+        }
+    }
+
     double calculateTurnStatesSizeInMb(int turnCount) {
-        return ((double) turnCount * (double) BYTES_PER_TURN_STATE) / MEGA_BYTE_FACTOR;
+        return bytesToMegaBytes(turnCount * BYTES_PER_TURN_STATE);
+    }
+
+    double bytesToMegaBytes(int bytes) {
+        return ((double) bytes) / MEGA_BYTE_FACTOR;
     }
 
     public Optional<InputStream> deserializeUncompressedFromFile(String filePath) {

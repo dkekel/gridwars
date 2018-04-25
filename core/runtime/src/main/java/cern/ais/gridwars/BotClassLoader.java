@@ -58,28 +58,35 @@ final class BotClassLoader {
     private PlayerBot instantiateBotClass(final Class botClass) {
         final ExecutorService executorService = Executors.newCachedThreadPool();
         final CompletableFuture<PlayerBot> instantiatorFuture = new CompletableFuture<>();
-
-        // TODO use StdOutputSwitcher to redirect stdout and stderr to the player output file
-        // Alternatively, simply pipe the output to a no-op stream and have it effectively discarded...
-        executorService.submit(() -> {
-            try {
-                instantiatorFuture.complete((PlayerBot) botClass.newInstance());
-            } catch (Exception e) {
-                instantiatorFuture.completeExceptionally(e);
-            }
-        });
+        PlayerBot botInstance;
 
         try {
-            return instantiatorFuture.get(GameConstants.BOT_INSTANTIATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            StdOutputSwitcher.INSTANCE.switchToDevNullPrintStream();
+
+            executorService.submit(() -> {
+                try {
+                    instantiatorFuture.complete((PlayerBot) botClass.newInstance());
+                } catch (Exception e) {
+                    instantiatorFuture.completeExceptionally(e);
+                }
+            });
+
+            botInstance = instantiatorFuture.get(GameConstants.BOT_INSTANTIATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            StdOutputSwitcher.INSTANCE.restoreOriginal();
         } catch (TimeoutException te) {
+            StdOutputSwitcher.INSTANCE.restoreOriginal();
             LogUtils.error("Bot failed to initialise within the allowed timeout of " +
                 GameConstants.BOT_INSTANTIATION_TIMEOUT_MS + " ms: " + botClass.getName());
-            return new InitTimeoutIdleBot(botClass.getName(), GameConstants.BOT_INSTANTIATION_TIMEOUT_MS);
+            botInstance = new InitTimeoutIdleBot(botClass.getName(), GameConstants.BOT_INSTANTIATION_TIMEOUT_MS);
         } catch (ExecutionException | InterruptedException e) {
+            StdOutputSwitcher.INSTANCE.restoreOriginal();
             throw new BotClassLoaderException("Failed to instantiate bot class: " + botClass.getName(), e.getCause());
         } finally {
+            StdOutputSwitcher.INSTANCE.restoreOriginal();
             executorService.shutdownNow();
         }
+
+        return botInstance;
     }
 
     static class BotClassLoaderException extends RuntimeException {

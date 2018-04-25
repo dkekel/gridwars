@@ -21,12 +21,11 @@ final class GameConstants {
     static final int TURN_TIMEOUT_MS = 50;
     static final int BOT_INSTANTIATION_TIMEOUT_MS = (int) TimeUnit.SECONDS.toMillis(3);
     static final int TURN_LIMIT = 2000;
-
-    static final int BOT_PRINT_OUTPUT_BYTE_LIMIT = 1024 * 1024 * 5; // 5 MB
+    static final int BOT_PRINT_OUTPUT_BYTE_LIMIT = 1024 * 1024 * 3; // 3 MB
 
     static final byte[][] PLAYER_COLORS = {
-        {(byte) 255, 0, 0}, // Red
         {0, 0, (byte) 255}, // Blue
+        {(byte) 255, 0, 0}, // Red
         {0, (byte) 255, 0}, // Green
         {(byte) 170, (byte) 86, 0}, // Orange
         {(byte) 102, (byte) 102, (byte) 51}, // Brown

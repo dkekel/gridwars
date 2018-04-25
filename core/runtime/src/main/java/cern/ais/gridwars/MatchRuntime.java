@@ -31,9 +31,10 @@ final class MatchRuntime {
     private static final long MEGA_BYTE_FACTOR = 1024 * 1024;
 
     private final BotClassLoader botClassLoader = new BotClassLoader();
-    private final MatchTurnDataSerializer matchTurnDataSerializer = new MatchTurnDataSerializer();
+    private final MatchDataSerializer matchTurnDataSerializer = new MatchDataSerializer();
     private final MatchResult matchResult = new MatchResult();
     private final List<Player> players = new ArrayList<>(2);
+    private final List<LimitedByteArrayOutputStream> playerOutputStreams = new ArrayList<>(2);
     private final List<byte[]> turnStates = new LinkedList<>();
     private final String bot1JarPath;
     private final String bot2JarPath;
@@ -131,11 +132,14 @@ final class MatchRuntime {
     private void playMatch(PlayerBot bot1, PlayerBot bot2) {
         info("Starting match ...");
         matchResult.clear();
+        playerOutputStreams.clear();
         players.clear();
         turnStates.clear();
 
-        players.add(createPlayer(0, bot1, MatchFile.BOT_1_OUTPUT.fileName));
-        players.add(createPlayer(1, bot2, MatchFile.BOT_2_OUTPUT.fileName));
+        playerOutputStreams.add(createPlayerOutputStream());
+        playerOutputStreams.add(createPlayerOutputStream());
+        players.add(createPlayer(0, bot1, playerOutputStreams.get(0)));
+        players.add(createPlayer(1, bot2, playerOutputStreams.get(1)));
 
         final Game game = new Game(players, (player, turn, binaryGameStatus) ->
             turnStates.add(binaryGameStatus.get().array())
@@ -158,6 +162,7 @@ final class MatchRuntime {
             error(errorMessage);
             populateErrorMatchResult(errorMessage);
         } finally {
+            persistPlayerOutputs();
             game.cleanUp();
         }
         matchDurationMillis = System.currentTimeMillis() - matchStartTimeMillis;
@@ -165,9 +170,13 @@ final class MatchRuntime {
         info("... finished match");
     }
 
-    private Player createPlayer(int playerIndex, PlayerBot bot, String outputFileName) {
+    private LimitedByteArrayOutputStream createPlayerOutputStream() {
+        return new LimitedByteArrayOutputStream(GameConstants.BOT_PRINT_OUTPUT_BYTE_LIMIT);
+    }
+
+    private Player createPlayer(int playerIndex, PlayerBot bot, LimitedByteArrayOutputStream botOutputStream) {
         try {
-            return new Player(playerIndex, bot, new File(outputFileName), playerIndex);
+            return new Player(playerIndex, bot, botOutputStream);
         } catch (Exception e) {
             throw new MatchExecutionException("Failed to create player " + (playerIndex + 1), e);
         }
@@ -191,10 +200,30 @@ final class MatchRuntime {
         matchResult.setErrorMessage(errorMessage);
     }
 
-    private void persistTurnStates() {
-        info("Persisting turn states data of size [mb]: " + matchTurnDataSerializer.calculateTurnStatesSizeInMb(turnStates.size()));
+    private void persistPlayerOutputs() {
+        persistPlayerOutput(0, MatchFile.BOT_1_OUTPUT);
+        persistPlayerOutput(1, MatchFile.BOT_2_OUTPUT);
+    }
+
+    private void persistPlayerOutput(int playerIndex, MatchFile outputMatchFile) {
+        LimitedByteArrayOutputStream outputStream = playerOutputStreams.get(playerIndex);
+        if (!outputStream.hasOutput()) {
+            info("Player " + (playerIndex + 1) + " did not create any output");
+            return;
+        }
+
+        info("Persisting output of player " + (playerIndex + 1) + " with size [KB]: " + (outputStream.size() / 1024.0));
+
         long start = System.currentTimeMillis();
-        matchTurnDataSerializer.serializeToFile(turnStates, MatchFile.TURN_DATA.fileName);
+        matchTurnDataSerializer.serializeBytesToFile(outputStream.toByteArray(), outputMatchFile.fileName);
+        info("Persisting output of player " + (playerIndex + 1) + " took [ms]: " + (System.currentTimeMillis() - start));
+    }
+
+    private void persistTurnStates() {
+        info("Persisting turn states data of size [MB]: " +
+            matchTurnDataSerializer.calculateTurnStatesSizeInMb(turnStates.size()));
+        long start = System.currentTimeMillis();
+        matchTurnDataSerializer.serializeTurnDataToFile(turnStates, MatchFile.TURN_DATA.fileName);
         info("Persisting turn states data took [ms]: " + (System.currentTimeMillis() - start));
     }
 
@@ -210,6 +239,7 @@ final class MatchRuntime {
     private void cleanUp() {
         matchResult.clear();
         turnStates.clear();
+        playerOutputStreams.clear();
         players.clear();
     }
 

@@ -134,9 +134,6 @@ Play fair... and may the code be with you ;)
 <dt>Q: Can I use other programming languages?</dt>
 <dd>A: No, you have to use Java 8.</dd>
 
-<dt>Q: Is there a size limit for the bot jar upload?</dt>
-<dd>A: Yes, it's 5 MB. This is way more than enough when not using 3rd party libs. The size of your jar file is typically just a few kilobytes.</dd>
-
 <dt>Q: Is there a memory limitation for the execution of a match?</dt>
 <dd>A: Yes, the match JVM processes are running with 256 MB of heap space, shared by both bots and the execution engine.</dd>
 
@@ -151,6 +148,9 @@ Play fair... and may the code be with you ;)
 
 <dt>Q: Is there a timout for the whole match?</dt>
 <dd>A: Yes, it's 60 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
+
+<dt>Q: Is there a size limit for the bot jar upload?</dt>
+<dd>A: Yes, it's 3 MB. This is way more than enough when not using 3rd party libs. The size of your jar file is typically just a few kilobytes. <b>Be careful with excessive output</b>, as it can degrade the performance and cause your bot to hit the turn timeout!</dd>
 
 <dt>Q: How are the scores calculated?</dt>
 <dd>A: A win gives 3 points, a draw 1 point and a loss no points. The score is the sum of the points.</dd>

@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public final class Emulator {
 
 	private void createGame(PlayerBot bot1, PlayerBot bot2) throws FileNotFoundException {
         List<Player> players = Arrays.asList(
-            new Player(0, bot1, new File("bot1.log"), 0),
-            new Player(1, bot2, new File("bot2.log"), 1)
+            new Player(0, bot1, new FileOutputStream("bot1.log")),
+            new Player(1, bot2, new FileOutputStream("bot2.log"))
         );
 
 		game = new Game(players, (player, turn, binaryGameStatus) -> {
@@ -66,7 +67,7 @@ public final class Emulator {
                         }
 
                         int alpha = (int) (Math.abs(population) / (double) GameConstants.MAXIMUM_POPULATION * 255);
-                        Color color = cell.getOwner().getColorIndex() == 0 ? Color.blue : Color.red;
+                        Color color = cell.getOwner().getId() == 0 ? Color.blue : Color.red;
                         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
                         graphics.setColor(color);

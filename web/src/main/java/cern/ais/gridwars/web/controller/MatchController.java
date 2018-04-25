@@ -1,7 +1,7 @@
 package cern.ais.gridwars.web.controller;
 
 import cern.ais.gridwars.MatchFile;
-import cern.ais.gridwars.MatchTurnDataSerializer;
+import cern.ais.gridwars.MatchDataSerializer;
 import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.domain.Match;
@@ -52,7 +52,7 @@ public class MatchController {
             }
         });
 
-    private final MatchTurnDataSerializer serializer = new MatchTurnDataSerializer();
+    private final MatchDataSerializer serializer = new MatchDataSerializer();
     private final MatchService matchService;
     private final RankingService rankingService;
     private final MatchFileService matchFileService;
@@ -121,29 +121,54 @@ public class MatchController {
                           @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding) {
         boolean acceptsGzipCompression = acceptsGzipEncoding(acceptEncoding);
 
-        return getDeserializedMatchData(matchId, acceptsGzipCompression)
-            .map(dataStream -> createMatchDataResponse(dataStream, acceptsGzipCompression))
+        return getDeserializedMatchFileContent(matchId, MatchFile.TURN_DATA, acceptsGzipCompression)
+            .map(dataStream -> createMatchFileContentResponse(dataStream, MediaType.APPLICATION_OCTET_STREAM,
+                    acceptsGzipCompression))
             .orElseGet(ControllerUtils::createNotFoundByteDataResponse);
+    }
+
+    @GetMapping("/{matchId}/{matchFileUrlSuffix}")
+    public ResponseEntity<byte[]> matchFile(@PathVariable String matchId, @PathVariable String matchFileUrlSuffix,
+            @AuthenticationPrincipal User currentUser,
+            @RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) String acceptEncoding) {
+        final MatchFile matchFile = getMatchFileByUrlSuffix(matchFileUrlSuffix.trim());
+        final boolean acceptsGzipCompression = acceptsGzipEncoding(acceptEncoding);
+        final boolean isCompressed = matchFile.compressed && acceptsGzipCompression;
+
+        return matchService.getMatchById(matchId)
+            .map(match -> validateUserAccessToMatchFile(match, currentUser, matchFile))
+            .flatMap(match -> getDeserializedMatchFileContent(matchId, matchFile, acceptsGzipCompression))
+            .map(dataStream -> createMatchFileContentResponse(dataStream, MediaType.TEXT_PLAIN, isCompressed))
+            .orElseThrow(NotFoundException::new);
     }
 
     private boolean acceptsGzipEncoding(String acceptEncoding) {
         return StringUtils.hasLength(acceptEncoding) && acceptEncoding.toLowerCase().contains(ControllerUtils.GZIP);
     }
 
-    private Optional<InputStream> getDeserializedMatchData(String matchId, boolean acceptsGzipCompression) {
-        String matchTurnFilePath = matchFileService.createMatchTurnDataFilePath(matchId);
-
-        return acceptsGzipCompression
-            ? serializer.deserializeCompressedFromFile(matchTurnFilePath)
-            : serializer.deserializeUncompressedFromFile(matchTurnFilePath);
+    private Match validateUserAccessToMatchFile(Match match, User user, MatchFile matchFile) {
+        if (!matchFileService.canUserAccessMatchFile(user, match, matchFile)) {
+            throw new AccessDeniedException();
+        }
+        return match;
     }
 
-    private ResponseEntity<byte[]> createMatchDataResponse(InputStream data, boolean acceptsGzipCompression) {
+    private Optional<InputStream> getDeserializedMatchFileContent(String matchId, MatchFile matchFile,
+                                                                  boolean acceptsGzipCompression) {
+        String matchFilePath = matchFileService.createAbsoluteMatchFilePath(matchId, matchFile);
+
+        return (!matchFile.compressed || acceptsGzipCompression)
+            ? serializer.deserializeCompressedFromFile(matchFilePath)
+            : serializer.deserializeUncompressedFromFile(matchFilePath);
+    }
+
+    private ResponseEntity<byte[]> createMatchFileContentResponse(InputStream data, MediaType contentType,
+                                                                  boolean isCompressed) {
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .contentType(contentType)
             .cacheControl(ControllerUtils.FOREVER_CACHE_CONTROL);
 
-        if (acceptsGzipCompression) {
+        if (isCompressed) {
             builder.header(HttpHeaders.CONTENT_ENCODING, ControllerUtils.GZIP);
         }
 
@@ -154,37 +179,12 @@ public class MatchController {
         }
     }
 
-    @GetMapping("/{matchId}/{matchFileUrlSuffix}")
-    public ResponseEntity<String> matchStdOut(@PathVariable String matchId, @PathVariable String matchFileUrlSuffix,
-                                              @AuthenticationPrincipal User currentUser) {
-        MatchFile matchFile = getMatchFileByUrlSuffix(matchFileUrlSuffix.trim());
-
-        return ResponseEntity.ok()
-            .contentType(MediaType.TEXT_PLAIN)
-            .cacheControl(ControllerUtils.FOREVER_CACHE_CONTROL)
-            .body(getMatchFileTextContent(matchId, currentUser, matchFile));
-    }
-
     private MatchFile getMatchFileByUrlSuffix(String matchFileName) {
         return MATCH_FILE_URL_SUFFIX_MAPPING.entrySet().stream()
             .filter(entry -> entry.getValue().equals(matchFileName))
             .map(Map.Entry::getKey)
             .findFirst()
             .orElseThrow(NotFoundException::new);
-    }
-
-    private String getMatchFileTextContent(String matchId, User user, MatchFile matchFile) {
-        return matchService.getMatchById(matchId)
-            .map(match -> validateUserAccessToMatchFile(match, user, matchFile))
-            .flatMap(match -> matchFileService.getMatchFileTextContent(match.getId(), matchFile))
-            .orElseThrow(NotFoundException::new);
-    }
-
-    private Match validateUserAccessToMatchFile(Match match, User user, MatchFile matchFile) {
-        if (!matchFileService.canUserAccessMatchFile(user, match, matchFile)) {
-            throw new AccessDeniedException();
-        }
-        return match;
     }
 
     public static class MatchFileInfo {
