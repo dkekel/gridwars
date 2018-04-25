@@ -68,6 +68,11 @@ public class BotService {
         return botRepository.findAllByUserAndActiveIsTrueOrderByUploadedDesc(user);
     }
 
+    @Transactional(readOnly = true)
+    public List<Bot> getAllBots() {
+        return botRepository.findAll();
+    }
+
     @Transactional
     public Bot validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime, String uploadIp) {
         File storedBotJarFile = null;
