@@ -147,6 +147,10 @@ public class Match {
         return this;
     }
 
+    public LocalDateTime getPendingSinceDateTime() {
+        return LocalDateTime.ofInstant(pendingSince, ZoneId.systemDefault());
+    }
+
     public Instant getStarted() {
         return started;
     }

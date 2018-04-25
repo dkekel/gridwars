@@ -173,8 +173,17 @@ public class MatchService {
         return match.isFinished() && (Match.Outcome.DNF != match.getOutcome());
     }
 
+    @Transactional(readOnly = true)
+    public List<Match> getAllPendingMatches() {
+        return matchRepository.findAllByStatus(Match.Status.PENDING);
+    }
+
     @Transactional
     public void updateMatch(Match match) {
         matchRepository.saveAndFlush(match);
     }
+
+//    public int getAverageMatchDurationMillis() {
+//        return matchRepository.getAverageMatchDurationMillis();
+//    }
 }
