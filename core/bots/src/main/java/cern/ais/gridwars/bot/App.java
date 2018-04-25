@@ -2,7 +2,8 @@ package cern.ais.gridwars.bot;
 
 import cern.ais.gridwars.Emulator;
 import cern.ais.gridwars.api.bot.PlayerBot;
-import spring.grid.fusion.HenrymightyBot;
+import cern.ais.gridwars.bot.admin.Level3AdminBot;
+//import spring.grid.fusion.HenrymightyBot;
 
 import java.io.FileNotFoundException;
 
@@ -24,7 +25,8 @@ public class App {
 //        PlayerBot bot1 = new RocketBot();
 //        PlayerBot bot2 = new JaegerBot();
 //        PlayerBot bot2 = new GinTonicBot();
-        PlayerBot bot2 = new BrugalColaBot();
+//        PlayerBot bot2 = new BrugalColaBot();
+        PlayerBot bot2 = new Level3AdminBot();
 //        PlayerBot bot2 = new ThreeFishBot();
 
 //        Main bot2 = new Main();

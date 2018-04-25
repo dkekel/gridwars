@@ -289,21 +289,23 @@ final class Game {
 
         private List<MovementCommand> getNextMovementCommands() {
             initialiseTurnThread();
-            startTurnThread();
-            waitForTurnThreadToFinish();
+            try {
+                startTurnThread();
+                waitForTurnThreadToFinish();
+            } finally {
+                if (hasTurnThreadTimedOut()) {
+                    forciblyTerminateThread();
 
-            if (hasTurnThreadTimedOut()) {
-                forciblyTerminateThread();
+                    System.out.println("[WARNING] Getting moves for turn " + turn + " timed out or an error" +
+                        " occurred. All further moves of this turn are ignored.");
 
-                System.out.println("[WARNING] Getting moves for turn " + turn + " timed out after " +
-                    turnTimeoutMillis + " ms . All further moves are ignored.");
-
-                // There is a "critical" moment where terminating the thread can leave the movementCommands
-                // list in an inconsistent state: when the element count has been increased but the
-                // elements themselves have not been set (see ArrayList.add() and variants). We will
-                // get rid of problems by creating a copy of the list further down, that calls .toArray().
-                // In the worst case, we will simply have the last "ghost" elements set as null (see
-                // Arrays.copyOf).
+                    // There is a "critical" moment where terminating the thread can leave the movementCommands
+                    // list in an inconsistent state: when the element count has been increased but the
+                    // elements themselves have not been set (see ArrayList.add() and variants). We will
+                    // get rid of problems by creating a copy of the list further down, that calls .toArray().
+                    // In the worst case, we will simply have the last "ghost" elements set as null (see
+                    // Arrays.copyOf).
+                }
             }
 
             return Arrays.asList(movementCommands.toArray(new MovementCommand[0]));
@@ -313,12 +315,16 @@ final class Game {
             turnThread = new Thread(() -> {
                 try {
                     player.getPlayerBot().getNextCommands(universeView, movementCommands);
-                }  catch (SecurityException se) {
+                } catch (SecurityException se) {
                     System.out.println("You were caught in turn " + turn + " trying to do something that is not " +
                         "allowed. *ding ding ding* Shame! Shame! - " + se.getMessage());
                 } catch (Exception e) {
                     System.out.println("[ERROR] Getting moves for turn " + turn + " failed with unhandled " +
                         "exception \"" + e.getClass().getName() + "\": " + e.getMessage());
+                } catch (Error e) {
+                    System.out.println("[ERROR] Getting moves for turn " + turn + " failed with runtime " +
+                        "error \"" + e.getClass().getName() + "\": " + e.getMessage());
+                    throw e; // Errors should be passed further up
                 }
             });
         }
@@ -337,12 +343,12 @@ final class Game {
         private boolean hasTurnThreadTimedOut() {
             // If the thread is still alive when calling this method, it means that it didn't finish in time and
             // is considered to be a timeout.
-            return turnThread.isAlive();
+            return (turnThread != null) && turnThread.isAlive();
         }
 
         @SuppressWarnings("deprecation")
         private void forciblyTerminateThread() {
-            if (turnThread.isAlive()) {
+            if ((turnThread != null) && turnThread.isAlive()) {
                 // The gods of deprecation will smite us, but... well, we have no control over what's going
                 // on in the bot code. It could be a while(true){} for all we know, and this is neither
                 // interruptable, nor can it be handled in any of the clean non-deprecated ways that involve
