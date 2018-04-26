@@ -1,5 +1,7 @@
 package cern.ais.gridwars.web.util;
 
+import cern.ais.gridwars.web.controller.error.AccessDeniedException;
+import cern.ais.gridwars.web.domain.User;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 
@@ -12,6 +14,12 @@ public final class ControllerUtils {
 
     public static ResponseEntity<byte[]> createNotFoundByteDataResponse() {
         return ResponseEntity.notFound().build();
+    }
+
+    public static void assertIsAdmin(User user) {
+        if (!user.isAdmin()) {
+            throw new AccessDeniedException();
+        }
     }
 
     private ControllerUtils() {

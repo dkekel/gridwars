@@ -8,6 +8,13 @@
 </head>
 <body>
     <main layout:fragment="content" class="container">
+        <div class="text-center mb-1">
+            <form th:action="@{/admin/queue/reset}" method="post"
+                  onsubmit="return confirm('Are you REALLY REALLY sure you want to do that??')">
+                <input th:value="#{page.admin.queue.reset}" type="submit" class="btn btn-danger">
+            </form>
+        </div>
+
         <div class="font-weight-light mb-1 text-center" th:text="#{page.admin.queue.size(${matches.size()})}"></div>
 
         <table class="table table-hover table-sm">

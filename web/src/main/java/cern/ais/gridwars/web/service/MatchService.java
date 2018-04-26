@@ -45,9 +45,6 @@ public class MatchService {
             .forEach(otherBot -> createMatches(bot, otherBot));
     }
 
-    // TODO add matchmaking method that generates new matches for a given list of bots, or for all currently
-    // active bots...
-
     private void createMatches(Bot bot1, Bot bot2) {
         int numberOfMatches = gridWarsProperties.getMatches().getMatchCountPerOpponent();
 
@@ -78,6 +75,42 @@ public class MatchService {
     }
 
     @Transactional
+    public void clearAndReplayAllMatches() {
+        cancelAllPendingMatches();
+        cancelAllStartedMatchesForActiveBots();
+        generateMatchesForAllActiveBots();
+    }
+
+    private void cancelAllPendingMatches() {
+        matchRepository.findAllByStatus(Match.Status.PENDING).forEach(this::cancelMatch);
+        matchRepository.flush();
+    }
+
+    private void cancelAllStartedMatchesForActiveBots() {
+        botService.getAllActiveBots().stream()
+            .flatMap(bot -> matchRepository.findAllByBot1OrBot2(bot, bot).stream())
+            .filter(this::wasMatchStarted)
+            .forEach(this::cancelMatch);
+    }
+
+    private void generateMatchesForAllActiveBots() {
+        List<Bot> activeBots = botService.getAllActiveBots();
+        Collections.shuffle(activeBots);
+        generateMatchesForAllBotPairs(activeBots);
+    }
+
+    private void generateMatchesForAllBotPairs(List<Bot> bots) {
+        final int iMax = bots.size() - 1;
+        final int jMax = bots.size();
+
+        for (int i = 0; i < iMax; i++) {
+            for (int j = i + 1; j < jMax; j++) {
+                createMatches(bots.get(i), bots.get(j));
+            }
+        }
+    }
+
+    @Transactional
     public void cancelPendingMatches(Bot bot) {
         matchRepository.findAllByBot1OrBot2(bot, bot).stream()
             .filter(this::isPending)
@@ -96,8 +129,6 @@ public class MatchService {
         match.setCancelled(Instant.now());
         matchRepository.save(match);
     }
-
-    // TODO Implement method for cancelling all pending matches
 
     // IMPORTANT: This method is a critical join point of several worker threads and must ensure to
     // never hand out the same match twice, even if it's called in parallel by several worker threads. This is
@@ -140,7 +171,7 @@ public class MatchService {
 
     @Transactional(readOnly = true)
     public List<Match> getAllFinishedMatchesForActiveBots() {
-        return matchRepository.findAllByStatusIn(Collections.singletonList(Match.Status.FINISHED)).stream()
+        return matchRepository.findAllByStatus(Match.Status.FINISHED).stream()
             .filter(this::areBothBotsActive)
             .collect(Collectors.toList());
     }

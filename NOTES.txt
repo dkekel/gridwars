@@ -1,10 +1,7 @@
 TODO:
 ========================================================================================================================
 Admin UI:
-- block bot upload and user registration
-    - Can be changed by directly modifying GridWarsProperties bean in the controller
 - Match queue, cancel or reset matches by hand
-    - Reset all matches (cancel) and generate new matches...
     - Show average match time on top and estimate when the queue will be empty
     - Do a match queue calculator, estimate how long it would take to finish the list
         - Make parameters: current team count, number of matches per pairing
@@ -16,14 +13,11 @@ Admin UI:
 - block bot upload and user registration
     - Can be changed by directly modifying GridWarsProperties bean in the controller
 - Stop, Start, Wake individual match workers
-
 - Display logs in the "work/logs/" folder
 - Integrate Spring Actuators??
 
-Matchmaking:
-- When resetting all matches and generating new matches, I need to do the correct calculation to create all the match
-  pairings:
-    - Shuffle the teams before to get a random order in which they play
+Bot Upload:
+- Restrict the length of the bot class name
 
 UI:
 - Use DataTables to make the tables sortable etc.
