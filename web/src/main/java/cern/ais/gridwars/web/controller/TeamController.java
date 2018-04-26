@@ -66,7 +66,6 @@ public class TeamController {
     }
 
     private boolean isBotUploadEnabled() {
-        // TODO override it for admin?
         return gridWarsProperties.getMatches().getBotUploadEnabled();
     }
 
