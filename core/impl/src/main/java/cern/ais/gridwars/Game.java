@@ -321,10 +321,6 @@ final class Game {
                 } catch (Exception e) {
                     System.out.println("[ERROR] Getting moves for turn " + turn + " failed with unhandled " +
                         "exception \"" + e.getClass().getName() + "\": " + e.getMessage());
-                } catch (Error e) {
-                    System.out.println("[ERROR] Getting moves for turn " + turn + " failed with runtime " +
-                        "error \"" + e.getClass().getName() + "\": " + e.getMessage());
-                    throw e; // Errors should be passed further up
                 }
             });
         }
