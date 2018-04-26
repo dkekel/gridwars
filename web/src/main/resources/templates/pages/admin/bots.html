@@ -5,6 +5,12 @@
       layout:decorate="~{layouts/main}">
 <head>
     <title th:text="#{page.admin.bots.title}"></title>
+
+    <style>
+        .bot-table td {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 <main layout:fragment="content" class="container">
@@ -16,7 +22,7 @@
 
     <div class="font-weight-light mb-1 text-center" th:text="#{page.common.results(${bots.size()})}"></div>
 
-    <table class="table table-bordered table-hover table-sm">
+    <table class="table table-bordered table-hover table-sm bot-table">
         <thead class="thead-dark">
         <tr>
             <th scope="col" class="text-center" th:text="#{page.admin.bots.id}">ID</th>
@@ -26,6 +32,7 @@
             <th scope="col" class="text-center" th:text="#{page.admin.bots.jarFileSize}">Jar File Size [KB]</th>
             <th scope="col" class="text-center" th:text="#{page.admin.bots.active}">Active</th>
             <th scope="col" class="text-center" th:text="#{page.admin.bots.uploaded}">Uploaded</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.action}">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -44,6 +51,12 @@
                     <i th:unless="${bot.active}" class="fas fa-times text-danger"></i>
                 </td>
                 <td th:text="${#temporals.format(bot.uploadedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>
+                <td class="text-center">
+                    <form th:if="${bot.active}" th:action="@{'/admin/bots/' + ${bot.id} + '?action=deactivate'}" method="post" class="text-nowrap"
+                          th:onsubmit="|return confirm('Do you really want to deactivate bot ${bot.botClassName} ?')|">
+                        <input type="submit" th:value="#{page.admin.bots.deactivate}">
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>

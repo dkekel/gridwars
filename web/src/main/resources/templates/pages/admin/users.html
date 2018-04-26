@@ -44,7 +44,7 @@
                           onsubmit="return confirm('Do you really want to change the password of the user?')">
                         <input name="userId" type="hidden" th:value="${user.id}">
                         <input name="newPassword" type="password" size="12" required>
-                        <input type="submit" th:value="'Change'">
+                        <input type="submit" th:value="#{page.admin.users.change}">
                     </form>
                 </td>
             </tr>

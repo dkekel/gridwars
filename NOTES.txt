@@ -1,39 +1,34 @@
 TODO:
 ========================================================================================================================
-Bots:
-- Fix the SplitBot implementation to have it for admin level 3
-
 Admin UI:
-- Simple actions for
-    - Match queue, cancel or reset matches by hand
-        - Show all pending matches in order
-        - Show average match time on top and estimate when the queue will be empty
-        - Do a match queue calculator, estimate how long it would take to finish the list
-            - Make parameters: current team count, number of matches per pairing
-            - Take average time of all finished matches
-    - User list
-        - Add checkbox to hide test and cern accounts?
-    - List all active bots
-        - Disable/delete bots
-        - List all matches of bots, also failed ones
-    - block bot upload and user registration
-        - Can be changed by directly modifying GridWarsProperties bean in the controller
-    - Disable/delete bots
-    - Stop, Start, Wake individual match workers
-        - Move general control buttons to the top...
+- block bot upload and user registration
+    - Can be changed by directly modifying GridWarsProperties bean in the controller
+- Match queue, cancel or reset matches by hand
     - Reset all matches (cancel) and generate new matches...
-    - Display logs in the "work/logs/" folder
-- Integrate Spring Actuators??
+    - Show average match time on top and estimate when the queue will be empty
+    - Do a match queue calculator, estimate how long it would take to finish the list
+        - Make parameters: current team count, number of matches per pairing
+        - Take average time of all finished matches
+- User list
+    - Add checkbox to hide test and cern accounts?
+- List all active bots
+    - List all matches of bots, also failed ones
+- block bot upload and user registration
+    - Can be changed by directly modifying GridWarsProperties bean in the controller
+- Stop, Start, Wake individual match workers
 
-UI:
-- Use DataTables to make the tables sortable etc.
-- Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
-- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
+- Display logs in the "work/logs/" folder
+- Integrate Spring Actuators??
 
 Matchmaking:
 - When resetting all matches and generating new matches, I need to do the correct calculation to create all the match
   pairings:
     - Shuffle the teams before to get a random order in which they play
+
+UI:
+- Use DataTables to make the tables sortable etc.
+- Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
+- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 
 Matches:
 - Score system: how to handle the case if the scores are the some but one bot has played more matches?
@@ -41,13 +36,6 @@ Matches:
 
 Match runtime process:
 - Tweak the stack size -Xss
-
-DB:
-- if the performance is too slow when using a file-based H2 db in production, consider adding a second level JPA cache (EHCache)
-
-Misc:
-- Prepare some shell aliases on the gridwars machine to quickly list match processes etc.
-    - List suspiciously large match output log files
 
 
 Info:
