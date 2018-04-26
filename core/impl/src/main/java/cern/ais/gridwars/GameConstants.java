@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 final class GameConstants {
 
-    static final int MATCH_TIMEOUT_MS = (int) TimeUnit.SECONDS.toMillis(60);
+    static final int MATCH_TIMEOUT_MS = (int) TimeUnit.SECONDS.toMillis(120);
     static final int UNIVERSE_SIZE = 50;
     static final double GROWTH_RATE = 1.10;
     static final int MAXIMUM_POPULATION = 100;

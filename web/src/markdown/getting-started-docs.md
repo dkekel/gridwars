@@ -147,7 +147,7 @@ Play fair... and may the code be with you ;)
 <dd>A: Yes, it's 3 seconds. If the bot fails to initialise (when instantiated) within the allowed time, it will idle for the rest of the match and (very likely) lose.</dd>
 
 <dt>Q: Is there a timout for the whole match?</dt>
-<dd>A: Yes, it's 60 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
+<dd>A: Yes, it's 120 seconds. If the match takes longer, it will be considered as failed and will not go into the rank calculation.</dd>
 
 <dt>Q: Is there a size limit for the bot jar upload?</dt>
 <dd>A: Yes, it's 3 MB. This is way more than enough when not using 3rd party libs. The size of your jar file is typically just a few kilobytes. <b>Be careful with excessive output</b>, as it can degrade the performance and cause your bot to hit the turn timeout!</dd>

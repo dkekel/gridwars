@@ -11,13 +11,13 @@ gridwars:
         registrationPassword: '!SpringCampus2018!'
     matches:
         botUploadEnabled: true
-        matchCountPerOpponent: 1
+        matchCountPerOpponent: 2
         workerCount: 2
         workerHeapSize: 256m
         # Give it a few more seconds than the general match timeout defined in the implementation
         # package. Just to be a bit more tolerant over the match execution overhead and bot
         # initialisation.
-        executionTimeoutSeconds: 80
+        executionTimeoutSeconds: 130
     mail:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
