@@ -35,6 +35,8 @@ import java.util.stream.Stream;
 public class BotService {
 
     private static final String BOT_CLASS_NAME_MANIFEST_HEADER = "Bot-Class-Name";
+    private static final int MAX_LENGTH_FULLY_QUALIFIED_CLASS_NAME = 64;
+    private static final int MAX_LENGTH_SIMPLE_CLASS_NAME = 24;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final BotRepository botRepository;
@@ -157,6 +159,15 @@ public class BotService {
     }
 
     private void validateBotClass(Class botClass) {
+        if (botClass.getName().length() > MAX_LENGTH_FULLY_QUALIFIED_CLASS_NAME) {
+            throw new BotException("Bot fully qualified class name is too long. Fully qualified class name length limit: " +
+                MAX_LENGTH_FULLY_QUALIFIED_CLASS_NAME);
+        }
+
+        if (botClass.getSimpleName().length() > MAX_LENGTH_SIMPLE_CLASS_NAME) {
+            throw new BotException("Bot class name is too long. Class name length limit: " + MAX_LENGTH_SIMPLE_CLASS_NAME);
+        }
+
         if (botClass.isInterface() || Modifier.isAbstract(botClass.getModifiers())) {
             throw new BotException("Bot class '" + botClass.getName() + "' must not be an interface or abstract");
         }

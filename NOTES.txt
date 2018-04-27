@@ -17,9 +17,6 @@ Admin UI:
 - Integrate Spring Actuators
     - Only useful for adjusting log levels on the fly...
 
-Bot Upload:
-- Restrict the length of the bot class name, add an additional validation during jar file upload
-
 UI:
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
