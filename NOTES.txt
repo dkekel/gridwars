@@ -1,35 +1,37 @@
 TODO:
 ========================================================================================================================
 Admin UI:
-- Match queue, cancel or reset matches by hand
+- Match queue
     - Show average match time on top and estimate when the queue will be empty
     - Do a match queue calculator, estimate how long it would take to finish the list
         - Make parameters: current team count, number of matches per pairing
         - Take average time of all finished matches
+    - Cancel single matches by hand
 - User list
     - Add checkbox to hide test and cern accounts?
-- List all active bots
-    - List all matches of bots, also failed ones
-- block bot upload and user registration
-    - Can be changed by directly modifying GridWarsProperties bean in the controller
-- Stop, Start, Wake individual match workers
+- List all matches of bots, also failed ones
+- Match workers
+    - Stop, Start, Wake individual match workers
+    - Allow to change the number of match workers on the fly using the settings
 - Display logs in the "work/logs/" folder
-- Integrate Spring Actuators??
+- Integrate Spring Actuators
+    - Only useful for adjusting log levels on the fly...
 
 Bot Upload:
-- Restrict the length of the bot class name
+- Restrict the length of the bot class name, add an additional validation during jar file upload
 
 UI:
 - Use DataTables to make the tables sortable etc.
 - Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
 - Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
 
+Team registration:
+- Enter names (and nationality) of the different team members
+    - Also e-mail addresses for sending the certificates at the end
+
 Matches:
 - Score system: how to handle the case if the scores are the some but one bot has played more matches?
     - Need to normalise scores and other values on the played matches?
-
-Match runtime process:
-- Tweak the stack size -Xss
 
 
 Info:
@@ -38,6 +40,7 @@ Info:
 - Egroups for participants: https://e-groups.cern.ch/e-groups/Egroup.do?egroupName=gridwars-2018&tab=3
 
 - H2 connection URL string for deployed database: jdbc:h2:/ais/deployed/work/db/gridwars
+
 
 GridWars Machine:
 ========================================================================================================================
@@ -116,4 +119,4 @@ Useful links:
 
     - It seems that creating threads can't be avoided: https://stackoverflow.com/questions/15868534/why-java-security-manager-doesnt-forbid-neither-creating-new-thread-nor-start?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
-- Creating a pkcs12 keystore from Let's Encrpyt certificates: https://www.namecheap.com/support/knowledgebase/article.aspx/9441/0/tomcat-using-keytool
+- Creating a pkcs12 keystore from Let's Encrypt certificates: https://www.namecheap.com/support/knowledgebase/article.aspx/9441/0/tomcat-using-keytool
