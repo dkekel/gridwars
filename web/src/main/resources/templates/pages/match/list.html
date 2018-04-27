@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.match.list.title}"></title>
+</head>
+<body>
+    <main layout:fragment="content" class="container">
+        <h2 class="text-center" th:text="#{page.match.list.title}"></h2>
+
+        <div class="font-weight-light text-center mb-1" th:text="#{page.common.results(${matches.size()})}"></div>
+
+        <table class="table table-hover table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.list.team1}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.list.team2}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.list.turns}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.list.duration}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.list.started}"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="match : ${matches}">
+                    <td class="text-center"><a th:text="#{page.match.list.show}" th:href="@{'/match/' + ${match.id}}"></a></td>
+                    <td>
+                        <a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark" th:classappend="${match.isBot1OfUser(currentUser) ? 'font-weight-bold' : _}"></a>
+                        <i th:if="${match.bot1.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
+                        <i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i>
+                    </td>
+                    <td>
+                        <a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark" th:classappend="${match.isBot2OfUser(currentUser) ? 'font-weight-bold' : _}"></a>
+                        <i th:if="${match.bot2.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
+                        <i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy ml-1 winner"></i></td>
+                    <td th:text="${match.turnCount}" class="text-center"></td>
+                    <td th:text="${#numbers.formatDecimal(match.durationMillis / 1000d, 1, 2)}" class="text-center"></td>
+                    <td th:text="${#temporals.format(match.startedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

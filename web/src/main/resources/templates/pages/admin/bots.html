@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.admin.bots.title}"></title>
+
+    <style>
+        .bot-table td {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content" class="container">
+
+    <div class="text-center">
+        <div th:if="${success}" th:text="${success}" class="alert alert-success d-inline-block" role="alert"></div>
+        <div th:if="${error}" th:text="${error}" class="alert alert-warning d-inline-block" role="alert"></div>
+    </div>
+
+    <div class="font-weight-light mb-1 text-center" th:text="#{page.common.results(${bots.size()})}"></div>
+
+    <table class="table table-bordered table-hover table-sm bot-table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.id}">ID</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.username}">Username</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.teamName}">Team Name</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.botClassName}">Bot Class Name</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.jarFileSize}">Jar File Size [KB]</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.active}">Active</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.uploaded}">Uploaded</th>
+            <th scope="col" class="text-center" th:text="#{page.admin.bots.action}">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="bot : ${bots}">
+                <td th:text="${bot.id}" class="text-center"></td>
+                <td th:text="${bot.user.username}"></td>
+                <td>
+                    <a th:href="@{'/team/' + ${bot.user.id}}" th:text="${bot.user.teamName}" class="text-dark"></a>
+                </td>
+                <td>
+                    <a th:href="@{'/bot/download/' + ${bot.id}}" th:text="${bot.botClassName}" target="_blank" class="text-dark"></a>
+                </td>
+                <td th:text="${#numbers.formatDecimal(bot.jarFileSize / 1024.0, 1, 'POINT', 0, 'COMMA')}" class="text-center"></td>
+                <td class="text-center">
+                    <i th:if="${bot.active}" class="fas fa-check text-success"></i>
+                    <i th:unless="${bot.active}" class="fas fa-times text-danger"></i>
+                </td>
+                <td th:text="${#temporals.format(bot.uploadedDateTime, 'dd-MM-yyyy HH:mm:ss')}" class="text-center"></td>
+                <td class="text-center">
+                    <form th:if="${bot.active}" th:action="@{'/admin/bots/' + ${bot.id} + '?action=deactivate'}" method="post" class="text-nowrap"
+                          th:onsubmit="|return confirm('Do you really want to deactivate bot ${bot.botClassName} ?')|">
+                        <input type="submit" th:value="#{page.admin.bots.deactivate}">
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <root level="WARN"/>
+
+    <logger name="org.springframework.web.servlet.PageNotFound" level="ERROR"/>
+    <logger name="cern.ais.gridwars.web" level="INFO"/>
+
+    <springProfile name="dev">
+        <logger name="cern.ais.gridwars.web" level="DEBUG"/>
+
+        <!--<logger name="org.springframework.jdbc" level="DEBUG"/>-->
+        <!--<logger name="org.springframework.transaction" level="DEBUG"/>-->
+        <!--<logger name="org.springframework.security" level="INFO"/>-->
+    </springProfile>
+</configuration>

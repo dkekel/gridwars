@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.welcome.title}"></title>
+</head>
+<body>
+    <!-- TODO improve layout with: https://getbootstrap.com/docs/4.0/components/jumbotron/ -->
+    <main layout:fragment="content" class="container text-center">
+        <h1 th:text="#{page.welcome.titleLabel}"></h1>
+
+        <div th:unless="${currentUser}">
+            <p>Please <a th:href="@{/user/signin}">log in</a></p>
+            <p>No account yet? <a th:href="@{/user/signup}">Register here</a> to get started.</p>
+        </div>
+        <div th:if="${currentUser}">
+            <p th:text="#{page.welcome.greeting(${currentUser.teamName})}"></p>
+            <!-- TODO Add hint and link to getting started guide -->
+        </div>
+    </main>
+</body>
+</html>

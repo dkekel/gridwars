@@ -1,40 +1,16 @@
-apply plugin: 'maven'
-apply plugin: 'groovy'
 apply plugin: 'application'
-apply plugin: 'distribution'
 
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
+mainClassName = 'cern.ais.gridwars.bot.App'
 
-mainClassName = "cern.ais.gridwars.Visualizer"
-
-repositories {
-	mavenCentral()
-	maven {
-		url 'http://clojars.org/repo/'
-	}
+jar {
+    manifest {
+        attributes(
+		        'Bot-Class-Name': 'cern.ais.gridwars.bot.admin.Level3AdminBot'
+        )
+    }
 }
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 dependencies {
-	compile project(':emulator')
-	compile 'org.codehaus.groovy:groovy-all:2.1.9'
+	compile project(':core:emulator')
+    compile fileTree(dir: 'lib')
 }
-
-sourceSets.main {
-	groovy.srcDirs = ['src']
-}
-
-distributions {
-	main {
-		contents {
-			from { 'dist' }
-			into('src') {
-				from { 'src' }
-			}
-		}
-	}
-}
-

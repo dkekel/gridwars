@@ -1,0 +1,17 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${errorMsg}"></title>
+</head>
+<body>
+    <main layout:fragment="content" class="container">
+        <div class="alert alert-danger text-center">
+            <h1 th:text="#{page.error.errorCode(${errorCode})}" class="text-dark"></h1>
+            <h4 th:text="${errorMsg}"></h4>
+        </div>
+    </main>
+</body>
+</html>

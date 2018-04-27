@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.admin.queue.title}"></title>
+</head>
+<body>
+    <main layout:fragment="content" class="container">
+        <div class="text-center mb-1">
+            <form th:action="@{/admin/queue/reset}" method="post"
+                  onsubmit="return confirm('Are you REALLY REALLY sure you want to do that??')">
+                <input th:value="#{page.admin.queue.reset}" type="submit" class="btn btn-danger">
+            </form>
+        </div>
+
+        <div class="font-weight-light mb-1 text-center" th:text="#{page.admin.queue.size(${matches.size()})}"></div>
+
+        <table class="table table-hover table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-center" th:text="#{page.admin.queue.position}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.admin.queue.id}"></th>
+                    <th scope="col" th:text="#{page.admin.queue.team1}"></th>
+                    <th scope="col" th:text="#{page.admin.queue.team2}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.admin.queue.pendingSince}"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="match,iter : ${matches}">
+                    <td th:text="${iter.index + 1}" class="text-center"></td>
+                    <td th:text="${match.id}" class="text-center"></td>
+                    <td>
+                        <a th:href="@{'/team/' + ${match.bot1.user.id}}" th:text="${match.bot1.teamBotLabel}" class="text-dark"></a>
+                    </td>
+                    <td>
+                        <a th:href="@{'/team/' + ${match.bot2.user.id}}" th:text="${match.bot2.teamBotLabel}" class="text-dark" ></a>
+                    </td>
+                    <td th:text="${#temporals.format(match.pendingSinceDateTime, 'dd-MM-yyyy HH:mm:ss.SSS')}" class="text-center"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

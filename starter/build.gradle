@@ -1,0 +1,55 @@
+description = 'GridWars - Starter Project'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+repositories {
+    addAll(buildscript.repositories)
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = gridwarsGroup
+version = gridwarsVersion
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+mainClassName = "gridwars.starter.EmulatorRunner"
+
+jar {
+    archiveName = "gridwars-${project.name}.jar"
+}
+
+distributions {
+    main {
+        contents {
+            from('src/main/java') {
+                into('src/main/java')
+            }
+        }
+    }
+}
+
+distZip.archiveName = 'gridwars-starter.zip'
+
+// We don't want to have the starter jar file shipped with the dist zip file, as
+// we already ship the source code.
+distZip.exclude "**/${jar.archiveName}"
+
+// We don't need the starter scripts automatically created in the "bin" folder.
+startScripts.enabled = false
+
+dependencies {
+    compile project(':core:emulator')
+}
+
+task copyApiJavaDocs(type: Copy) {
+    from project(':core:api').javadoc
+    into project.file("src/main/dist/api")
+}
+processResources.dependsOn(copyApiJavaDocs)

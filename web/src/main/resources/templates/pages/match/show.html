@@ -1,0 +1,99 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.match.show.title}"></title>
+
+    <script th:src="@{/static/js/matchviewer.js}"></script>
+
+    <style>
+        .team-1-label {
+            color: blue;
+        }
+
+        .team-2-label {
+            color: red;
+        }
+
+        .available-files {
+            margin-bottom: 8rem;
+        }
+
+        .show-match-column {
+            flex: 0 0 602px;
+        }
+
+        .team-label-column {
+            flex: 1;
+            text-wrap: normal;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <main layout:fragment="content" class="container">
+        <div th:if="${error}" th:text="#{page.match.show.error.matchFailed(${error})}" class="alert alert-danger text-center" role="alert"></div>
+
+        <div th:text="#{page.match.show.error.loading}" id="matchDataLoadErrorLabel" class="alert alert-danger text-center" role="alert" hidden></div>
+
+        <div th:unless="${error}" id="gameView" class="d-flex justify-content-center" hidden>
+            <div class="text-center mr-2 team-label-column">
+                <div class="d-flex justify-content-center align-items-end h-50">
+                    <i th:if="${match.bot1Winner}" th:title="#{page.common.winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                    <span th:if="${match.draw}" th:text="#{page.common.draw}" class="h4 text-secondary"></span>
+                </div>
+                <div class="h-50">
+                    <div class="team-1-label h4 font-weight-bold" th:text="${match.bot1.user.teamName}"></div>
+                    <div class="text-muted h5" th:text="${match.bot1.name}"></div>
+                </div>
+            </div>
+
+            <div class="text-center show-match-column">
+                <canvas id="gameCanvas" width="600" height="600" class="border border-dark"></canvas>
+                <canvas id="preCanvas" hidden></canvas>
+
+                <div>
+                    <span>Turn: <span id="currentTurn"></span></span><span class="ml-3">Speed: <span id="speed"></span>x</span>
+                </div>
+
+                <div>
+                    <button onclick="matchViewer.goToStart();" title="Go to start">|&lt;</button>
+                    <button onclick="matchViewer.goToPreviousTurn();" title="Go to previous turn">&lt;</button>
+                    <button onclick="matchViewer.togglePlay();" title="Toggle play/pause">Play / Pause</button>
+                    <button onclick="matchViewer.goToNextTurn();" title="Go to next turn">&gt;</button>
+                    <button onclick="matchViewer.goToEnd();" title="Go to end">&gt;|</button>
+                    <button onclick="matchViewer.decreaseSpeed();" title="Decrease speed" class="ml-3">&lt;&lt;</button>
+                    <button onclick="matchViewer.resetSpeed();" title="Reset speed">1x</button>
+                    <button onclick="matchViewer.increaseSpeed();" title="Increase speed">&gt;&gt;</button>
+                </div>
+            </div>
+
+            <div class="text-center ml-2 team-label-column">
+                <div class="d-flex justify-content-center align-items-end h-50">
+                    <i th:if="${match.bot2Winner}" th:title="#{page.common.winner}" class="fas fa-trophy fa-3x winner mb-2"></i>
+                    <span th:if="${match.draw}" th:text="#{page.common.draw}" class="h4 text-secondary"></span>
+                </div>
+                <div class="h-50">
+                    <div class="team-2-label h4 font-weight-bold" th:text="${match.bot2.user.teamName}"></div>
+                    <div class="text-muted h5" th:text="${match.bot2.name}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div th:unless="${availableFiles.isEmpty()}" class="available-files text-center mt-3">
+            <div class="btn-group dropright">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" th:text="#{page.match.show.availableFiles}"></button>
+                <div class="dropdown-menu">
+                    <a th:each="file : ${availableFiles}" th:href="${file.link}" th:text="${file.name}" target="_blank" class="dropdown-item"></a>
+                </div>
+            </div>
+        </div>
+
+        <script th:unless="${error}" th:inline="javascript">
+            matchViewer.init([[${matchDataUrl}]]);
+        </script>
+    </main>
+</body>
+</html>

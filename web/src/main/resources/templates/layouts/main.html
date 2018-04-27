@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title layout:title-pattern="$CONTENT_TITLE $LAYOUT_TITLE" th:text="#{layout.main.titleSuffix}"></title>
+
+    <link th:href="@{/static/favicon.ico}" rel="icon" type="image/x-icon"/>
+    <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/static/css/fontawesome-all.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/static/css/gridwars.css}" rel="stylesheet" type="text/css">
+
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fab fa-schlix"></i>
+            <span th:text="#{layout.main.brandLabel}" class="align-baseline"></span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul th:if="${currentUser}" class="navbar-nav text-nowrap">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/docs/getting-started}" th:text="#{layout.main.gettingStarted}" th:classappend="${#request.getRequestURI().contains('/docs') ? 'active' : ''}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/match/scores}" th:text="#{layout.main.scores}" th:classappend="${#request.getRequestURI().contains('/match/scores') ? 'active' : ''}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/match/list}" th:text="#{layout.main.matches}" th:classappend="${#request.getRequestURI().contains('/match/list') ? 'active' : ''}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/team}" th:text="#{layout.main.team}" th:classappend="${#request.getRequestURI().contains('/team') ? 'active' : ''}"></a>
+                </li>
+                <li th:if="${currentUser.admin}" class="nav-item dropdown" th:classappend="${#request.getRequestURI().contains('/admin/') ? 'active' : ''}">
+                    <a th:text="#{layout.main.admin}" class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"></a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/admin/users}" th:text="#{layout.main.admin.users}"></a>
+                        <a class="dropdown-item" th:href="@{/admin/bots}" th:text="#{layout.main.admin.bots}"></a>
+                        <a class="dropdown-item" th:href="@{/admin/queue}" th:text="#{layout.main.admin.matchQueue}"></a>
+                        <a class="dropdown-item" th:href="@{/admin/worker}" th:text="#{layout.main.admin.worker}"></a>
+                        <a class="dropdown-item" th:href="@{/admin/settings}" th:text="#{layout.main.admin.settings}"></a>
+                        <a class="dropdown-item" th:href="@{/admin/system}" th:text="#{layout.main.admin.systemInfo}"></a>
+                        <a class="dropdown-item" th:href="@{/admin/h2}" th:text="#{layout.main.admin.h2}" target="_blank"></a>
+                    </div>
+                </li>
+            </ul>
+
+            <div th:unless="${currentUser}" class="ml-auto">
+                <a th:href="@{/user/signin}" th:text="#{layout.main.signin}" class="navbar-text"></a>
+                <a th:href="@{/user/signup}" th:text="#{layout.main.signup}" class="navbar-text ml-3"></a>
+            </div>
+
+            <form th:if="${currentUser}" th:action="@{/user/signout}" id="signOutForm" method="post" class="ml-auto text-nowrap">
+                <a th:href="@{/user/update}" class="navbar-text">
+                    <span th:text="${currentUser.username}"></span><span th:if="${currentUser.admin}" th:text="#{layout.main.userAdminSuffix}" class="ml-1"></span>
+                </a>
+                <a href="javascript:{}" th:text="#{layout.main.signout}" onclick="document.getElementById('signOutForm').submit();" class="navbar-text ml-3"></a>
+            </form>
+        </div>
+    </nav>
+
+    <main role="main" class="container" layout:fragment="content"></main>
+</body>
+</html>

@@ -1,11 +1,19 @@
-/target/
-/res/
-/.idea/
+# IntelliJ IDEA
+.idea/
+*.iml
 
-# web application files
-/web-app/WEB-INF/classes
-/web-app/api
-/web-app/db
-/web-app/META-INF
-/web-app/player-jars
-/web-app/player-outputs
+# Gradle and build output
+.gradle/
+build/
+out/
+target/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Java build output
+*.class
+
+# Default excludes
+*.tmp
+*.zip
+*.log
+*.gz

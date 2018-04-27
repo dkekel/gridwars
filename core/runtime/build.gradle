@@ -1,35 +1,14 @@
-apply plugin: 'maven'
-apply plugin: 'groovy'
+apply plugin: 'application'
 
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
+mainClassName = 'cern.ais.gridwars.runtime.MatchRuntime'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-  mavenCentral()
-  maven {
-    url 'http://clojars.org/repo/'
-  }
+test {
+    useJUnitPlatform()
 }
 
 dependencies {
-  compile project(':impl')
-  compile 'com.esotericsoftware:kryo:3.0.0'
-  compile 'kryonet:kryonet:2.21'
-  compile 'org.codehaus.gpars:gpars:1.2.1'
-  compile 'org.codehaus.groovy:groovy-all:2.1.9'
-}
+    compile project(':core:impl')
 
-sourceSets.main.java.srcDirs = []
-sourceSets.main {
-  groovy.srcDirs = ['src']
-}
-
-task createWorkerClassPath(type: Copy) {
-  println("${ System.properties.GW_HOME }/workers/workerClassPath")
-  into "${ System.properties.GW_HOME }/workers/workerClassPath"
-  from configurations.runtime
-  from jar
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
 }

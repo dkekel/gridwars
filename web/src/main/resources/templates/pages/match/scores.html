@@ -1,0 +1,67 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.match.scores.title}"></title>
+
+    <style>
+        .score-table > tbody > tr:nth-child(1) {
+            font-weight: bold;
+        }
+
+        .score-table .trophy-icon {
+            visibility: hidden;
+        }
+
+        .score-table > tbody > tr:nth-child(1) .trophy-icon {
+            visibility: visible;
+            color: goldenrod;
+        }
+
+        .score-table > tbody > tr:nth-child(2) .trophy-icon {
+            visibility: visible;
+            color: silver;
+        }
+
+        .score-table > tbody > tr:nth-child(3) .trophy-icon {
+            visibility: visible;
+            color: sandybrown;
+        }
+    </style>
+</head>
+<body>
+    <main layout:fragment="content" class="container">
+        <h2 th:text="#{page.match.scores.title}" class="text-center"></h2>
+        <table class="table table-sm table-hover score-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.rank}"></th>
+                    <th scope="col" th:text="#{page.match.scores.team}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.wins}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.draws}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.losses}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.total}"></th>
+                    <th scope="col" class="text-center" th:text="#{page.match.scores.score}"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ranking,iter : ${rankings}">
+                    <td th:text="${iter.index} + 1" class="text-center"></td>
+                    <td>
+                        <a th:href="@{'/team/' + ${ranking.user.id}}" th:text="${ranking.user.teamName} + ' (' + ${ranking.bot.name} + ')'" class="text-dark"></a>
+                        <i th:if="${ranking.bot.adminBot}" th:title="#{page.common.adminBot.title}" class="fab fa-empire text-info"></i>
+                        <i class="fas fa-trophy ml-1 trophy-icon"></i>
+                    </td>
+                    <td th:text="${ranking.wins}" class="text-center"></td>
+                    <td th:text="${ranking.draws}" class="text-center"></td>
+                    <td th:text="${ranking.losses}" class="text-center"></td>
+                    <td th:text="${ranking.total}" class="text-center"></td>
+                    <td th:text="${ranking.score}" class="text-center"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

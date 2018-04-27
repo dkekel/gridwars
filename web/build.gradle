@@ -1,0 +1,127 @@
+buildscript {
+    buildscript {
+        repositories {
+            jcenter()
+            maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
+        }
+    }
+
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath('org.kordamp:markdown-gradle-plugin:1.1.0')
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.kordamp.markdown.convert'
+
+
+group = gridwarsGroup
+version = gridwarsVersion
+description = 'GridWars - Web Project'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+ext {
+    // Project work dir subfolder name used during development
+    workDirName = 'work'
+}
+
+repositories {
+    addAll(buildscript.repositories)
+}
+
+bootJar {
+    archiveName = "gridwars-${project.name}.jar"
+}
+
+bootRun {
+    // Enable live reloading of static resources
+    sourceResources sourceSets.main
+
+    // Set the base work folder. When running from a runnable jar, the base work dir should be set using
+    // the -Dgridwars.directories.baseWorkDir system property. Must be an absolute path!
+    systemProperties['gridwars.directories.baseWorkDir'] = project.file(workDirName).absolutePath
+}
+
+// See: https://github.com/aalmiray/markdown-gradle-plugin
+markdownToHtml.outputDir = project.file('src/main/resources/templates/pages/docs/')
+processResources.dependsOn(markdownToHtml)
+
+dependencies {
+    compile project(':core:api')
+    compile project(':core:impl')
+    compile project(':core:runtime')
+
+    // Used during development to provide test bots
+    compile project(':core:bots')
+
+    // For copying the starter project zip file to the web resources folder
+    compile project(':starter')
+
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+    compile('org.springframework.boot:spring-boot-starter-mail')
+
+	compile('org.springframework.boot:spring-boot-devtools')
+
+    runtime('com.h2database:h2')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.springframework.security:spring-security-test')
+}
+
+task createWorkDir(dependsOn: processResources) {
+    doLast {
+        ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
+            project.file("${workDirName}/${subWorkDir}").mkdirs()
+        }
+    }
+}
+
+task cleanWorkDir(type: Delete, dependsOn: createWorkDir) {
+    doLast {
+        ['bots', 'db', 'matches', 'runtime', 'server'].each { subWorkDir ->
+            def workSubDir = project.file("${workDirName}/${subWorkDir}")
+
+            if (workSubDir && workSubDir.exists()) {
+                delete workSubDir.listFiles()
+            }
+        }
+    }
+}
+
+task setUpBotsWorkDir(type: Copy, dependsOn: cleanWorkDir) {
+    from project(':core:bots').jar
+    into project.file("${workDirName}/bots")
+}
+
+task setUpRuntimeLibWorkDir(type: Copy, dependsOn: cleanWorkDir) {
+    from project(':core:api').jar
+    from project(':core:impl').jar
+    from project(':core:runtime').jar
+    from project(':core:runtime').file('gridwars.policy')
+
+    into project.file("${workDirName}/runtime")
+}
+
+task setUpWorkDir(dependsOn: [setUpBotsWorkDir, setUpRuntimeLibWorkDir])
+bootRun.dependsOn(setUpWorkDir)
+
+task copyApiJavaDocs(type: Copy) {
+    from project(':core:api').javadoc
+    into project.file("src/main/resources/static/api/")
+}
+processResources.dependsOn(copyApiJavaDocs)
+
+task copyStarterProjectZipFile(type: Copy) {
+    from project(':starter').distZip
+    into project.file("src/main/resources/files/")
+}
+processResources.dependsOn(copyStarterProjectZipFile)

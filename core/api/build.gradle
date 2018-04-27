@@ -1,14 +1,4 @@
-apply plugin: 'maven'
-apply plugin: 'java'
-
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-	mavenCentral()
+jar {
+    // Bundle the Java source files in the jar to allow attaching sources in the IDE
+    from sourceSets.main.java
 }
-
-sourceSets.main.java.srcDirs = ['src']

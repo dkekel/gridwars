@@ -1,0 +1,122 @@
+TODO:
+========================================================================================================================
+Admin UI:
+- Match queue
+    - Show average match time on top and estimate when the queue will be empty
+    - Do a match queue calculator, estimate how long it would take to finish the list
+        - Make parameters: current team count, number of matches per pairing
+        - Take average time of all finished matches
+    - Cancel single matches by hand
+- User list
+    - Add checkbox to hide test and cern accounts?
+- List all matches of bots, also failed ones
+- Match workers
+    - Stop, Start, Wake individual match workers
+    - Allow to change the number of match workers on the fly using the settings
+- Display logs in the "work/logs/" folder
+- Integrate Spring Actuators
+    - Only useful for adjusting log levels on the fly...
+
+Bot Upload:
+- Restrict the length of the bot class name, add an additional validation during jar file upload
+
+UI:
+- Use DataTables to make the tables sortable etc.
+- Over the internet it might take some time to load a match, implement a loading spinner when the loading takes longer...
+- Consider using a fancy bootstrap theme to nicen up the look&feel: https://www.creative-tim.com/product/material-dashboard
+
+Team registration:
+- Enter names (and nationality) of the different team members
+    - Also e-mail addresses for sending the certificates at the end
+
+Matches:
+- Score system: how to handle the case if the scores are the some but one bot has played more matches?
+    - Need to normalise scores and other values on the played matches?
+
+
+Info:
+========================================================================================================================
+- Service account: gridwars Fiba-Raxi
+- Egroups for participants: https://e-groups.cern.ch/e-groups/Egroup.do?egroupName=gridwars-2018&tab=3
+
+- H2 connection URL string for deployed database: jdbc:h2:/ais/deployed/work/db/gridwars
+
+
+GridWars Machine:
+========================================================================================================================
+Setup:
+- Connect with aisgi@gridwars (or root@gridwars for actions that require root)
+- Install Git (if not available): yum install git
+- Accessing gridwars repo on Bitbucket: use "ForwardAgent yes" when using ssh to forward to the local cert when pulling
+
+Running GridWars app:
+- Running app from standalone jar from ssh shell without being closed on disconnect (output will be written to separate log file):
+nohup java -Dspring.profiles.active=prod -Dgridwars.directories.baseWorkDir=/ais/deployed/work -jar gridwars-web.jar > "work/logs/gridwars-$(date +'%d-%m-%Y-%H%M%S').log" &
+
+- Better to copy and use the "web/start-gridwars.sh" starter script and execute it in the folder where the bootJar jar file is located.
+
+Enable/disable local firewall:
+# service iptables stop
+# service iptables start
+
+Enable/disable puppet agent:
+# puppet agent --disable
+# puppet agent --enable
+
+Redirect 80/443 -> 8080/8443 ports:
+# iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80 -m comment --comment "101 redirect for gridwars 80" -j REDIRECT --to-ports 8080
+# iptables -t nat -A PREROUTING -p tcp -m multiport --dports 443 -m comment --comment "102 redirect for gridwars 443" -j REDIRECT --to-ports 8443
+
+External firewall opening request: https://landb.cern.ch/landb/portal/firewallRequest/newRequest?interface=gridwars.CERN.CH
+
+
+Using Let's Encrypt Certificate for HTTPS
+========================================================================================================================
+- sslforfree.com gives you: certificate.crt, private.key, ca_bundle.crt
+
+1) Create the p12 file that can be directly used for the embedded Tomcat in Spring Boot:
+$ openssl pkcs12 -export -out gridwars.p12 -inkey private.key -in certificate.crt -certfile ca_bundle.crt
+    - Use "changeit" or so as password, must be configured in application.yml.
+
+
+Useful links:
+========================================================================================================================
+- Spring Boot docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/
+- Spring Boot config properties: https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
+- Thymeleaf docs: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html
+
+- Bootstrap docs: https://getbootstrap.com/docs/4.0/components/alerts/
+
+- Spring Data JPA docs: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
+
+- Spring Mail docs: https://docs.spring.io/spring/docs/5.0.5.RELEASE/spring-framework-reference/integration.html#mail
+- Sending mails: http://www.baeldung.com/spring-email
+- Sending HTML mails with Thymeleaf: https://www.thymeleaf.org/doc/articles/springmail.html
+
+- Sending HTML emails: http://dolszewski.com/spring/sending-html-mail-with-spring-boot-and-thymeleaf/
+- Spring MVC Thymeleaf registration: http://www.baeldung.com/registration-with-spring-mvc-and-spring-security
+- File upload example: http://www.mkyong.com/spring-boot/spring-boot-file-upload-example/
+
+- Using ProcessBuilder: https://www.developer.com/java/data/understanding-java-process-and-java-processbuilder.html
+
+- Enable HTTPS and redirect HTTP to HTTPS: https://www.thomasvitale.com/https-spring-boot-ssl-certificate/
+
+- Using SecurityManager to restrict reflection, file access, etc.:
+    - https://docs.oracle.com/javase/tutorial/essential/environment/security.html
+    - https://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html
+        - The passages about the "codeBase" property is very interesting and probably what we are looking fore
+        - We can simply grant all permissions to the jar files that make the match execution by using the match
+          runtime folder as the codeBase, including all jar files in there.
+        - To all other code sources, which also includes the bot jar files, we only allow a minimal set to run
+          code and to print to system.out and system.err.
+    - https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html
+        - Lists all the relevant permissions that we can allow (or check to have disabled!)
+    - Reflections: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#ReflectPermission
+    - ClassLoading and threads: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#RuntimePermission
+    - File access: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#FilePermission
+    - Socket permissions: https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html#SocketPermission
+
+    - It seems that creating threads can't be avoided: https://stackoverflow.com/questions/15868534/why-java-security-manager-doesnt-forbid-neither-creating-new-thread-nor-start?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
+- Creating a pkcs12 keystore from Let's Encrypt certificates: https://www.namecheap.com/support/knowledgebase/article.aspx/9441/0/tomcat-using-keytool

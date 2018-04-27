@@ -1,0 +1,50 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{page.admin.settings.title}"></title>
+
+    <style>
+        .settings-table tr,
+        .settings-table td {
+            vertical-align: middle;
+        }
+
+        .settings-table tr > td:nth-child(1) {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content" class="container">
+    <div class="text-center">
+        <div th:if="${success}" th:text="${success}" class="alert alert-success d-inline-block" role="alert"></div>
+        <div th:if="${error}" th:text="${error}" class="alert alert-warning d-inline-block" role="alert"></div>
+    </div>
+
+    <form th:action="@{/admin/settings}" th:object="${settings}" method="post">
+        <table class="table table-bordered table-sm settings-table">
+            <tbody>
+                <tr>
+                    <td class="table-active" th:text="#{page.admin.settings.userRegistrationEnabled}"></td>
+                    <td><input th:field="*{userRegistrationEnabled}" name="userRegistrationEnabled" type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td class="table-active" th:text="#{page.admin.settings.botUploadEnabled}"></td>
+                    <td><input th:field="*{botUploadEnabled}" name="botUploadEnabled" type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td class="table-active" th:text="#{page.admin.settings.matchesPerDuel}"></td>
+                    <td><input th:field="*{matchesPerDuel}" name="matchesPerDuel" type="number"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <button th:text="#{page.admin.settings.save}" type="submit" class="btn btn-primary"></button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

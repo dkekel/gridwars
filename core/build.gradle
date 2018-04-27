@@ -1,3 +1,37 @@
-task wrapper(type: Wrapper) {
-	gradleVersion = '2.3'
+description = 'GridWars - Core Project'
+
+subprojects {
+    buildscript {
+        repositories {
+            jcenter()
+        }
+    }
+
+    repositories {
+        addAll(buildscript.repositories)
+    }
+
+    apply plugin: 'java'
+
+    group = gridwarsGroup
+    version = gridwarsVersion
+
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+
+    jar {
+        archiveName = "gridwars-${project.name}.jar"
+    }
+
+    // Puts sub-project name and version in the MANIFEST.MF files of every JAR and WAR file.
+    tasks.withType(Jar) {
+        manifest {
+            attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'CERN / AIS',
+                'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
+            )
+        }
+    }
 }

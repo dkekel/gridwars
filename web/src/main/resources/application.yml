@@ -1,0 +1,191 @@
+# ==================================================================================================
+# GridWars Configuration
+# ==================================================================================================
+gridwars:
+    directories:
+        # Default value, should be provided upon start by the -Dgridwars.directory.baseWorkDir jvm parameter.
+        # Must be an absolute path!
+        baseWorkDir: "work"
+    registration:
+        enabled: true
+        registrationPassword: '!SpringCampus2018!'
+    matches:
+        botUploadEnabled: true
+        matchCountPerOpponent: 2
+        workerCount: 2
+        workerHeapSize: 256m
+        # Give it a few more seconds than the general match timeout defined in the implementation
+        # package. Just to be a bit more tolerant over the match execution overhead and bot
+        # initialisation.
+        executionTimeoutSeconds: 130
+    mail:
+        enabled: true
+        from: 'CERN GridWars <grid.wars@cern.ch>'
+        bccRecipient: 'benjamin.wolff@cern.ch'
+
+---
+spring:
+    profiles: dev
+
+gridwars:
+    mail:
+        toRecipientOverride: 'benjamin.wolff@cern.ch'
+        baseUrl: 'http://localhost:8080'
+
+---
+spring:
+    profiles: prod
+
+gridwars:
+    matches:
+        matchCountPerOpponent: 3
+        workerCount: 20
+    mail:
+        baseUrl: 'https://gridwars.cern.ch'
+
+# ==================================================================================================
+# Default Spring Profile Configuration
+# ==================================================================================================
+---
+spring:
+    profiles:
+        # Default profile that will be active. Must be overridden by a start parameter when running
+        # in production.
+        active: dev
+
+# ==================================================================================================
+# DataSource Configuration
+# ==================================================================================================
+---
+spring:
+    profiles: dev
+    datasource:
+        url: jdbc:h2:mem:gridwars;DB_CLOSE_ON_EXIT=FALSE
+    jpa:
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create-drop
+
+---
+spring:
+    profiles: prod
+    datasource:
+        url: jdbc:h2:${gridwars.directories.baseWorkDir}/db/gridwars;DB_CLOSE_ON_EXIT=FALSE
+    jpa:
+        generate-ddl: false
+        hibernate:
+            ddl-auto: none
+
+# ==================================================================================================
+# JPA Configuration
+# ==================================================================================================
+---
+spring:
+    jpa:
+        open-in-view: true # TODO check what the effect on the transactions is during view rendering
+        # Can be enabled for debugging
+        show-sql: false
+
+# ==================================================================================================
+# Static Resources Configuration
+# ==================================================================================================
+---
+spring:
+    resources:
+        # Disable the default static resource mappings, we control this manually configuration
+        # class: cern.ais.gridwars.web.config.WebMvcConfiguration
+        add-mappings: false
+
+# ==================================================================================================
+# Spring Servlet Configuration
+# ==================================================================================================
+---
+spring:
+    servlet:
+        multipart:
+            # Maximum file upload size
+            max-file-size: 5MB
+            max-request-size: 8MB
+
+# ==================================================================================================
+# Thymeleaf Configuration
+# ==================================================================================================
+---
+spring:
+    profiles: dev
+    thymeleaf:
+        cache: false
+
+---
+spring:
+    profiles: prod
+    thymeleaf:
+        cache: true
+
+# ==================================================================================================
+# H2 Configuration
+# ==================================================================================================
+---
+spring:
+    h2:
+        console:
+            enabled: true
+            path: /admin/h2
+            settings:
+                web-allow-others: true
+
+# ==================================================================================================
+# Server Configuration
+# ==================================================================================================
+---
+server:
+    servlet:
+        session:
+            persistent: false
+    compression:
+        enabled: true
+    tomcat:
+        accesslog:
+            enabled: true
+        basedir: "${gridwars.directories.baseWorkDir}/server"
+
+# In prod mode we enforce https
+---
+spring:
+    profiles: prod
+
+server:
+    port: 8443
+    servlet:
+        session:
+            persistent: true
+            timeout: 24h
+            cookie:
+                secure: true
+    ssl:
+        enabled: true
+        key-store: classpath:gridwars.p12
+        key-store-password: changeit
+        key-store-type: PKCS12
+
+
+# ==================================================================================================
+# Mail Configuration
+# ==================================================================================================
+---
+spring:
+    mail:
+        host: smtp.cern.ch
+        port: 587
+        username: gridwars
+        password: Fiba-Raxi
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enabled: true
+                        required: true
+                    connectiontimeout: 5000
+                    timeout: 5000
+                    writetimeout: 5000

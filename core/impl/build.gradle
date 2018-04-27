@@ -1,23 +1,10 @@
-apply plugin: 'maven'
-apply plugin: "java"
-
-group = 'cern.ais.gridwars'
-version = '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
-repositories {
-	mavenCentral()
-	maven {
-		url 'http://clojars.org/repo/'
-	}
+test {
+    useJUnitPlatform()
 }
 
 dependencies {
-	compile project(':api')
-}
+    compile project(':core:api')
 
-sourceSets.main {
-	java.srcDirs = ['src']
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
 }
