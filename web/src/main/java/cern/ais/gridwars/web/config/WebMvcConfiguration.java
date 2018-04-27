@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.config;
 
+import cern.ais.gridwars.web.util.ControllerUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -28,7 +29,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // the new files should be immediately available.
         registry.addResourceHandler("/files/**")
             .addResourceLocations("classpath:/files/")
-            .setCacheControl(CacheControl.noCache())
+            .setCacheControl(ControllerUtils.NO_CACHE_CONTROL)
             .setCachePeriod(0);
     }
 }

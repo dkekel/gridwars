@@ -1,4 +1,4 @@
-# GridWars server project.
+TODO add docs about project content and how to buld
 
 ## Build & deploy process
 _all paths are relative to project root directory._

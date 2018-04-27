@@ -12,6 +12,10 @@
             vertical-align: middle;
         }
 
+        .system-info-table td > * {
+            vertical-align: middle;
+        }
+
         .system-info-table tr > td:nth-child(1) {
             text-align: right;
         }
@@ -52,13 +56,29 @@
             <tr>
                 <td class="table-active">Server Log Files</td>
                 <td>
-                    <select name="logFileSelect">
+                    <select id="logFileSelect">
                         <option th:each="serverLogFileName : ${systemInfo.serverLogFileNames}" th:value="${serverLogFileName}" th:text="${serverLogFileName}"></option>
                     </select>
+                    <a id="logFileLink" target="_blank" th:text="'View'" class="ml-1"></a>
                 </td>
             </tr>
         </tbody>
     </table>
+
+    <script>
+        const logFileSelect = document.getElementById('logFileSelect');
+        const logFileLink = document.getElementById("logFileLink");
+
+        function setLogLink(logFileName) {
+            logFileLink.setAttribute("href", "/admin/system/log/" + logFileName);
+        }
+
+        logFileSelect.onchange = function() {
+            setLogLink(logFileSelect.value);
+        };
+
+        setLogLink(logFileSelect.value);
+    </script>
 </main>
 </body>
 </html>

@@ -1,9 +1,14 @@
 package cern.ais.gridwars.web.controller.admin;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
+import cern.ais.gridwars.web.controller.error.NotFoundException;
+import cern.ais.gridwars.web.util.ControllerUtils;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
@@ -109,6 +114,35 @@ public class SystemInfoAdminController extends BaseAdminController {
             .sorted((file1, file2) -> file2.getName().compareToIgnoreCase(file1.getName()))
             .map(File::getName)
             .collect(Collectors.toList());
+    }
+
+    @GetMapping("system/log/{logFileName}")
+    public ResponseEntity<byte[]> showLogFile(@PathVariable String logFileName) {
+        return getLogFile(logFileName)
+            .map(this::getLogFileContentResponse)
+            .orElseThrow(NotFoundException::new);
+    }
+
+    private Optional<File> getLogFile(String logFileName) {
+        if (!logFileName.endsWith(".log")) {
+            logFileName += ".log";
+        }
+
+        File logFileDir = Paths.get(gridWarsProperties.getDirectories().getBaseWorkDir(), "logs").toFile();
+        File logFile = new File(logFileDir, logFileName);
+
+        return (logFile.exists() && logFile.canRead()) ? Optional.of(logFile) : Optional.empty();
+    }
+
+    private ResponseEntity<byte[]> getLogFileContentResponse(File logFile) {
+        try {
+            return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .cacheControl(ControllerUtils.NO_CACHE_CONTROL) // Log files change, so disable caching
+                .body(Files.readAllBytes(logFile.toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static final class SystemInfo {
