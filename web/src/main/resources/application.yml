@@ -8,7 +8,7 @@ gridwars:
         baseWorkDir: "work"
     registration:
         enabled: true
-        registrationPassword: '!SpringCampus2018!'
+        registrationPassword: '!CERN-AIS-2018!'
     matches:
         botUploadEnabled: true
         matchCountPerOpponent: 2
@@ -38,7 +38,7 @@ spring:
 
 gridwars:
     matches:
-        matchCountPerOpponent: 3
+        matchCountPerOpponent: 7
         workerCount: 20
     mail:
         baseUrl: 'https://gridwars.cern.ch'
