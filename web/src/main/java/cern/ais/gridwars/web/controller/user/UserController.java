@@ -6,9 +6,12 @@ import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,9 +42,21 @@ public class UserController {
     }
 
     // IMPORTANT: Only map GET method here, not POST, to let the login filter do its work.
-    @GetMapping("/signin")
-    public ModelAndView showSignin() {
-        return ModelAndViewBuilder.forPage("user/signin").toModelAndView();
+    @GetMapping("/login/{userName}")
+    public RedirectView userLogin(@PathVariable final String userName, final Model model) {
+        RedirectView redirectView = new RedirectView(gridWarsProperties.getOAuth().getAuthorizeUrl());
+        redirectView.setContextRelative(false);
+        model.addAttribute("grant_type", gridWarsProperties.getOAuth().getGrantType());
+        model.addAttribute("response_type", gridWarsProperties.getOAuth().getResponseType());
+        model.addAttribute("client_id", gridWarsProperties.getOAuth().getClientId());
+        model.addAttribute("state", userName);
+        return redirectView;
+    }
+
+    @GetMapping("/login/client-app")
+    public String userOAuthToken(final String code, final String state) {
+        OAuthToken token = userService.getUserOAuthToken(code);
+        return "";
     }
 
     @GetMapping("/signup")

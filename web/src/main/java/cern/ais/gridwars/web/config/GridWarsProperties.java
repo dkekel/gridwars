@@ -18,6 +18,7 @@ public class GridWarsProperties {
     private final Registration registration = new Registration();
     private final Matches matches = new Matches();
     private final Mail mail = new Mail();
+    private final OAuth oAuth = new OAuth();
 
     @PostConstruct
     public void init() {
@@ -38,6 +39,10 @@ public class GridWarsProperties {
 
     public Mail getMail() {
         return mail;
+    }
+
+    public OAuth getOAuth() {
+        return oAuth;
     }
 
     public class Directories {
@@ -222,6 +227,63 @@ public class GridWarsProperties {
         public Mail setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
             return this;
+        }
+    }
+
+    public class OAuth {
+        private String clientId;
+        private String clientSecret;
+        private String grantType;
+        private String responseType;
+        private String authorizeUrl;
+        private String tokenUrl;
+
+        public String getClientId() {
+            return clientId;
+        }
+
+        public void setClientId(String clientId) {
+            this.clientId = clientId;
+        }
+
+        public String getClientSecret() {
+            return clientSecret;
+        }
+
+        public void setClientSecret(String clientSecret) {
+            this.clientSecret = clientSecret;
+        }
+
+        public String getGrantType() {
+            return grantType;
+        }
+
+        public void setGrantType(String grantType) {
+            this.grantType = grantType;
+        }
+
+        public String getResponseType() {
+            return responseType;
+        }
+
+        public void setResponseType(String responseType) {
+            this.responseType = responseType;
+        }
+
+        public String getAuthorizeUrl() {
+            return authorizeUrl;
+        }
+
+        public void setAuthorizeUrl(String authorizeUrl) {
+            this.authorizeUrl = authorizeUrl;
+        }
+
+        public String getTokenUrl() {
+            return tokenUrl;
+        }
+
+        public void setTokenUrl(String tokenUrl) {
+            this.tokenUrl = tokenUrl;
         }
     }
 }

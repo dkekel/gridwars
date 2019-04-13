@@ -21,15 +21,21 @@ gridwars:
     mail:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
-        bccRecipient: 'benjamin.wolff@cern.ch'
-
+        bccRecipient: 'dkekel@cern.ch'
+    oAuth:
+        clientId: 'gridwars'
+        clientSecret: 'muchoseguridad'
+        grantType: 'authorization_code'
+        responseType: 'code'
+        authorizeUrl: 'http://localhost:8080/oauth/authorize'
+        tokenUrl: 'http://localhost:8080/oauth/token'
 ---
 spring:
     profiles: dev
 
 gridwars:
     mail:
-        toRecipientOverride: 'benjamin.wolff@cern.ch'
+        toRecipientOverride: 'dkekel@cern.ch'
         baseUrl: 'http://localhost:8080'
 
 ---
@@ -139,6 +145,7 @@ spring:
 # ==================================================================================================
 ---
 server:
+    port: 8081
     servlet:
         session:
             persistent: false
@@ -175,17 +182,14 @@ server:
 ---
 spring:
     mail:
-        host: smtp.cern.ch
-        port: 587
-        username: gridwars
-        password: Fiba-Raxi
+        host: localhost
+        port: 8025
+        username:
+        password:
         properties:
             mail:
                 smtp:
-                    auth: true
-                    starttls:
-                        enabled: true
-                        required: true
+                    auth: false
                     connectiontimeout: 5000
                     timeout: 5000
                     writetimeout: 5000

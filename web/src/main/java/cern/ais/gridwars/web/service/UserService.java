@@ -1,39 +1,58 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.user.NewUserDto;
+import cern.ais.gridwars.web.controller.user.OAuthToken;
 import cern.ais.gridwars.web.controller.user.UpdateUserDto;
 import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
 public class UserService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final UserMailingService userMailingService;
-
+    private final transient GridWarsProperties gridWarsProperties;
+    private final transient UserRepository userRepository;
+    private final transient BCryptPasswordEncoder passwordEncoder;
+    private final transient UserMailingService userMailingService;
+    private final transient RestTemplate restTemplateOAuth;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
-                       UserMailingService userMailingService) {
+    public UserService(final GridWarsProperties gridWarsProperties,
+                       final UserRepository userRepository,
+                       final BCryptPasswordEncoder passwordEncoder,
+                       final UserMailingService userMailingService,
+                       final RestTemplate restTemplateOAuth) {
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
         this.userRepository = Objects.requireNonNull(userRepository);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
         this.userMailingService = Objects.requireNonNull(userMailingService);
+        this.restTemplateOAuth = Objects.requireNonNull(restTemplateOAuth);
+    }
+
+    public OAuthToken getUserOAuthToken(final String code) {
+        Map<String, String> variables = new HashMap<>();
+        variables.put("grant_type", gridWarsProperties.getOAuth().getGrantType());
+        variables.put("code", code);
+        String urlFormat = "%s?grant_type=%s&code=%s";
+        String url = String.format(urlFormat, gridWarsProperties.getOAuth().getTokenUrl(),
+            gridWarsProperties.getOAuth().getGrantType(), code);
+        return restTemplateOAuth.getForObject(url, OAuthToken.class, variables);
     }
 
     @Transactional(readOnly = true)

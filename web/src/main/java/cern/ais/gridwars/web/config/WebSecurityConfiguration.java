@@ -24,6 +24,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http.authorizeRequests()
+            .antMatchers("/user/login").permitAll()
             .antMatchers("/admin/**").hasRole(User.ADMIN)
             .antMatchers("/docs/**").fullyAuthenticated()
             .antMatchers("/files/**").fullyAuthenticated()
