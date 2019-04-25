@@ -1,24 +1,37 @@
 package cern.ais.gridwars.web.config;
 
+import cern.ais.gridwars.web.config.oauth.OAuthCookieAuthenticationFilter;
 import cern.ais.gridwars.web.domain.User;
-import cern.ais.gridwars.web.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final transient AuthenticationProvider authenticationProvider;
 
-    @Autowired
-    private UserService userService;
+    public WebSecurityConfiguration(
+        @Qualifier("OAuthAuthenticationProvider") final AuthenticationProvider authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
+    }
+
+    @Bean
+    public AbstractAuthenticationProcessingFilter getAuthenticationFilter() throws Exception {
+        OAuthCookieAuthenticationFilter authenticationFilter =
+            new OAuthCookieAuthenticationFilter(new AntPathRequestMatcher("/bot/**"));
+        authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+        return authenticationFilter;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,9 +48,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/user/confirm/**").permitAll()
             .antMatchers("/**").permitAll()
             .and()
-                .formLogin().loginPage("/user/signin").defaultSuccessUrl("/team").permitAll()
+                .formLogin().loginPage("/user/login").defaultSuccessUrl("/team").permitAll()
             .and()
-                .logout().logoutUrl("/user/signout").logoutSuccessUrl("/").permitAll();
+                .logout().logoutUrl("/user/signout").logoutSuccessUrl("/").permitAll()
+            .and().addFilterBefore(getAuthenticationFilter(), BasicAuthenticationFilter.class);
         // @formatter:on
 
         // Allow using iFrames from the same origin for the H2 console to work
@@ -55,6 +69,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.authenticationProvider(authenticationProvider);
     }
 }

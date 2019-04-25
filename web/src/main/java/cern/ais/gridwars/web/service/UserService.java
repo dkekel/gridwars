@@ -1,22 +1,22 @@
 package cern.ais.gridwars.web.service;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
+import cern.ais.gridwars.web.config.oauth.OAuthorizedToken;
 import cern.ais.gridwars.web.controller.user.NewUserDto;
 import cern.ais.gridwars.web.controller.user.OAuthToken;
 import cern.ais.gridwars.web.controller.user.UpdateUserDto;
-import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
+import cern.ais.gridwars.web.util.DomainUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
@@ -53,6 +53,14 @@ public class UserService implements UserDetailsService {
         String url = String.format(urlFormat, gridWarsProperties.getOAuth().getTokenUrl(),
             gridWarsProperties.getOAuth().getGrantType(), code);
         return restTemplateOAuth.getForObject(url, OAuthToken.class, variables);
+    }
+
+    public OAuthorizedToken validateUserToken(final String token) throws RestClientException {
+        Map<String, String> variables = new HashMap<>();
+        variables.put("token", token);
+        String urlFormat = "%s?token=%s";
+        String url = String.format(urlFormat, gridWarsProperties.getOAuth().getCheckTokenUrl(), "aaaa");
+        return restTemplateOAuth.getForObject(url, OAuthorizedToken.class, variables);
     }
 
     @Transactional(readOnly = true)

@@ -1,29 +1,26 @@
 package cern.ais.gridwars.web.controller.user;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
+import cern.ais.gridwars.web.config.oauth.OAuthCookieAuthenticationFilter;
 import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Objects;
 
@@ -42,34 +39,29 @@ public class UserController {
     }
 
     // IMPORTANT: Only map GET method here, not POST, to let the login filter do its work.
-    @GetMapping("/login/{userName}")
-    public RedirectView userLogin(@PathVariable final String userName, final Model model) {
+    @GetMapping("/login")
+    public RedirectView userLogin(final Model model) {
         RedirectView redirectView = new RedirectView(gridWarsProperties.getOAuth().getAuthorizeUrl());
         redirectView.setContextRelative(false);
         model.addAttribute("grant_type", gridWarsProperties.getOAuth().getGrantType());
         model.addAttribute("response_type", gridWarsProperties.getOAuth().getResponseType());
         model.addAttribute("client_id", gridWarsProperties.getOAuth().getClientId());
-        model.addAttribute("state", userName);
+        //TODO provide better state
+        model.addAttribute("state", "NEW_STATE");
         return redirectView;
     }
 
     @GetMapping("/login/client-app")
-    public String userOAuthToken(final String code, final String state) {
+    public RedirectView userOAuthToken(final String code, final String state, final HttpServletResponse response) {
+        RedirectView redirectView = new RedirectView("http://localhost:8081/");
         OAuthToken token = userService.getUserOAuthToken(code);
-        return "";
-    }
-
-    @GetMapping("/signup")
-    public ModelAndView showSignup(@AuthenticationPrincipal User currentUser) {
-        restrictAccessForSignedInNonAdminUser(currentUser);
-
-        if (isUserRegistrationDisabled() && !isAdmin(currentUser)) {
-            return ModelAndViewBuilder.forPage("user/signupDisabled").toModelAndView();
-        } else {
-            return ModelAndViewBuilder.forPage("user/signup")
-                .addAttribute("newUser", new NewUserDto())
-                .toModelAndView();
-        }
+        //TODO create JWT token
+        Cookie oauthCookie = new Cookie(OAuthCookieAuthenticationFilter.OAUTH_COOKIE_NAME, token.getAccessToken());
+        oauthCookie.setPath("/");
+        oauthCookie.setDomain("localhost");
+        oauthCookie.setMaxAge(token.getExpiresIn().intValue());
+        response.addCookie(oauthCookie);
+        return redirectView;
     }
 
     private void restrictAccessForSignedInNonAdminUser(User currentUser) {
