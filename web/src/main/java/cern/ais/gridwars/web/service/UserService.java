@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
         Map<String, String> variables = new HashMap<>();
         variables.put("token", token);
         String urlFormat = "%s?token=%s";
-        String url = String.format(urlFormat, gridWarsProperties.getOAuth().getCheckTokenUrl(), "aaaa");
+        String url = String.format(urlFormat, gridWarsProperties.getOAuth().getCheckTokenUrl(), token);
         return restTemplateOAuth.getForObject(url, OAuthorizedToken.class, variables);
     }
 

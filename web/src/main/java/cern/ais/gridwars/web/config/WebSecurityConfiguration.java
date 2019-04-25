@@ -13,22 +13,28 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final transient AuthenticationProvider authenticationProvider;
+    private final transient GridWarsProperties gridWarsProperties;
 
     public WebSecurityConfiguration(
-        @Qualifier("OAuthAuthenticationProvider") final AuthenticationProvider authenticationProvider) {
+        @Qualifier("OAuthAuthenticationProvider") final AuthenticationProvider authenticationProvider,
+        final GridWarsProperties gridWarsProperties) {
         this.authenticationProvider = authenticationProvider;
+        this.gridWarsProperties = gridWarsProperties;
     }
 
     @Bean
     public AbstractAuthenticationProcessingFilter getAuthenticationFilter() throws Exception {
+        RequestMatcher requestMatcher = new AntPathRequestMatcher("/bot/**");
+        String jwtSecret = gridWarsProperties.getJwt().getSecret();
         OAuthCookieAuthenticationFilter authenticationFilter =
-            new OAuthCookieAuthenticationFilter(new AntPathRequestMatcher("/bot/**"));
+            new OAuthCookieAuthenticationFilter(requestMatcher, jwtSecret);
         authenticationFilter.setAuthenticationManager(authenticationManagerBean());
         return authenticationFilter;
     }

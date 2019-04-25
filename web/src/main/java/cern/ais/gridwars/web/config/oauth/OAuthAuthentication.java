@@ -3,18 +3,17 @@ package cern.ais.gridwars.web.config.oauth;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.servlet.http.Cookie;
 import java.util.Collection;
 
 public class OAuthAuthentication implements Authentication {
 
-    private final Cookie oAuthCookie;
+    private final String oAuthToken;
     private final String userName;
 
     private boolean isAuthenticated;
 
-    public OAuthAuthentication(final Cookie oAuthCookie, final String userName) {
-        this.oAuthCookie = oAuthCookie;
+    public OAuthAuthentication(final String oAuthToken, final String userName) {
+        this.oAuthToken = oAuthToken;
         this.userName = userName;
     }
 
@@ -25,7 +24,7 @@ public class OAuthAuthentication implements Authentication {
 
     @Override
     public Object getCredentials() {
-        return oAuthCookie;
+        return oAuthToken;
     }
 
     @Override

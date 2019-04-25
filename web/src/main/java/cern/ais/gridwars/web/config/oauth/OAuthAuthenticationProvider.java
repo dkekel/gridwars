@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.client.RestClientException;
 
-import javax.servlet.http.Cookie;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,9 +24,9 @@ public class OAuthAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Cookie oAuthCookie = (Cookie) authentication.getCredentials();
+        String oAuthToken = (String) authentication.getCredentials();
         try {
-            OAuthorizedToken authorizedToken = userService.validateUserToken(oAuthCookie.getValue());
+            OAuthorizedToken authorizedToken = userService.validateUserToken(oAuthToken);
             Date expirationDate = new Date(authorizedToken.getExpirationTimestamp() * MILLISECONDS);
             boolean isExpired = Calendar.getInstance().getTime().before(expirationDate);
             authentication.setAuthenticated(!isExpired);

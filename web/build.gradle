@@ -68,8 +68,10 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
     compile('org.springframework.boot:spring-boot-starter-mail')
+    compile('io.jsonwebtoken:jjwt:0.9.1')
 
-	compile('org.springframework.boot:spring-boot-devtools')
+
+    compile('org.springframework.boot:spring-boot-devtools')
 
     runtime('com.h2database:h2')
 

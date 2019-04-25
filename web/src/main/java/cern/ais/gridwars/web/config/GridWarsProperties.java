@@ -19,6 +19,7 @@ public class GridWarsProperties {
     private final Matches matches = new Matches();
     private final Mail mail = new Mail();
     private final OAuth oAuth = new OAuth();
+    private final Jwt jwt = new Jwt();
 
     @PostConstruct
     public void init() {
@@ -43,6 +44,10 @@ public class GridWarsProperties {
 
     public OAuth getOAuth() {
         return oAuth;
+    }
+
+    public Jwt getJwt() {
+        return jwt;
     }
 
     public class Directories {
@@ -293,6 +298,18 @@ public class GridWarsProperties {
 
         public void setCheckTokenUrl(final String checkTokenUrl) {
             this.checkTokenUrl = checkTokenUrl;
+        }
+    }
+
+    public class Jwt {
+        private String secret;
+
+        public String getSecret() {
+            return secret;
+        }
+
+        public void setSecret(final String secret) {
+            this.secret = secret;
         }
     }
 }
