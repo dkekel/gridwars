@@ -1,1 +1,1 @@
-TODO add docs about project content and how to buld
+TODO add docs about project content and how to build

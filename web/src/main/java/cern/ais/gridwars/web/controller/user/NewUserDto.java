@@ -30,10 +30,6 @@ public class NewUserDto {
     @Size(min = 4, max = 32)
     private String teamName;
 
-    @NotNull
-    @NotEmpty
-    private String registrationPassword;
-
     private String ip;
 
     public String getUsername() {
@@ -73,12 +69,7 @@ public class NewUserDto {
     }
 
     public String getRegistrationPassword() {
-        return registrationPassword;
-    }
-
-    public NewUserDto setRegistrationPassword(String registrationPassword) {
-        this.registrationPassword = registrationPassword;
-        return this;
+        return "";
     }
 
     public String getIp() {

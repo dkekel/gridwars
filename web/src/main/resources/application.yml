@@ -19,7 +19,7 @@ gridwars:
         # initialisation.
         executionTimeoutSeconds: 130
     mail:
-        enabled: true
+        enabled: false
         from: 'CERN GridWars <grid.wars@cern.ch>'
         bccRecipient: 'benjamin.wolff@cern.ch'
 
@@ -74,7 +74,7 @@ spring:
     jpa:
         generate-ddl: false
         hibernate:
-            ddl-auto: none
+            ddl-auto: create-drop
 
 # ==================================================================================================
 # JPA Configuration
@@ -175,10 +175,10 @@ server:
 ---
 spring:
     mail:
-        host: smtp.cern.ch
+        host: smtp.gmail.com
         port: 587
-        username: gridwars
-        password: Fiba-Raxi
+        username: nouser
+        password: empty
         properties:
             mail:
                 smtp:

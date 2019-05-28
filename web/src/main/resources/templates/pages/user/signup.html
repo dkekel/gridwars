@@ -41,12 +41,6 @@
                 <small th:text="#{page.user.signup.teamName.help}" class="form-text text-muted"></small>
                 <p th:each="error : ${#fields.errors('teamName')}" th:text="${error}" class="text-danger"></p>
             </div>
-            <div class="form-group">
-                <label th:text="#{page.user.signup.registrationPassword}"></label>
-                <input th:field="*{registrationPassword}" name="registrationPassword" class="form-control" type="password" th:errorclass="is-invalid" required/>
-                <small th:utext="#{page.user.signup.registrationPassword.help}" class="form-text text-muted"></small>
-                <p th:each="error : ${#fields.errors('registrationPassword')}" th:text="${error}" class="text-danger"></p>
-            </div>
             <div>
                 <button th:text="#{page.user.signup.submit}" type="submit" class="btn btn-primary"></button>
             </div>

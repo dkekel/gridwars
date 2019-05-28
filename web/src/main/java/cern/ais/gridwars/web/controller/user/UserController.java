@@ -76,19 +76,11 @@ public class UserController {
             throw new AccessDeniedException();
         }
 
-        // Admins can bypass the registration password
-        if (!result.hasErrors() && !isAdmin(currentUser)) {
-            if (!hasProvidedValidRegistrationPassword(newUserDto)) {
-                result.rejectValue("registrationPassword", "user.error.wrong.registrationPassword");
-            }
-        }
-
         if (!result.hasErrors()) {
             preprocessNewUser(newUserDto, request);
 
             try {
-                boolean bypassConfirmation = isAdmin(currentUser);
-                userService.create(newUserDto, false, bypassConfirmation, true);
+                userService.create(newUserDto, false, true, true);
             } catch (UserService.UserFieldValueException ufve) {
                 result.rejectValue(ufve.getFieldName(), ufve.getErrorMessageCode());
             }
