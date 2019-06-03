@@ -28,13 +28,16 @@ gridwars:
         grantType: 'authorization_code'
         responseType: 'code'
         authorizeUrl: 'http://localhost:8080/oauth/authorize'
-        tokenUrl: 'http://localhost:8080/oauth/token'
-        checkTokenUrl: 'http://localhost:8080/oauth/check_token'
+        tokenUrl: 'http://${oauth.host.name}:8080/oauth/token'
+        checkTokenUrl: 'http://${oauth.host.name}:8080/oauth/check_token'
     jwt:
         secret: 'insegurmucho'
 ---
 spring:
     profiles: dev
+    devtools:
+        remote:
+            secret: 'bonjour'
 
 gridwars:
     mail:
