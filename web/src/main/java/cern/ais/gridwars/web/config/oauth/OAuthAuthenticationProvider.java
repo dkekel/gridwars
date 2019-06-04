@@ -28,8 +28,8 @@ public class OAuthAuthenticationProvider implements AuthenticationProvider {
         try {
             OAuthorizedToken authorizedToken = userService.validateUserToken(oAuthToken);
             Date expirationDate = new Date(authorizedToken.getExpirationTimestamp() * MILLISECONDS);
-            boolean isExpired = Calendar.getInstance().getTime().before(expirationDate);
-            authentication.setAuthenticated(!isExpired);
+            boolean isValid = Calendar.getInstance().getTime().before(expirationDate);
+            authentication.setAuthenticated(isValid);
         } catch (RestClientException e) {
             throw new BadCredentialsException(e.getLocalizedMessage(), e);
         }

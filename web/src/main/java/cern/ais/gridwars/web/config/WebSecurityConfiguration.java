@@ -10,10 +10,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @Configuration
@@ -30,11 +29,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AbstractAuthenticationProcessingFilter getAuthenticationFilter() throws Exception {
-        RequestMatcher requestMatcher = new AntPathRequestMatcher("/bot/**");
+    public OncePerRequestFilter getAuthenticationFilter() throws Exception {
         String jwtSecret = gridWarsProperties.getJwt().getSecret();
         OAuthCookieAuthenticationFilter authenticationFilter =
-            new OAuthCookieAuthenticationFilter(requestMatcher, jwtSecret);
+            new OAuthCookieAuthenticationFilter(jwtSecret);
         authenticationFilter.setAuthenticationManager(authenticationManagerBean());
         return authenticationFilter;
     }
@@ -51,12 +49,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/team/**").fullyAuthenticated()
             .antMatchers("/bot/**").fullyAuthenticated()
             .antMatchers("/user/update").fullyAuthenticated()
+            .antMatchers("/user/getUsername").fullyAuthenticated()
             .antMatchers("/user/confirm/**").permitAll()
             .antMatchers("/**").permitAll()
             .and()
                 .formLogin().loginPage("/user/login").defaultSuccessUrl("/team").permitAll()
             .and()
                 .logout().logoutUrl("/user/signout").logoutSuccessUrl("/").permitAll()
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().addFilterBefore(getAuthenticationFilter(), BasicAuthenticationFilter.class);
         // @formatter:on
 

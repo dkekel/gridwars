@@ -9,7 +9,9 @@ import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -87,6 +89,13 @@ public class UserController {
         oauthCookie.setDomain("localhost");
         oauthCookie.setMaxAge(token.getExpiresIn().intValue());
         response.addCookie(oauthCookie);
+    }
+
+    @GetMapping(value = "/getUsername")
+    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
+    public @ResponseBody String getCurrentUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 
     @GetMapping("/confirm/{confirmationId}")
