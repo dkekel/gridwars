@@ -1,6 +1,7 @@
 package cern.ais.gridwars.web.service;
 
 import cern.ais.gridwars.web.config.GridWarsProperties;
+import cern.ais.gridwars.web.config.oauth.OAuthAuthentication;
 import cern.ais.gridwars.web.config.oauth.OAuthorizedToken;
 import cern.ais.gridwars.web.controller.user.NewUserDto;
 import cern.ais.gridwars.web.controller.user.OAuthToken;
@@ -9,6 +10,7 @@ import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
 import cern.ais.gridwars.web.util.DomainUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -197,6 +199,13 @@ public class UserService implements UserDetailsService {
             user.touch();
             userRepository.saveAndFlush(user);
         });
+    }
+
+    public void destroyAuthenticationToken() {
+        OAuthAuthentication oAuth = (OAuthAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        Map<String, String> variables = new HashMap<>();
+        variables.put("token", (String) oAuth.getCredentials());
+        restTemplateOAuth.delete(gridWarsProperties.getOAuth().getRevokeTokenUrl(), OAuthToken.class, variables);
     }
 
     public static class UserFieldValueException extends RuntimeException {

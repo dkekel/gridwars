@@ -30,6 +30,7 @@ gridwars:
         authorizeUrl: 'http://localhost:8080/oauth/authorize'
         tokenUrl: 'http://${oauth.host.name}:8080/oauth/token'
         checkTokenUrl: 'http://${oauth.host.name}:8080/oauth/check_token'
+        revokeTokenUrl: 'http://${oauth.host.name}:8080/oauth/logout'
     jwt:
         secret: 'insegurmucho'
 ---
@@ -151,7 +152,7 @@ spring:
 # ==================================================================================================
 ---
 server:
-    port: 8080
+    port: 8090
     servlet:
         session:
             persistent: false

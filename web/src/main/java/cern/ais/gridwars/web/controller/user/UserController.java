@@ -59,6 +59,7 @@ public class UserController {
 
     @GetMapping("/login/client-app")
     public RedirectView userOAuthToken(final String code, final String state, final HttpServletResponse response) {
+        //TODO redirect to the referer
         RedirectView redirectView = new RedirectView("http://localhost:8081/");
         OAuthToken token = userService.getUserOAuthToken(code);
         String jwtToken = getJwtToken(token);
@@ -91,8 +92,14 @@ public class UserController {
         response.addCookie(oauthCookie);
     }
 
+    @PostMapping("/logout")
+    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"}, allowCredentials = "true")
+    public @ResponseStatus void logout() {
+        userService.destroyAuthenticationToken();
+    }
+
     @GetMapping(value = "/getUsername")
-    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"})
+    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"}, allowCredentials = "true")
     public @ResponseBody String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();

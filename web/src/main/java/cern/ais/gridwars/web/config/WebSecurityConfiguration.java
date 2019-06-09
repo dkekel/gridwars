@@ -12,11 +12,16 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private static final String CSRF_COOKIE_NAME = "GW_XSRF-TOKEN";
+    private static final String CSRF_HEADER_NAME = "X_GW_XSRF-TOKEN";
 
     private final transient AuthenticationProvider authenticationProvider;
     private final transient GridWarsProperties gridWarsProperties;
@@ -37,19 +42,31 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return authenticationFilter;
     }
 
+    @Bean
+    public CsrfTokenRepository getCsrfTokenRepository() {
+        CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfTokenRepository.setCookieName(CSRF_COOKIE_NAME);
+        csrfTokenRepository.setHeaderName(CSRF_HEADER_NAME);
+        return csrfTokenRepository;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.authorizeRequests()
-            .antMatchers("/user/login").permitAll()
+        http.cors()
+            .and()
+            .csrf()
+            .csrfTokenRepository(getCsrfTokenRepository())
+            .and()
+            .authorizeRequests()
+            .antMatchers("/user/login", "/user/login/client-app").permitAll()
             .antMatchers("/admin/**").hasRole(User.ADMIN)
             .antMatchers("/docs/**").fullyAuthenticated()
             .antMatchers("/files/**").fullyAuthenticated()
             .antMatchers("/match/**").fullyAuthenticated()
             .antMatchers("/team/**").fullyAuthenticated()
             .antMatchers("/bot/**").fullyAuthenticated()
-            .antMatchers("/user/update").fullyAuthenticated()
-            .antMatchers("/user/getUsername").fullyAuthenticated()
+            .antMatchers("/user/**").fullyAuthenticated()
             .antMatchers("/user/confirm/**").permitAll()
             .antMatchers("/**").permitAll()
             .and()

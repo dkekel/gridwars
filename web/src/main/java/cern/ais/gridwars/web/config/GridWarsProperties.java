@@ -243,6 +243,7 @@ public class GridWarsProperties {
         private String authorizeUrl;
         private String tokenUrl;
         private String checkTokenUrl;
+        private String revokeTokenUrl;
 
         public String getClientId() {
             return clientId;
@@ -298,6 +299,14 @@ public class GridWarsProperties {
 
         public void setCheckTokenUrl(final String checkTokenUrl) {
             this.checkTokenUrl = checkTokenUrl;
+        }
+
+        public String getRevokeTokenUrl() {
+            return revokeTokenUrl;
+        }
+
+        public void setRevokeTokenUrl(final String revokeTokenUrl) {
+            this.revokeTokenUrl = revokeTokenUrl;
         }
     }
 
