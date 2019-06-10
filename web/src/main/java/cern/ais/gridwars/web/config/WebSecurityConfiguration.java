@@ -20,8 +20,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String CSRF_COOKIE_NAME = "GW_XSRF-TOKEN";
-    private static final String CSRF_HEADER_NAME = "X_GW_XSRF-TOKEN";
+    private static final String CSRF_COOKIE_NAME = "GW-XSRF-TOKEN";
+    private static final String CSRF_HEADER_NAME = "X-GW-XSRF-TOKEN";
 
     private final transient AuthenticationProvider authenticationProvider;
     private final transient GridWarsProperties gridWarsProperties;

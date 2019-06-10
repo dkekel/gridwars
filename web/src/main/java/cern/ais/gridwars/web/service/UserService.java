@@ -51,18 +51,14 @@ public class UserService implements UserDetailsService {
         Map<String, String> variables = new HashMap<>();
         variables.put("grant_type", gridWarsProperties.getOAuth().getGrantType());
         variables.put("code", code);
-        String urlFormat = "%s?grant_type=%s&code=%s";
-        String url = String.format(urlFormat, gridWarsProperties.getOAuth().getTokenUrl(),
-            gridWarsProperties.getOAuth().getGrantType(), code);
-        return restTemplateOAuth.getForObject(url, OAuthToken.class, variables);
+        return restTemplateOAuth.getForObject(gridWarsProperties.getOAuth().getTokenUrl(), OAuthToken.class, variables);
     }
 
     public OAuthorizedToken validateUserToken(final String token) throws RestClientException {
         Map<String, String> variables = new HashMap<>();
         variables.put("token", token);
-        String urlFormat = "%s?token=%s";
-        String url = String.format(urlFormat, gridWarsProperties.getOAuth().getCheckTokenUrl(), token);
-        return restTemplateOAuth.getForObject(url, OAuthorizedToken.class, variables);
+        return restTemplateOAuth.getForObject(gridWarsProperties.getOAuth().getCheckTokenUrl(), OAuthorizedToken.class,
+            variables);
     }
 
     @Transactional(readOnly = true)
@@ -205,7 +201,7 @@ public class UserService implements UserDetailsService {
         OAuthAuthentication oAuth = (OAuthAuthentication) SecurityContextHolder.getContext().getAuthentication();
         Map<String, String> variables = new HashMap<>();
         variables.put("token", (String) oAuth.getCredentials());
-        restTemplateOAuth.delete(gridWarsProperties.getOAuth().getRevokeTokenUrl(), OAuthToken.class, variables);
+        restTemplateOAuth.delete(gridWarsProperties.getOAuth().getRevokeTokenUrl(), variables);
     }
 
     public static class UserFieldValueException extends RuntimeException {

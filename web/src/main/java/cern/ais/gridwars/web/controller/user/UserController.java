@@ -9,6 +9,7 @@ import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -94,7 +95,8 @@ public class UserController {
 
     @PostMapping("/logout")
     @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"}, allowCredentials = "true")
-    public @ResponseStatus void logout() {
+    @ResponseStatus(HttpStatus.OK)
+    public void logout() {
         userService.destroyAuthenticationToken();
     }
 

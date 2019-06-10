@@ -28,9 +28,9 @@ gridwars:
         grantType: 'authorization_code'
         responseType: 'code'
         authorizeUrl: 'http://localhost:8080/oauth/authorize'
-        tokenUrl: 'http://${oauth.host.name}:8080/oauth/token'
-        checkTokenUrl: 'http://${oauth.host.name}:8080/oauth/check_token'
-        revokeTokenUrl: 'http://${oauth.host.name}:8080/oauth/logout'
+        tokenUrl: 'http://${oauth.host.name}:8080/oauth/token?grant_type={grant_type}&code={code}'
+        checkTokenUrl: 'http://${oauth.host.name}:8080/oauth/check_token?token={token}'
+        revokeTokenUrl: 'http://${oauth.host.name}:8080/api/logout/{token}'
     jwt:
         secret: 'insegurmucho'
 ---
@@ -39,6 +39,12 @@ spring:
     devtools:
         remote:
             secret: 'bonjour'
+
+logging:
+    level:
+        org:
+            springframework:
+                security: DEBUG
 
 gridwars:
     mail:
