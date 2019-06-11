@@ -1,8 +1,10 @@
 package cern.ais.gridwars.web.config;
 
 import cern.ais.gridwars.web.util.ControllerUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,6 +15,13 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableWebMvc
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+    private final transient GridWarsProperties properties;
+
+    @Autowired
+    public WebMvcConfiguration(final GridWarsProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -31,5 +40,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
             .addResourceLocations("classpath:/files/")
             .setCacheControl(ControllerUtils.NO_CACHE_CONTROL)
             .setCachePeriod(0);
+    }
+
+    @Override
+    public void addCorsMappings(final CorsRegistry registry) {
+        GridWarsProperties.Cors cors = properties.getCors();
+        registry.addMapping("/**").allowCredentials(cors.isCredentials())
+            .allowedMethods(cors.getMethods().toArray(new String[]{}))
+            .allowedOrigins(cors.getOrigins().toArray(new String[]{}));
     }
 }

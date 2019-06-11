@@ -94,14 +94,12 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"}, allowCredentials = "true")
     @ResponseStatus(HttpStatus.OK)
     public void logout() {
         userService.destroyAuthenticationToken();
     }
 
     @GetMapping(value = "/getUsername")
-    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8081"}, allowCredentials = "true")
     public @ResponseBody String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();

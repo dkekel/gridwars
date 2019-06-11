@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 @Configuration
@@ -20,6 +21,7 @@ public class GridWarsProperties {
     private final Mail mail = new Mail();
     private final OAuth oAuth = new OAuth();
     private final Jwt jwt = new Jwt();
+    private final Cors cors = new Cors();
 
     @PostConstruct
     public void init() {
@@ -48,6 +50,10 @@ public class GridWarsProperties {
 
     public Jwt getJwt() {
         return jwt;
+    }
+
+    public Cors getCors() {
+        return cors;
     }
 
     public class Directories {
@@ -319,6 +325,36 @@ public class GridWarsProperties {
 
         public void setSecret(final String secret) {
             this.secret = secret;
+        }
+    }
+
+    public class Cors {
+        private List<String> origins;
+        private List<String> methods;
+        private boolean credentials;
+
+        public List<String> getOrigins() {
+            return origins;
+        }
+
+        public void setOrigins(final List<String> origins) {
+            this.origins = origins;
+        }
+
+        public List<String> getMethods() {
+            return methods;
+        }
+
+        public void setMethods(final List<String> methods) {
+            this.methods = methods;
+        }
+
+        public boolean isCredentials() {
+            return credentials;
+        }
+
+        public void setCredentials(final boolean credentials) {
+            this.credentials = credentials;
         }
     }
 }

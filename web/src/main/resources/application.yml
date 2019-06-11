@@ -33,6 +33,16 @@ gridwars:
         revokeTokenUrl: 'http://${oauth.host.name}:8080/api/logout/{token}'
     jwt:
         secret: 'insegurmucho'
+    cors:
+        origins:
+            - 'http://localhost:8081'
+            - 'http://localhost:8080'
+        methods:
+            - 'GET'
+            - 'HEAD'
+            - 'POST'
+        credentials: true
+
 ---
 spring:
     profiles: dev
