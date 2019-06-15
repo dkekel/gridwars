@@ -14,10 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,19 +28,16 @@ public class UserService implements UserDetailsService {
 
     private final transient GridWarsProperties gridWarsProperties;
     private final transient UserRepository userRepository;
-    private final transient BCryptPasswordEncoder passwordEncoder;
     private final transient UserMailingService userMailingService;
     private final transient RestTemplate restTemplateOAuth;
 
     @Autowired
     public UserService(final GridWarsProperties gridWarsProperties,
                        final UserRepository userRepository,
-                       final BCryptPasswordEncoder passwordEncoder,
                        final UserMailingService userMailingService,
                        final RestTemplate restTemplateOAuth) {
         this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
         this.userRepository = Objects.requireNonNull(userRepository);
-        this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
         this.userMailingService = Objects.requireNonNull(userMailingService);
         this.restTemplateOAuth = Objects.requireNonNull(restTemplateOAuth);
     }

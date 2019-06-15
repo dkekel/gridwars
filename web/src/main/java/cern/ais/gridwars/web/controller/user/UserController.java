@@ -107,7 +107,7 @@ public class UserController {
         userService.destroyAuthenticationToken();
     }
 
-    @GetMapping(value = "/getUsername")
+    @GetMapping("/name")
     @ResponseBody
     public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -50,7 +50,7 @@ public class TeamController {
         return showTeam(currentUser.getId(), currentUser);
     }
 
-    @GetMapping("/getName")
+    @GetMapping("/name")
     @ResponseBody
     public String getTeamName(final @AuthenticationPrincipal User user) {
         return user == null ? "" : user.getTeamName();
