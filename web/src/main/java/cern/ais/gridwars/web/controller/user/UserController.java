@@ -3,6 +3,7 @@ package cern.ais.gridwars.web.controller.user;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.config.oauth.OAuthCookieAuthenticationFilter;
 import cern.ais.gridwars.web.controller.error.NotFoundException;
+import cern.ais.gridwars.web.controller.error.ValidationError;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
 import cern.ais.gridwars.web.util.ModelAndViewBuilder;
@@ -63,6 +64,12 @@ public class UserController {
         //TODO redirect to the referer
         RedirectView redirectView = new RedirectView("http://localhost:8081/");
         OAuthToken token = userService.getUserOAuthToken(code);
+        if (!userService.isExistingUser(token.getUsername())) {
+            NewUserDto newUser = new NewUserDto();
+            newUser.setUsername(token.getUsername());
+            //TODO Send mail to admin
+            userService.create(newUser, false, true, false);
+        }
         String jwtToken = getJwtToken(token);
         setOAuthCookie(token, jwtToken, response);
         return redirectView;
@@ -101,7 +108,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/getUsername")
-    public @ResponseBody String getCurrentUserName() {
+    @ResponseBody
+    public String getCurrentUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
@@ -137,8 +145,9 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public ModelAndView updateUser(@ModelAttribute("user") @Valid UpdateUserDto updateUserDto, BindingResult result,
-                                   RedirectAttributes redirectAttributes, @AuthenticationPrincipal User currentUser) {
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateUser(@ModelAttribute("user") @Valid UpdateUserDto updateUserDto, BindingResult result,
+                           @AuthenticationPrincipal User currentUser) {
         if (!result.hasErrors()) {
             preprocessUpdatedUser(updateUserDto, currentUser);
 
@@ -147,15 +156,10 @@ public class UserController {
             } catch (UserService.UserFieldValueException ufve) {
                 result.rejectValue(ufve.getFieldName(), ufve.getErrorMessageCode());
             }
-        }
-
-        if (result.hasErrors()) {
-            return ModelAndViewBuilder.forPage("user/update")
-                .addAttribute("user", updateUserDto)
-                .toModelAndView();
         } else {
-            redirectAttributes.addFlashAttribute("success", true);
-            return ModelAndViewBuilder.forRedirect("/user/update").toModelAndView();
+            //TODO return actual errors to the client
+            //Avoid returning 200 status in case of validation errors
+            throw new ValidationError();
         }
     }
 

@@ -57,6 +57,8 @@ public class OAuthCookieAuthenticationFilter extends OncePerRequestFilter {
             String oAuthToken = claims.get(OAUTH_COOKIE_NAME, String.class);
             String username = claims.get("username", String.class);
 
+            //TODO update expiration time
+
             if (authenticationIsRequired(username)) {
                 OAuthAuthentication authRequest = new OAuthAuthentication(oAuthToken, username);
                 Authentication authResult = this.authenticationManager.authenticate(authRequest);

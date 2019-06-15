@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.config.oauth;
 
+import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.service.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,6 +31,10 @@ public class OAuthAuthenticationProvider implements AuthenticationProvider {
             Date expirationDate = new Date(authorizedToken.getExpirationTimestamp() * MILLISECONDS);
             boolean isValid = Calendar.getInstance().getTime().before(expirationDate);
             authentication.setAuthenticated(isValid);
+            if (OAuthAuthentication.class.isAssignableFrom(authentication.getClass())) {
+                User currentUser = userService.getById(authorizedToken.getUsername()).orElse(null);
+                ((OAuthAuthentication) authentication).setUser(currentUser);
+            }
         } catch (RestClientException e) {
             throw new BadCredentialsException(e.getLocalizedMessage(), e);
         }

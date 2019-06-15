@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.config.oauth;
 
+import cern.ais.gridwars.web.domain.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -9,6 +10,7 @@ public class OAuthAuthentication implements Authentication {
 
     private final String oAuthToken;
     private final String userName;
+    private User user;
 
     private boolean isAuthenticated;
 
@@ -34,7 +36,7 @@ public class OAuthAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return user;
     }
 
     @Override
@@ -50,5 +52,13 @@ public class OAuthAuthentication implements Authentication {
     @Override
     public String getName() {
         return userName;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
     }
 }

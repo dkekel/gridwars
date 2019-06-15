@@ -76,6 +76,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
+    public boolean isExistingUser(final String userId) {
+        return userRepository.existsByUsernameIgnoreCase(userId);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<User> getByConfirmationId(String confirmationId) {
         return userRepository.findByConfirmationId(confirmationId);
     }
@@ -115,14 +120,6 @@ public class UserService implements UserDetailsService {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
-        if (userRepository.existsByEmailIgnoreCase(newUserDto.getEmail())) {
-            throw new UserFieldValueException("email", "user.error.exists.email");
-        }
-
-        if (userRepository.existsByTeamNameIgnoreCase(newUserDto.getTeamName())) {
-            throw new UserFieldValueException("teamName", "user.error.exists.teamName");
-        }
-
         User newUser = saveNewUser(newUserDto, createAdmin, bypassConfirmation);
 
         if (!bypassConfirmation) {
@@ -138,9 +135,8 @@ public class UserService implements UserDetailsService {
 
     private User saveNewUser(NewUserDto newUserDto, boolean createAdmin, boolean bypassConfirmation) {
         User newUser = new User()
-            .setId(DomainUtils.generateId())
+            .setId(newUserDto.getUsername())
             .setUsername(newUserDto.getUsername())
-            .setPassword(encodePassword(newUserDto.getPassword()))
             .setEmail(newUserDto.getEmail())
             .setCreated(Instant.now())
             .setTeamName(newUserDto.getTeamName())
@@ -175,26 +171,11 @@ public class UserService implements UserDetailsService {
     private void updateExistingUser(UpdateUserDto updateUserDto) {
        userRepository.findById(updateUserDto.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(updateUserDto.getEmail());
-           if (StringUtils.hasLength(updateUserDto.getPassword())) {
-               existingUser.setPassword(encodePassword(updateUserDto.getPassword()));
-           }
+           existingUser.setTeamName(updateUserDto.getTeamName());
            existingUser.touch();
 
            userRepository.saveAndFlush(existingUser);
        });
-    }
-
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
-    }
-
-    @Transactional
-    public void changeUserPassword(String userId, String newPassword) {
-        userRepository.findById(userId).ifPresent(user -> {
-            user.setPassword(encodePassword(newPassword));
-            user.touch();
-            userRepository.saveAndFlush(user);
-        });
     }
 
     public void destroyAuthenticationToken() {

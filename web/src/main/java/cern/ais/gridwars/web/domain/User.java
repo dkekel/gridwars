@@ -37,13 +37,10 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String teamName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -75,11 +72,6 @@ public class User implements UserDetails {
 
     public User setUsername(String username) {
         this.username = username;
-        return this;
-    }
-
-    public User setPassword(String password) {
-        this.password = password;
         return this;
     }
 
@@ -199,7 +191,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return "";
     }
 
     @Override

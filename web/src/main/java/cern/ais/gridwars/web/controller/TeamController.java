@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Comparator;
@@ -47,6 +48,12 @@ public class TeamController {
     @GetMapping // empty path parameter here maps is it to "" as well as "/"
     public ModelAndView showCurrentTeam(@AuthenticationPrincipal User currentUser) {
         return showTeam(currentUser.getId(), currentUser);
+    }
+
+    @GetMapping("/getName")
+    @ResponseBody
+    public String getTeamName(final @AuthenticationPrincipal User user) {
+        return user == null ? "" : user.getTeamName();
     }
 
     @GetMapping("/{userId}")
