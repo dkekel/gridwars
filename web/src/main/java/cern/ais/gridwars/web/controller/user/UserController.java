@@ -90,6 +90,7 @@ public class UserController {
         oauthCookie.setPath("/");
         oauthCookie.setDomain("localhost");
         oauthCookie.setMaxAge(token.getExpiresIn().intValue());
+        oauthCookie.setHttpOnly(true);
         response.addCookie(oauthCookie);
     }
 
