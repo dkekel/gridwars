@@ -23,8 +23,12 @@ public class ProdDataPopulatorConfiguration {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
+    private final transient UserService userService;
+
     @Autowired
-    private UserService userService;
+    public ProdDataPopulatorConfiguration(final UserService userService) {
+        this.userService = userService;
+    }
 
     @PostConstruct
     protected void populateInitialData() {
@@ -39,7 +43,6 @@ public class ProdDataPopulatorConfiguration {
         userService.create(
             new NewUserDto()
                 .setUsername("admin")
-                .setPassword("luwulo19")
                 .setEmail("grid.wars@cern.ch")
                 .setTeamName("Admin Team"),
             true, true, false
@@ -58,12 +61,10 @@ public class ProdDataPopulatorConfiguration {
 
         for (int i = 0; i < adminPws.size(); i++) {
             final int index = i + 1;
-            final String pw = adminPws.get(i);
 
             userService.create(
                 new NewUserDto()
                     .setUsername("admin" + index)
-                    .setPassword(pw)
                     .setEmail("admin" + index + "@dummy.bla")
                     .setTeamName("Admin Level " + index),
                 true, true, false
@@ -74,7 +75,6 @@ public class ProdDataPopulatorConfiguration {
         userService.create(
             new NewUserDto()
                 .setUsername("test")
-                .setPassword("yacimo24")
                 .setEmail("test@dummy.bla")
                 .setTeamName("Test Team"),
                 false, true, false

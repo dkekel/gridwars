@@ -28,23 +28,29 @@ public class DevDataPopulatorConfiguration {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private UserService userService;
+    private final transient UserService userService;
+
+    private final transient BotService botService;
+
+    private final transient MatchService matchService;
+
+    private final transient MatchWorkerService matchWorkerService;
+
+    private final transient MailService mailService;
+
+    private final transient GridWarsProperties gridWarsProperties;
 
     @Autowired
-    private BotService botService;
-
-    @Autowired
-    private MatchService matchService;
-
-    @Autowired
-    private MatchWorkerService matchWorkerService;
-
-    @Autowired
-    private MailService mailService;
-
-    @Autowired
-    private GridWarsProperties gridWarsProperties;
+    public DevDataPopulatorConfiguration(final UserService userService, final BotService botService,
+                                         final MatchService matchService, final MatchWorkerService matchWorkerService,
+                                         final MailService mailService, final GridWarsProperties gridWarsProperties) {
+        this.userService = userService;
+        this.botService = botService;
+        this.matchService = matchService;
+        this.matchWorkerService = matchWorkerService;
+        this.mailService = mailService;
+        this.gridWarsProperties = gridWarsProperties;
+    }
 
     @PostConstruct
     public void initTestData() {
@@ -63,7 +69,6 @@ public class DevDataPopulatorConfiguration {
             testUsers.add(userService.create(
                 new NewUserDto()
                     .setUsername("uSeR" + i)
-                    .setPassword("bla" + i)
                     .setEmail("user" + i + "@blubb.bla")
                     .setTeamName("Team User" + i),
                 false, true, false));
@@ -72,7 +77,6 @@ public class DevDataPopulatorConfiguration {
         User admin1 = userService.create(
             new NewUserDto()
                 .setUsername("adMin")
-                .setPassword("blabla")
                 .setEmail("admin@cern.ch")
                 .setTeamName("Team Admin"),
             true, true, false

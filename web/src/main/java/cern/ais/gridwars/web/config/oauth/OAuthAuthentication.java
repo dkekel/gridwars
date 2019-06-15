@@ -14,7 +14,7 @@ public class OAuthAuthentication implements Authentication {
 
     private boolean isAuthenticated;
 
-    public OAuthAuthentication(final String oAuthToken, final String userName) {
+    OAuthAuthentication(final String oAuthToken, final String userName) {
         this.oAuthToken = oAuthToken;
         this.userName = userName;
     }
