@@ -59,6 +59,11 @@ public class BotService {
     }
 
     @Transactional(readOnly = true)
+    public List<Bot> getAllUserBots(final User user) {
+        return botRepository.findAllByUserOrderByUploadedDesc(user);
+    }
+
+    @Transactional(readOnly = true)
     public List<Bot> getAllActiveBots() {
         return botRepository.findAllByActiveIsTrue();
     }

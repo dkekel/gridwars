@@ -72,6 +72,12 @@ public class TeamController {
             .orElseThrow(NotFoundException::new);
     }
 
+    @GetMapping("/bots")
+    @ResponseBody
+    public List<Bot> showTeamBots(@AuthenticationPrincipal User currentUser) {
+        return botService.getAllUserBots(currentUser);
+    }
+
     private boolean isBotUploadEnabled() {
         return gridWarsProperties.getMatches().getBotUploadEnabled();
     }
