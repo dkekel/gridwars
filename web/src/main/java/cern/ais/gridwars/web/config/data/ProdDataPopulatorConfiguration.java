@@ -39,7 +39,7 @@ public class ProdDataPopulatorConfiguration {
         userService.create(
             new NewUserDto()
                 .setUsername("admin")
-                .setPassword("luwulo19")
+                .setPassword("insegur")
                 .setEmail("grid.wars@cern.ch")
                 .setTeamName("Admin Team"),
             true, true, false
@@ -47,13 +47,13 @@ public class ProdDataPopulatorConfiguration {
 
         // Create additional admin accounts for the different level bots
         final List<String> adminPws = Arrays.asList(
-            "zivuco62",
-            "rutofu79",
-            "cayilu74",
-            "zodefo24",
-            "luwulo19",
-            "kiceri59",
-            "kufasa62"
+            "seguridad",
+            "seguridad",
+            "seguridad",
+            "seguridad",
+            "seguridad",
+            "seguridad",
+            "seguridad"
         );
 
         for (int i = 0; i < adminPws.size(); i++) {

@@ -7,10 +7,11 @@ RUN ["gradle", "build"]
 FROM openjdk:8-jre-slim
 ARG DEPENDENCY=/home/gradle/gridwars
 
-VOLUME gridwars:/work
-
 COPY --from=builder ${DEPENDENCY}/web/build/libs /app
 COPY --from=builder ${DEPENDENCY}/core/bots/build/libs /work/bots
+COPY --from=builder ${DEPENDENCY}/core/runtime/build/libs /work/runtime
+COPY --from=builder ${DEPENDENCY}/core/api/build/libs /work/runtime
+COPY --from=builder ${DEPENDENCY}/core/impl/build/libs /work/runtime
 
 EXPOSE 8080 8443
 
