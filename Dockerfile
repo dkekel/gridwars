@@ -10,6 +10,7 @@ ARG DEPENDENCY=/home/gradle/gridwars
 COPY --from=builder ${DEPENDENCY}/web/build/libs /app
 COPY --from=builder ${DEPENDENCY}/core/bots/build/libs /work/bots
 COPY --from=builder ${DEPENDENCY}/core/runtime/build/libs /work/runtime
+COPY --from=builder ${DEPENDENCY}/core/runtime/gridwars.policy /work/runtime/gridwars.policy
 COPY --from=builder ${DEPENDENCY}/core/api/build/libs /work/runtime
 COPY --from=builder ${DEPENDENCY}/core/impl/build/libs /work/runtime
 
