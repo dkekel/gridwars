@@ -8,18 +8,17 @@ import cern.ais.gridwars.web.service.BotFileService;
 import cern.ais.gridwars.web.service.BotService;
 import cern.ais.gridwars.web.service.BotUploadService;
 import cern.ais.gridwars.web.util.ControllerUtils;
-import cern.ais.gridwars.web.util.ModelAndViewBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,7 +87,8 @@ public class BotController {
     }
 
     @PostMapping("/upload")
-    public ModelAndView upload(@RequestParam MultipartFile botJarFile, RedirectAttributes redirectAttributes,
+    @ResponseBody
+    public Bot upload(@RequestParam MultipartFile botJarFile, RedirectAttributes redirectAttributes,
                                @AuthenticationPrincipal User currentUser, HttpServletRequest request) {
         LOG.info("Received bot jar upload - name: {}, original name: {}, content type: {}, size: {}, " +
                 "upload user: {}, ip: {}",
@@ -99,14 +99,7 @@ public class BotController {
             throw new AccessDeniedException();
         }
 
-        try {
-            Bot newBot = botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now(), request.getRemoteAddr());
-            redirectAttributes.addFlashAttribute("success", newBot.getName());
-        } catch (BotService.BotException bue) {
-            redirectAttributes.addFlashAttribute("error", bue.getMessage());
-        }
-
-        return ModelAndViewBuilder.forRedirect("/team").toModelAndView();
+        return botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now(), request.getRemoteAddr());
     }
 
     private boolean botUploadDisabled() {
