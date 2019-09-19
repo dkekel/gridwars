@@ -102,6 +102,12 @@ public class BotController {
         return botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now(), request.getRemoteAddr());
     }
 
+    @PostMapping("/activate")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void activateBot(@RequestBody String botId, @AuthenticationPrincipal User currentUser) {
+        botUploadService.activateBot(botId, currentUser);
+    }
+
     private boolean botUploadDisabled() {
         return !gridWarsProperties.getMatches().getBotUploadEnabled();
     }

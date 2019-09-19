@@ -221,6 +221,13 @@ public class BotService {
         botRepository.saveAndFlush(bot);
     }
 
+    @Transactional
+    public void activateBot(Bot bot) {
+        bot.setActive(true);
+        bot.setInactivated(null);
+        botRepository.saveAndFlush(bot);
+    }
+
     public static class BotException extends RuntimeException {
 
         BotException(String message) {
