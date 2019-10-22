@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.config.data;
 
+import cern.ais.gridwars.web.bean.BotInfo;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.user.NewUserDto;
 import cern.ais.gridwars.web.domain.Bot;
@@ -87,15 +88,23 @@ public class DevDataPopulatorConfiguration {
         // =====================================================================
         File sharedBotFile = Paths.get(gridWarsProperties.getDirectories().getBotJarDir(), "gridwars-bots.jar").toFile();
 
-        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.ExpandBot", testUsers.get(0), Instant.now(), null);
+        BotInfo expandBotInfo = new BotInfo();
+        expandBotInfo.setUploadUser(testUsers.get(0));
+        Bot bot1 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.ExpandBot", expandBotInfo);
 
-        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.JaegerBot", testUsers.get(1), Instant.now(), null);
+        BotInfo jaegerBotInfo = new BotInfo();
+        jaegerBotInfo.setUploadUser(testUsers.get(1));
+        Bot bot2 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.JaegerBot", jaegerBotInfo);
         matchService.generateMatches(bot2);
 
-        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.GinTonicBot", testUsers.get(2), Instant.now(), null);
+        BotInfo ginTonicBotInfo = new BotInfo();
+        ginTonicBotInfo.setUploadUser(testUsers.get(2));
+        Bot bot3 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.GinTonicBot", ginTonicBotInfo);
         matchService.generateMatches(bot3);
 
-        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.BrugalColaBot", testUsers.get(3), Instant.now(), null);
+        BotInfo brugalColaBotInfo = new BotInfo();
+        brugalColaBotInfo.setUploadUser(testUsers.get(3));
+        Bot bot4 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.BrugalColaBot", brugalColaBotInfo);
         matchService.generateMatches(bot4);
 
 //        Bot bot5 = botService.createNewBotRecord(sharedBotFile, "cern.ais.gridwars.bot.PermissionCheckerBot", testUsers.get(4), Instant.now(), null);

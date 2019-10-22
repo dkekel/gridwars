@@ -32,6 +32,9 @@ public class Bot implements Comparable<Bot> {
     @Size(max = 63)
     private String botClassName;
 
+    @Size(max = 255)
+    private String botDescription;
+
     @Column(nullable = false)
     private Instant uploaded;
 
@@ -87,6 +90,15 @@ public class Bot implements Comparable<Bot> {
 
     public Bot setBotClassName(String botClassName) {
         this.botClassName = botClassName;
+        return this;
+    }
+
+    public String getBotDescription() {
+        return botDescription;
+    }
+
+    public Bot setBotDescription(final String botDescription) {
+        this.botDescription = botDescription;
         return this;
     }
 

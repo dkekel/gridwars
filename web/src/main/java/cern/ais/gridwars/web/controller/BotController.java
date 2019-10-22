@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.controller;
 
+import cern.ais.gridwars.web.bean.BotInfo;
 import cern.ais.gridwars.web.config.GridWarsProperties;
 import cern.ais.gridwars.web.controller.error.AccessDeniedException;
 import cern.ais.gridwars.web.domain.Bot;
@@ -19,13 +20,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -88,18 +87,29 @@ public class BotController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public Bot upload(@RequestParam MultipartFile botJarFile, RedirectAttributes redirectAttributes,
-                               @AuthenticationPrincipal User currentUser, HttpServletRequest request) {
+    public Bot upload(@RequestParam MultipartFile botJarFile, @RequestParam String botDescription,
+                      @AuthenticationPrincipal User currentUser, HttpServletRequest request) {
         LOG.info("Received bot jar upload - name: {}, original name: {}, content type: {}, size: {}, " +
-                "upload user: {}, ip: {}",
+                "description: {}, upload user: {}, ip: {}",
                 botJarFile.getName(), botJarFile.getOriginalFilename(), botJarFile.getContentType(),
-                botJarFile.getSize(), currentUser.getUsername(), request.getRemoteAddr());
+                botJarFile.getSize(), botDescription, currentUser.getUsername(), request.getRemoteAddr());
 
         if (botUploadDisabled() && !currentUser.isAdmin()) {
             throw new AccessDeniedException();
         }
 
-        return botUploadService.uploadNewBot(botJarFile, currentUser, Instant.now(), request.getRemoteAddr());
+        BotInfo botInfo = createNewBot(botJarFile, botDescription, currentUser, request);
+        return botUploadService.uploadNewBot(botInfo);
+    }
+
+    private BotInfo createNewBot(MultipartFile botJarFile, String botDescription, User currentUser,
+                                 HttpServletRequest request) {
+        BotInfo newBot = new BotInfo();
+        newBot.setBotJarFile(botJarFile);
+        newBot.setBotDescription(botDescription);
+        newBot.setUploadUser(currentUser);
+        newBot.setUploadIp(request.getRemoteAddr());
+        return newBot;
     }
 
     @PostMapping("/activate")

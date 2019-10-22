@@ -1,10 +1,11 @@
 package cern.ais.gridwars.web.service;
 
 import cern.ais.gridwars.api.bot.PlayerBot;
+import cern.ais.gridwars.web.bean.BotInfo;
 import cern.ais.gridwars.web.domain.Bot;
-import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.BotRepository;
+import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,21 +81,23 @@ public class BotService {
     }
 
     @Transactional
-    public Bot validateAndCreateNewUploadedBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime, String uploadIp) {
+    public Bot validateAndCreateNewUploadedBot(BotInfo botInfo) {
         File storedBotJarFile = null;
         try {
-            storedBotJarFile = storeUploadedBotJarFile(uploadedBotJarFile, user, uploadTime);
+            storedBotJarFile = storeUploadedBotJarFile(botInfo);
             String botClassName = validateBotJarFileAndExtractBotClassName(storedBotJarFile);
-            return createNewBotRecord(storedBotJarFile, botClassName, user, uploadTime, uploadIp);
+            return createNewBotRecord(storedBotJarFile, botClassName, botInfo);
         } catch (Exception e) {
+            User user = botInfo.getUploadUser();
             LOG.error("Failed to validate and persist bot uploaded by user '{}': {}", user.getUsername(), e.getMessage());
             FileUtils.deleteFile(storedBotJarFile);
             throw e;
         }
     }
 
-    private File storeUploadedBotJarFile(MultipartFile uploadedJarFile, User user, Instant uploadTime) {
-        return botFileService.storeUploadedJarFile(uploadedJarFile, user.getId(), uploadTime);
+    private File storeUploadedBotJarFile(BotInfo botInfo) {
+        User user = botInfo.getUploadUser();
+        return botFileService.storeUploadedJarFile(botInfo.getBotJarFile(), user.getId(), botInfo.getUploadTime());
     }
 
     private String validateBotJarFileAndExtractBotClassName(File botJarFile) {
@@ -187,16 +189,17 @@ public class BotService {
     }
 
     @Transactional
-    public Bot createNewBotRecord(File jarFile, String botClassName, User user, Instant uploadTime, String uploadIp) {
+    public Bot createNewBotRecord(File jarFile, String botClassName, BotInfo botInfo) {
         Bot newBot = new Bot()
             .setId(DomainUtils.generateId())
-            .setUser(user)
+            .setUser(botInfo.getUploadUser())
             .setJarFileName(jarFile.getName())
             .setJarFileHash(getFileContentHash(jarFile))
             .setJarFileSize(jarFile.length())
             .setBotClassName(botClassName)
-            .setUploaded(uploadTime)
-            .setUploadIp(uploadIp)
+            .setBotDescription(botInfo.getBotDescription())
+            .setUploaded(botInfo.getUploadTime())
+            .setUploadIp(botInfo.getUploadIp())
             .setActive(true);
 
         botRepository.saveAndFlush(newBot);

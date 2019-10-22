@@ -1,5 +1,6 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.bean.BotInfo;
 import cern.ais.gridwars.web.domain.Bot;
 import cern.ais.gridwars.web.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,9 @@ public class BotUploadService {
     }
 
     @Transactional
-    public Bot uploadNewBot(MultipartFile uploadedBotJarFile, User user, Instant uploadTime, String uploadIp) {
-        List<Bot> oldBots = botService.getAllActiveBotsOfUser(user);
-        Bot newBot = botService.validateAndCreateNewUploadedBot(uploadedBotJarFile, user, uploadTime, uploadIp);
+    public Bot uploadNewBot(BotInfo botInfo) {
+        List<Bot> oldBots = botService.getAllActiveBotsOfUser(botInfo.getUploadUser());
+        Bot newBot = botService.validateAndCreateNewUploadedBot(botInfo);
 
         inactivateOldBots(oldBots);
         matchService.generateMatches(newBot);
