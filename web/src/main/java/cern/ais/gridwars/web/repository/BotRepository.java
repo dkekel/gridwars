@@ -14,5 +14,6 @@ public interface BotRepository extends JpaRepository<Bot, String> {
 
     Optional<Bot> findFirstByUserAndActiveIsTrueOrderByUploadedDesc(User user);
     List<Bot> findAllByUserAndActiveIsTrueOrderByUploadedDesc(User user);
+    List<Bot> findAllByUserOrderByUploadedDesc(User user);
     List<Bot> findAllByActiveIsTrue();
 }

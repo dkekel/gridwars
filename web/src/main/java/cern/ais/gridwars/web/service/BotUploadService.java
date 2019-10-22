@@ -42,6 +42,12 @@ public class BotUploadService {
         return newBot;
     }
 
+    @Transactional
+    public void activateBot(String botId, User user) {
+        botService.getActiveBotOfUser(user).ifPresent(botService::inactivateBot);
+        botService.getBotById(botId).ifPresent(botService::activateBot);
+    }
+
     private void inactivateOldBots(List<Bot> oldBots) {
         oldBots.forEach(oldBot -> {
             matchService.cancelPendingMatches(oldBot);

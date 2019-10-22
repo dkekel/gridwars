@@ -16,23 +16,12 @@ public class NewUserDto {
     @Pattern(regexp = "[A-Za-z0-9-_]+")
     private String username;
 
-    @Size(min = 6, max = 32)
-    private String password;
-
-    @NotNull
-    @NotEmpty
     @Size(max = 32)
     @ValidEmail
     private String email;
 
-    @NotNull
-    @NotEmpty
     @Size(min = 4, max = 32)
     private String teamName;
-
-    @NotNull
-    @NotEmpty
-    private String registrationPassword;
 
     private String ip;
 
@@ -42,15 +31,6 @@ public class NewUserDto {
 
     public NewUserDto setUsername(String username) {
         this.username = username;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public NewUserDto setPassword(String password) {
-        this.password = password;
         return this;
     }
 
@@ -69,15 +49,6 @@ public class NewUserDto {
 
     public NewUserDto setTeamName(String teamName) {
         this.teamName = teamName;
-        return this;
-    }
-
-    public String getRegistrationPassword() {
-        return registrationPassword;
-    }
-
-    public NewUserDto setRegistrationPassword(String registrationPassword) {
-        this.registrationPassword = registrationPassword;
         return this;
     }
 

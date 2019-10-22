@@ -59,6 +59,11 @@ public class BotService {
     }
 
     @Transactional(readOnly = true)
+    public List<Bot> getAllUserBots(final User user) {
+        return botRepository.findAllByUserOrderByUploadedDesc(user);
+    }
+
+    @Transactional(readOnly = true)
     public List<Bot> getAllActiveBots() {
         return botRepository.findAllByActiveIsTrue();
     }
@@ -213,6 +218,13 @@ public class BotService {
     public void inactivateBot(Bot bot) {
         bot.setActive(false);
         bot.setInactivated(Instant.now());
+        botRepository.saveAndFlush(bot);
+    }
+
+    @Transactional
+    public void activateBot(Bot bot) {
+        bot.setActive(true);
+        bot.setInactivated(null);
         botRepository.saveAndFlush(bot);
     }
 

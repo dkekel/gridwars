@@ -1,39 +1,59 @@
 package cern.ais.gridwars.web.service;
 
+import cern.ais.gridwars.web.config.GridWarsProperties;
+import cern.ais.gridwars.web.config.oauth.OAuthAuthentication;
+import cern.ais.gridwars.web.config.oauth.OAuthorizedToken;
 import cern.ais.gridwars.web.controller.user.NewUserDto;
+import cern.ais.gridwars.web.controller.user.OAuthToken;
 import cern.ais.gridwars.web.controller.user.UpdateUserDto;
-import cern.ais.gridwars.web.util.DomainUtils;
 import cern.ais.gridwars.web.domain.User;
 import cern.ais.gridwars.web.repository.UserRepository;
+import cern.ais.gridwars.web.util.DomainUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
 public class UserService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final UserMailingService userMailingService;
-
+    private final transient GridWarsProperties gridWarsProperties;
+    private final transient UserRepository userRepository;
+    private final transient UserMailingService userMailingService;
+    private final transient RestTemplate restTemplateOAuth;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
-                       UserMailingService userMailingService) {
+    public UserService(final GridWarsProperties gridWarsProperties,
+                       final UserRepository userRepository,
+                       final UserMailingService userMailingService,
+                       final RestTemplate restTemplateOAuth) {
+        this.gridWarsProperties = Objects.requireNonNull(gridWarsProperties);
         this.userRepository = Objects.requireNonNull(userRepository);
-        this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
         this.userMailingService = Objects.requireNonNull(userMailingService);
+        this.restTemplateOAuth = Objects.requireNonNull(restTemplateOAuth);
+    }
+
+    public OAuthToken getUserOAuthToken(final String code) {
+        Map<String, String> variables = new HashMap<>();
+        variables.put("grant_type", gridWarsProperties.getOAuth().getGrantType());
+        variables.put("code", code);
+        return restTemplateOAuth.getForObject(gridWarsProperties.getOAuth().getTokenUrl(), OAuthToken.class, variables);
+    }
+
+    public OAuthorizedToken validateUserToken(final String token) throws RestClientException {
+        Map<String, String> variables = new HashMap<>();
+        variables.put("token", token);
+        return restTemplateOAuth.getForObject(gridWarsProperties.getOAuth().getCheckTokenUrl(), OAuthorizedToken.class,
+            variables);
     }
 
     @Transactional(readOnly = true)
@@ -48,6 +68,11 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public Optional<User> getById(String userId) {
         return userRepository.findById(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isExistingUser(final String userId) {
+        return userRepository.existsByUsernameIgnoreCase(userId);
     }
 
     @Transactional(readOnly = true)
@@ -90,14 +115,6 @@ public class UserService implements UserDetailsService {
             throw new UserFieldValueException("username", "user.error.exists.username");
         }
 
-        if (userRepository.existsByEmailIgnoreCase(newUserDto.getEmail())) {
-            throw new UserFieldValueException("email", "user.error.exists.email");
-        }
-
-        if (userRepository.existsByTeamNameIgnoreCase(newUserDto.getTeamName())) {
-            throw new UserFieldValueException("teamName", "user.error.exists.teamName");
-        }
-
         User newUser = saveNewUser(newUserDto, createAdmin, bypassConfirmation);
 
         if (!bypassConfirmation) {
@@ -113,9 +130,8 @@ public class UserService implements UserDetailsService {
 
     private User saveNewUser(NewUserDto newUserDto, boolean createAdmin, boolean bypassConfirmation) {
         User newUser = new User()
-            .setId(DomainUtils.generateId())
+            .setId(newUserDto.getUsername())
             .setUsername(newUserDto.getUsername())
-            .setPassword(encodePassword(newUserDto.getPassword()))
             .setEmail(newUserDto.getEmail())
             .setCreated(Instant.now())
             .setTeamName(newUserDto.getTeamName())
@@ -150,26 +166,18 @@ public class UserService implements UserDetailsService {
     private void updateExistingUser(UpdateUserDto updateUserDto) {
        userRepository.findById(updateUserDto.getId()).ifPresent(existingUser -> {
            existingUser.setEmail(updateUserDto.getEmail());
-           if (StringUtils.hasLength(updateUserDto.getPassword())) {
-               existingUser.setPassword(encodePassword(updateUserDto.getPassword()));
-           }
+           existingUser.setTeamName(updateUserDto.getTeamName());
            existingUser.touch();
 
            userRepository.saveAndFlush(existingUser);
        });
     }
 
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
-    }
-
-    @Transactional
-    public void changeUserPassword(String userId, String newPassword) {
-        userRepository.findById(userId).ifPresent(user -> {
-            user.setPassword(encodePassword(newPassword));
-            user.touch();
-            userRepository.saveAndFlush(user);
-        });
+    public void destroyAuthenticationToken() {
+        OAuthAuthentication oAuth = (OAuthAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        Map<String, String> variables = new HashMap<>();
+        variables.put("token", (String) oAuth.getCredentials());
+        restTemplateOAuth.delete(gridWarsProperties.getOAuth().getRevokeTokenUrl(), variables);
     }
 
     public static class UserFieldValueException extends RuntimeException {

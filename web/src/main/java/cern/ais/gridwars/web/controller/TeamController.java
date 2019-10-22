@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Comparator;
@@ -49,6 +50,12 @@ public class TeamController {
         return showTeam(currentUser.getId(), currentUser);
     }
 
+    @GetMapping("/name")
+    @ResponseBody
+    public String getTeamName(final @AuthenticationPrincipal User user) {
+        return user == null ? "" : user.getTeamName();
+    }
+
     @GetMapping("/{userId}")
     public ModelAndView showTeam(@PathVariable String userId, @AuthenticationPrincipal User currentUser) {
         ModelAndViewBuilder mavBuilder = ModelAndViewBuilder.forPage("team/show");
@@ -63,6 +70,12 @@ public class TeamController {
                 return mavBuilder.toModelAndView();
             })
             .orElseThrow(NotFoundException::new);
+    }
+
+    @GetMapping("/bots")
+    @ResponseBody
+    public List<Bot> showTeamBots(@AuthenticationPrincipal User currentUser) {
+        return botService.getAllUserBots(currentUser);
     }
 
     private boolean isBotUploadEnabled() {

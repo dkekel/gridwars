@@ -21,15 +21,44 @@ gridwars:
     mail:
         enabled: true
         from: 'CERN GridWars <grid.wars@cern.ch>'
-        bccRecipient: 'benjamin.wolff@cern.ch'
+        bccRecipient: 'dkekel@cern.ch'
+    oAuth:
+        clientId: 'gridwars'
+        clientSecret: 'muchoseguridad'
+        grantType: 'authorization_code'
+        responseType: 'code'
+        authorizeUrl: 'http://localhost:8080/oauth/authorize'
+        tokenUrl: 'http://${oauth.host.name}:8080/oauth/token?grant_type={grant_type}&code={code}'
+        checkTokenUrl: 'http://${oauth.host.name}:8080/oauth/check_token?token={token}'
+        revokeTokenUrl: 'http://${oauth.host.name}:8080/api/logout/{token}'
+    jwt:
+        secret: 'insegurmucho'
+    cors:
+        origins:
+            - 'http://localhost:8081'
+            - 'http://localhost:8080'
+        methods:
+            - 'GET'
+            - 'HEAD'
+            - 'POST'
+        credentials: true
 
 ---
 spring:
     profiles: dev
+    devtools:
+        remote:
+            secret: 'bonjour'
+
+logging:
+    level:
+        org:
+            springframework:
+                security: DEBUG
 
 gridwars:
     mail:
-        toRecipientOverride: 'benjamin.wolff@cern.ch'
+        toRecipientOverride: 'dkekel@cern.ch'
         baseUrl: 'http://localhost:8080'
 
 ---
@@ -139,6 +168,7 @@ spring:
 # ==================================================================================================
 ---
 server:
+    port: 8090
     servlet:
         session:
             persistent: false
@@ -175,17 +205,14 @@ server:
 ---
 spring:
     mail:
-        host: smtp.cern.ch
-        port: 587
-        username: gridwars
-        password: Fiba-Raxi
+        host: localhost
+        port: 8025
+        username:
+        password:
         properties:
             mail:
                 smtp:
-                    auth: true
-                    starttls:
-                        enabled: true
-                        required: true
+                    auth: false
                     connectiontimeout: 5000
                     timeout: 5000
                     writetimeout: 5000

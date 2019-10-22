@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 @Configuration
@@ -18,6 +19,9 @@ public class GridWarsProperties {
     private final Registration registration = new Registration();
     private final Matches matches = new Matches();
     private final Mail mail = new Mail();
+    private final OAuth oAuth = new OAuth();
+    private final Jwt jwt = new Jwt();
+    private final Cors cors = new Cors();
 
     @PostConstruct
     public void init() {
@@ -38,6 +42,18 @@ public class GridWarsProperties {
 
     public Mail getMail() {
         return mail;
+    }
+
+    public OAuth getOAuth() {
+        return oAuth;
+    }
+
+    public Jwt getJwt() {
+        return jwt;
+    }
+
+    public Cors getCors() {
+        return cors;
     }
 
     public class Directories {
@@ -222,6 +238,123 @@ public class GridWarsProperties {
         public Mail setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
             return this;
+        }
+    }
+
+    public class OAuth {
+        private String clientId;
+        private String clientSecret;
+        private String grantType;
+        private String responseType;
+        private String authorizeUrl;
+        private String tokenUrl;
+        private String checkTokenUrl;
+        private String revokeTokenUrl;
+
+        public String getClientId() {
+            return clientId;
+        }
+
+        public void setClientId(String clientId) {
+            this.clientId = clientId;
+        }
+
+        public String getClientSecret() {
+            return clientSecret;
+        }
+
+        public void setClientSecret(String clientSecret) {
+            this.clientSecret = clientSecret;
+        }
+
+        public String getGrantType() {
+            return grantType;
+        }
+
+        public void setGrantType(String grantType) {
+            this.grantType = grantType;
+        }
+
+        public String getResponseType() {
+            return responseType;
+        }
+
+        public void setResponseType(String responseType) {
+            this.responseType = responseType;
+        }
+
+        public String getAuthorizeUrl() {
+            return authorizeUrl;
+        }
+
+        public void setAuthorizeUrl(String authorizeUrl) {
+            this.authorizeUrl = authorizeUrl;
+        }
+
+        public String getTokenUrl() {
+            return tokenUrl;
+        }
+
+        public void setTokenUrl(String tokenUrl) {
+            this.tokenUrl = tokenUrl;
+        }
+
+        public String getCheckTokenUrl() {
+            return checkTokenUrl;
+        }
+
+        public void setCheckTokenUrl(final String checkTokenUrl) {
+            this.checkTokenUrl = checkTokenUrl;
+        }
+
+        public String getRevokeTokenUrl() {
+            return revokeTokenUrl;
+        }
+
+        public void setRevokeTokenUrl(final String revokeTokenUrl) {
+            this.revokeTokenUrl = revokeTokenUrl;
+        }
+    }
+
+    public class Jwt {
+        private String secret;
+
+        public String getSecret() {
+            return secret;
+        }
+
+        public void setSecret(final String secret) {
+            this.secret = secret;
+        }
+    }
+
+    public class Cors {
+        private List<String> origins;
+        private List<String> methods;
+        private boolean credentials;
+
+        public List<String> getOrigins() {
+            return origins;
+        }
+
+        public void setOrigins(final List<String> origins) {
+            this.origins = origins;
+        }
+
+        public List<String> getMethods() {
+            return methods;
+        }
+
+        public void setMethods(final List<String> methods) {
+            this.methods = methods;
+        }
+
+        public boolean isCredentials() {
+            return credentials;
+        }
+
+        public void setCredentials(final boolean credentials) {
+            this.credentials = credentials;
         }
     }
 }

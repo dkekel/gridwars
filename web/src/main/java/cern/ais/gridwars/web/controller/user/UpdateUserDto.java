@@ -16,11 +16,6 @@ public class UpdateUserDto {
     private String teamName;
 
     @Size(max = 32)
-    private String password;
-
-    @NotNull
-    @NotEmpty
-    @Size(max = 32)
     @ValidEmail
     private String email;
 
@@ -48,15 +43,6 @@ public class UpdateUserDto {
 
     public UpdateUserDto setTeamName(String teamName) {
         this.teamName = teamName;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public UpdateUserDto setPassword(String password) {
-        this.password = password;
         return this;
     }
 

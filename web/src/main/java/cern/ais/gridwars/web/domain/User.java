@@ -21,10 +21,10 @@ import java.util.Objects;
 @Entity
 public class User implements UserDetails {
 
-    public static final String USER = "USER";
+    private static final String USER = "USER";
     public static final String ADMIN = "ADMIN";
-    public static final String ROLE_USER = "ROLE_" + USER;
-    public static final String ROLE_ADMIN = "ROLE_" + ADMIN;
+    private static final String ROLE_USER = "ROLE_" + USER;
+    private static final String ROLE_ADMIN = "ROLE_" + ADMIN;
     public static final GrantedAuthority ROLE_USER_AUTHORITY = new SimpleGrantedAuthority(ROLE_USER);
     public static final GrantedAuthority ROLE_ADMIN_AUTHORITY = new SimpleGrantedAuthority(ROLE_ADMIN);
 
@@ -37,13 +37,10 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String teamName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -75,11 +72,6 @@ public class User implements UserDetails {
 
     public User setUsername(String username) {
         this.username = username;
-        return this;
-    }
-
-    public User setPassword(String password) {
-        this.password = password;
         return this;
     }
 
@@ -199,7 +191,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return "";
     }
 
     @Override
