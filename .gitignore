@@ -7,6 +7,7 @@
 build/
 out/
 target/
+work/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Java build output
